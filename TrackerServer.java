@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	
@@ -13,6 +15,19 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	
 	private String timestamp;
 	private Hashtable<String, String> table;
+	
+	private static final String PATTERN = 
+	        "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+	private boolean validate(final String ip){          
+
+	      Pattern pattern = Pattern.compile(PATTERN);
+	      Matcher matcher = pattern.matcher(ip);
+	      return matcher.matches();             
+	}
 	
 	/*
 	 * Setta il timestamp al momento corrente
@@ -27,6 +42,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		int second = now.get(Calendar.SECOND);
 		int millis = now.get(Calendar.MILLISECOND);
 		this.timestamp = String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
+		assert timestamp.length() == 23 : "Il timestamp ha lunghezza " + timestamp.length();
 	}
 	
 	/*
@@ -51,6 +67,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 */
 	public Vector<String> registrazione(String ip, Vector<String> risorse) throws RemoteException {
 		
+		assert this.validate(ip) == true : "Indirizzo ip non valido";
+		
 		Vector<String> ipCoordinatori = new Vector<String>();
 		
 		for (int i = 0; i < risorse.capacity(); i++) {
@@ -63,6 +81,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 				ipCoordinatori.add(ip);
 			}
 		}
+		
+		assert ipCoordinatori.capacity() == risorse.capacity() : "Dimensione vettori non bilanciata";
 		
 		return ipCoordinatori;
 	}
@@ -96,6 +116,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * 2) se è cambiato allora restituisce semplicemente il nuovo coordinatore
      */
     public String richiesta(String risorsa, String ipPrecedente) throws RemoteException {
+    	
+    	assert this.validate(ipPrecedente) == true : "Indirizzo ip non valido";
     	
     	String coordinatore_corrente = this.richiesta(risorsa);
     	
@@ -148,6 +170,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		        this.setTimestamp();
 		    }
 		}
+		
+		assert table.containsValue(coordinator) == false : "Non è stato eliminato il coordinatore per una certa risorsa";
     }
     
     /*
@@ -157,10 +181,14 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      */
     public void cambioCoordinatore(String ip, String risorsa) throws RemoteException {
     	
+    	assert this.validate(ip) == true : "Indirizzo ip non valido";
+    	
     	// se la chiave esiste già viene fatto un replace
     	// se la chiave non esiste, viene aggiunta
     	table.put(risorsa, ip);
     	this.setTimestamp();
+    	
+    	assert table.get(risorsa) == ip : "Non è stato cambiato il coordinatore per la risorsa " + risorsa;
     }
     
     /*
@@ -170,6 +198,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * la tabella e il coordinatore ha una versione non aggiornata)
      */
     public Hashtable<String, String> getList(String timestamp) throws RemoteException {
+    	
+    	assert timestamp.length() == this.timestamp.length() : "I due timestamp hanno dimensione diversa";
     	
     	if (timestamp.compareTo(this.timestamp) < 0) {
     		return table;
