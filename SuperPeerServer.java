@@ -13,6 +13,12 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	
 	private Hashtable<String, String> coordTable = null;
 	
+	/*
+	 * Costruttore della classe SuperPeerServer.
+	 * Il costruttore si occupa di inizializzare le variabili private quali
+	 * tabella dei coordinatori, IP dell'host sul quale il server è in
+	 * esecuzione e identificativo del SuperPeer.
+	 * */
 	protected SuperPeerServer() throws RemoteException, UnknownHostException {
 		super();
 		try {
@@ -25,15 +31,34 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		this.id = name + ":" + ip;
 	}
 	
+	/*
+	 * Metodo che restituisce il nome del server SuperPeer.
+	 * 
+	 * Valore di ritorno:
+	 * una stringa contenente il nome del server SuperPeer
+	 * */
 	public String getName() throws RemoteException {
 		return this.name;
 	}
 	
-	// TODO: eliminare la parte remota?
+	/*
+	 * Metodo accessore dell'identificativo di un server SuperPeer.
+	 * 
+	 * Valore di ritorno:
+	 * una stringa contenente l'identificativo del server SuperPeer.
+	 * 
+	 * TODO: eliminare la parte remota?
+	 * */
 	public String getId() throws RemoteException {
 		return this.id;
 	}
 	
+	/*
+	 * Metodo accessore dell'IP di un server SuperPeer.
+	 * 
+	 * Valore di ritorno:
+	 * una stringa contenente l'IP del server SuperPeer.
+	 * */
 	public String getIP() throws RemoteException {
 		return this.ip;
 	}
@@ -41,7 +66,13 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	/*
 	 * Metodo invocato da un peer per registrare una nuova risorsa nella rete peer-to-peer
 	 * quando il peer invocante si trova già nella rete.
-	 */
+	 * 
+	 * Parametri:
+	 * requestor_ip: indirizzo IP del peer richiedente
+	 * resources: vettore di identificatori univoci delle risorse registrate
+	 * Valore di ritorno:
+	 * un vettore di indirizzi IP dei coordinatori delle risorse registrate
+	 * */
 	public Vector<String> register(String requestor_ip, Vector<String> resources)
 			throws RemoteException {
 		Vector<String> coordinators = new Vector<String>();
@@ -65,7 +96,13 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * Metodo invocato da un peer per richiedere una nuova risorsa quando il peer
 	 * invocante si trova già nella rete. Questo metodo è eseguito la prima volta
 	 * che tale risorsa è richiesta.
-	 */
+	 * 
+	 * Parametri:
+	 * resource: l'identificativo univoco della risorsa richiesta
+	 * Valore di ritorno:
+	 * una stringa contenente l'IP del coordinatore per la risorsa richiesta, una
+	 * stringa vuota se non esiste
+	 * */
 	public String request(String resource) throws RemoteException {
 		String coordinator = "";
 		String coord = this.coordTable.get(resource);
@@ -75,9 +112,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/*
+	 * Metodo privato per il controllo di raggiungibilità di un IP.
+	 * 
 	 * Il metodo ritorna vero se l'indirizzo IP passato come parametro
 	 * risulta raggiungibile, falso altrimenti.
-	 */
+	 * 
+	 * Parametri:
+	 * ip: l'indirizzo IP dell'host del quale verificare la raggiungibilità
+	 * Valore di ritorno:
+	 * true se l'IP è raggiungibile, false se non lo è
+	 * */
 	private boolean pingIP(String ip) {
 		boolean reachable = false;
 		try {
@@ -95,7 +139,14 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * invocante si trova già nella rete. Questo metodo è eseguito la seconda volta
 	 * che tale risorsa è richiesta, nel momento in cui il precedente coordinatore
 	 * non ha risposto al successivo tentativo di instaurare una connessione.
-	 */
+	 * 
+	 * Parametri:
+	 * resource: l'identificativo univoco della risorsa richiesta
+	 * last_coord: l'indirizzo IP dell'ultimo coordinatore noto per la risorsa richiesta
+	 * Valore di ritorno:
+	 * una stringa contenente l'indirizzo IP dell'attale coordinatore per la risorsa
+	 * richiesta, una stringa vuota se non esiste
+	 * */
 	public String request(String resource, String last_coord)
 			throws RemoteException {
 		assert(last_coord != null && last_coord != "");
@@ -123,7 +174,10 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	
 	/*
 	 * Metodo invocato da un peer per uscire dalla rete in modo "pulito".
-	 */
+	 * 
+	 * Parametri:
+	 * peer_ip: indirizzo Ip del peer invocante il metodo
+	 * */
 	public void goodbye(String peer_ip) throws RemoteException {
 		assert(peer_ip != null && peer_ip != "");
 		Enumeration<String> e = resourceTable.keys();
@@ -147,7 +201,13 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	/*
 	 * Metodo invocato da un peer quando ha appena ricevuto dal root tracker
 	 * l'informazione di chi sia il coordinatore per la risorsa richiesta.
-	 */
+	 * 
+	 * Parametri:
+	 * resource_name: identificativo univoco della risorsa per la quale si
+	 *                effettua la richiesta dei possessori
+	 * Valore di ritorno:
+	 * una lista di indirizzi IP dei possessori della risorsa richiesta
+	 * */
 	public Vector<String> getList(String resource_name) throws RemoteException {
 		PeerTable pt = resourceTable.get(resource_name);
 		if (pt == null)
@@ -162,10 +222,26 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return possessors;
 	}
 	
+	/*
+	 * Metodo per il rinfresco della tabella dei coordinatori nel server.
+	 * 
+	 * Il metodo rinfresca completamente il contenuto della tabella dei
+	 * coordinatori posseduta dal server SuperPeer.
+	 * 
+	 * Parametri:
+	 * una tabella hash che associa a un identificativo di risorsa il
+	 * suo coordinatore.
+	 * */
 	public void setList(Hashtable<String, String> table) {
 		this.coordTable = table;
 	}
 	
+	/*
+	 * Metodo principale di funzionamento del server SuperPeer.
+	 * 
+	 * Il metodo registra il server nell'RMI registry in attività sulla
+	 * stessa JVM. 
+	 * */
 	public static void main(String[] args) {
 		System.setSecurityManager(new RMISecurityManager());
 		
