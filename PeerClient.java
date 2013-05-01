@@ -38,7 +38,7 @@ public class PeerClient {
 	 * resources: Vector<String> contenente i nomi delle risorse da registrare
 	 * */
 	private Vector<String> registerResources(Tracker server, Vector<String> resources) {
-	
+		assert server != null : "Tracker object is undefined!";
 		try {	
 			return server.registrazione(this.myIp, resources);
 		}
@@ -57,7 +57,7 @@ public class PeerClient {
 	 * resources: Vector<String> contenente i nomi delle risorse da registrare
 	 * */
 	private Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
-		
+		assert server != null : "SuperPeer object is undefined!";
 		try {	
 			return server.register(this.myIp, resources);
 		}
@@ -76,7 +76,7 @@ public class PeerClient {
 	 * resource: il nome della risorsa richiesta
 	 * */
 	private String simpleResourceRequest(Tracker server, String resource) {
-		
+		assert server != null : "Tracker object is undefined!";
 		try {
 			return server.richiesta(resource);
 		}
@@ -94,7 +94,7 @@ public class PeerClient {
 	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
 	 * */
 	private String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
-		
+		assert server != null : "Tracker object is undefined!";
 		try {
 			return server.richiesta(resource, prevCoord);
 		}
@@ -112,7 +112,7 @@ public class PeerClient {
 	 * resource: il nome della risorsa richiesta
 	 * */
 	private String simpleResourceRequest(SuperPeer server, String resource) {
-		
+		assert server != null : "SuperPeer object is undefined!";
 		try {
 			return server.request(resource);
 		}
@@ -130,7 +130,7 @@ public class PeerClient {
 	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
 	 * */
 	private String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
-		
+		assert server != null : "SuperPeer object is undefined!";
 		try {
 			return server.request(resource, prevCoord);
 		}
@@ -150,7 +150,7 @@ public class PeerClient {
 	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
 	 * */
 	private void goodbye(SuperPeer coord) {
-		
+		assert coord != null : "SuperPeer object is undefined!";
 		try {
 			coord.goodbye(this.myIp);
 		}
@@ -168,6 +168,7 @@ public class PeerClient {
 	 * resName: stringa contenente il nome della risorsa
 	 * */
 	private Vector<String> getList(SuperPeer coord, String resName) {
+		assert coord != null : "SuperPeer object is undefined!";
 		try {
 			return coord.getList(resName);
 		}
@@ -188,7 +189,7 @@ public class PeerClient {
 	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
 	 * */
 	private float discovery(Peer p) {
-		
+		assert p != null : "Peer object is undefined!";
 		try {
 			return p.discovery(this.myIp);
 		}
@@ -208,6 +209,8 @@ public class PeerClient {
 	 * resName: stringa contenente il nome della risorsa
 	 * */
 	private boolean getResource(Peer p, String resName) {
+		assert p != null : "Peer object is undefined!";
+		
 		byte[] filedata;
 		try {
 			filedata = p.getResource(resName);
@@ -246,6 +249,8 @@ public class PeerClient {
 	 * resName: stringa contenente il nome della risorsa
 	 * */
 	private float election(Peer p, String resName) {
+		assert p != null : "Peer object is undefined!";
+		
 		try {
 			return p.election(resName);
 		}
@@ -264,6 +269,8 @@ public class PeerClient {
 	 * ipCoord: stringa contenente l'indirizzo ip del coordinatore da impostare
 	 * */
 	private void coordinator(Peer p, String resName, String ipCoord) {
+		assert p != null : "Peer object is undefined!";
+		
 		try {
 			p.coordinator(ipCoord, resName);
 		}
@@ -355,6 +362,9 @@ public class PeerClient {
 			String server = this.resourceTable.get(resName).get().get(i).peer;
 			server = "rmi://"+server+"/"+"PeerServer";
 			Peer p = this.getPeer(server);
+			
+			assert p != null : "Peer object is undefined!";
+			
 			try {
 				answers[i] = p.election(resName);
 			} catch (RemoteException e) {
@@ -379,6 +389,9 @@ public class PeerClient {
 			String server = this.resourceTable.get(resName).get().get(i).peer;
 			server = "rmi://"+server+"/"+"PeerServer";
 			Peer p = this.getPeer(server);
+			
+			assert p != null : "Peer object is undefined!";
+			
 			try {
 				p.coordinator(peerMin, resName);
 			} catch (RemoteException e) {
@@ -398,6 +411,8 @@ public class PeerClient {
 		
 		Tracker tr = self.getTracker(server);
 		
+		assert tr != null : "Tracker object is undefined!";
+		
 		if(mode.equals("register")) {
 			Vector<String> resNames = new Vector<String>();
 			resNames.add("prova.txt");
@@ -405,12 +420,17 @@ public class PeerClient {
 			//register new resources
 			Vector<String> coords = self.registerResources(tr, resNames);
 			
+			assert coords.size() == resNames.size() : "coords and resNames size doesn't match!";
+			
 			//add coordinators in the hashtable
 			for(int i=0;i<coords.size();++i) {
 				self.resourceTable.put(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
 				if(coords.get(i) != self.myIp) {
 					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeerServer";
 					SuperPeer c = self.getCoord(coord);
+					
+					assert c != null : "SuperPeer object is undefined!";
+					
 					self.registerResources(c, resNames);
 				}
 					
@@ -422,20 +442,26 @@ public class PeerClient {
 			String coord = "rmi://"+prevC+"/"+"SuperPeerServer";
 			
 			SuperPeer c = self.getCoord(coord);
+			
+			assert c != null : "SuperPeer object is undefined!";
+			
 			Vector<String> ipList = self.getList(c, resName);
 			while(ipList == null) {
 				System.out.println("Coordinator isn't responding..");
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(5000);	//TODO: trovare un tempo di sleep realistico
 				} catch (InterruptedException e) {
 					System.out.println("Exception while sleeping: " + e.getMessage());
 					e.printStackTrace();
 				}
 				
 				prevC = self.advancedResourceRequest(tr, resName, prevC);
-				coord = "rmi://"+prevC+"/"+"SuperPeerServer";
-				
+				coord = "rmi://"+prevC+"/"+"SuperPeerServer";				
 				SuperPeer c1 = self.getCoord(coord);
+				
+				assert c1 != null : "SuperPeer object is undefined!"; //FIXME: ha senso questa assert? come gestisce rmi il non
+																	   //		 rispondere..? fa ritornare un null?
+				
 				ipList = self.getList(c1, resName);
 			}
 			
@@ -445,6 +471,8 @@ public class PeerClient {
 				String peer = ipList.get(i);
 				peer = "rmi://"+peer+"/"+"PeerServer";
 				Peer p = self.getPeer(peer);
+				
+				assert p != null : "Peer object is undefined!";
 				
 				PeerTableData pd = new PeerTableData(ipList.get(i),self.discovery(p),false,ipList.get(i)==prevC?true:false);
 				pt.add(pd);
@@ -459,10 +487,13 @@ public class PeerClient {
 			closestPeer = "rmi://"+closestPeer+"/"+"PeerServer";
 			Peer p = self.getPeer(closestPeer);
 			
+			assert p != null : "Peer object is undefined!";
+			
 			//richiedi la risorsa..
 			if(self.getResource(p, resName))
 				System.out.println("tutto e' andato a buon fine, yeah!");
-			
+			else
+				System.out.println("Trasferimento della risorsa fallito..");
 			
 		}
 		

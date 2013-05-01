@@ -65,12 +65,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			input.read(buffer,0,buffer.length);
 	
 			input.close();
-	
+			assert buffer.length > 0 : "Something went wrong while reading file, but no exception were rised..";
 			return(buffer);
 
 		} catch(Exception e){
 
-			System.out.println("FileImpl: "+e.getMessage());
+			System.out.println("Something went wrong while reading file: "+e.getMessage());
 	
 			e.printStackTrace();
 	
@@ -85,7 +85,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * res: risorsa per la quale si avvia l'election
 	 * */
 	public float election(String res) throws RemoteException {
-		
+		assert this.avgDist > 0 : "Called election but avgDist is not a valid number!";
 		return this.avgDist;
 		
 	}
@@ -98,16 +98,18 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * res: stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 * */
 	public void coordinator(String newCoord, String res) throws RemoteException {
-		
+		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
 		
 		for(int i=0;i<pt.get().size();++i) {
 			pt.get().get(i).coordinator = false;
-			if(pt.get().get(i).peer.equals(newCoord))
-				pt.get().get(i).coordinator = true; 
+			if(pt.get().get(i).peer.equals(newCoord)) {
+				pt.get().get(i).coordinator = true;
+				elected = true;
+			}
 			
 		}
-		
+		assert elected == true : "No coordinator set!";
 		this.resourceTable.put(res, pt);
 	}
 	
