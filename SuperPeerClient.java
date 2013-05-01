@@ -69,7 +69,7 @@ public class SuperPeerClient {
 	 * la memorizzi internamente.
 	 * */
 	private void startupListRetriever() {
-		  // XXX: se listRetriever è già non null?
+		  assert(listRetriever == null);
 		  listRetriever = new Thread(
 				  new Runnable() {
 		                public void run() {
@@ -91,7 +91,9 @@ public class SuperPeerClient {
 	 * */
 	@SuppressWarnings("deprecation")
 	private void stopListRetriever() {
-		// XXX: fare qualsiasi cosa solo se listRetriever != null!
-		listRetriever.stop();
+		if (listRetriever != null) {
+			listRetriever.stop();
+			listRetriever = null;
+		}
 	}
 }
