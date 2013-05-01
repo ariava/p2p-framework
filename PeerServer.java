@@ -19,6 +19,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	
 	protected Hashtable<String, PeerTable> resourceTable; //TODO: sincronizzare con quella del client..
 	
+	
+	/*
+	 * Costruttore della classe PeerServer.
+	 * 
+	 * Inizializza la distanza media a -1 e l'ip all'ip corrente della macchina. Crea una hashtable vuota.
+	 * */
 	public PeerServer() throws RemoteException, UnknownHostException {
 		
 		super();
@@ -28,13 +34,24 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
+	/*
+	 * Metodo che dato l'indirizzo ip del chiamante ritorna la distanza in termini di hopcount dalla macchina corrente.
+	 * 
+	 * Parametri: 
+	 * ip: stringa contenente l'ip del chiamante
+	 * */
 	public float discovery(String ip) throws RemoteException {
-		
+		//TODO: hopcount..
 		return 4;
 		
 	}
 	
-
+	/*
+	 * Metodo che ritorna un array di byte che contiene la risorsa richiesta.
+	 * 
+	 * Parametri: 
+	 * resName: stringa contenente il nome della risorsa richiesta
+	 * */
 	public byte[] getResource(String resName) throws RemoteException {
 
 		try {
@@ -63,7 +80,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
-	 * Metodo invocato da un altro peer una volta avviata la procedura di elezione per ricevere i vari id
+	 * Metodo invocato da un altro peer una volta avviata la procedura di elezione per ricevere i vari id (distanze medie)
 	 * 
 	 * res: risorsa per la quale si avvia l'election
 	 * */
@@ -76,8 +93,9 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	/*
 	 * Metodo invocato da un altro peer per annunciare il nuovo coordinatore per una risorsa.
 	 * 
-	 * newCoord: ip del nuovo coordinatore
-	 * res: risorsa per cui e' stato eletto il nuovo coordinatore
+	 * Parametri:
+	 * newCoord: stringa contenente l'ip del nuovo coordinatore
+	 * res: stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 * */
 	public void coordinator(String newCoord, String res) throws RemoteException {
 		

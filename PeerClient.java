@@ -26,9 +26,17 @@ public class PeerClient {
 	}
 	
 	/*
-	 * Metodi sul tracker
+	 * Metodi chiamati sul tracker
 	 * */
-	//connect to tracker and register resources
+	
+
+	/*
+	 * Metodo privato utilizzato per chiamare il metodo registrazione del tracker, utilizzato per gestire le eventuali
+	 * eccezioni.
+	 * Parametri:
+	 * server: oggetto di tipo tracker sul quale chiamare il metodo
+	 * resources: Vector<String> contenente i nomi delle risorse da registrare
+	 * */
 	private Vector<String> registerResources(Tracker server, Vector<String> resources) {
 	
 		try {	
@@ -40,6 +48,14 @@ public class PeerClient {
 			return null;
 		}
 	}
+	
+	/*
+	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer, utilizzato per gestire le eventuali
+	 * eccezioni.
+	 * Parametri:
+	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * resources: Vector<String> contenente i nomi delle risorse da registrare
+	 * */
 	private Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
 		
 		try {	
@@ -52,6 +68,13 @@ public class PeerClient {
 		}		
 	}
 	
+	/*
+	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta del tracker. Gestisce la richiesta semplice
+	 * 
+	 * Parametri:
+	 * server: oggetto di tipo tracker
+	 * resource: il nome della risorsa richiesta
+	 * */
 	private String simpleResourceRequest(Tracker server, String resource) {
 		
 		try {
@@ -63,6 +86,13 @@ public class PeerClient {
 		}	
 	}
 	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del tracker. Effettua una richiesta avanzata
+	 * Parametri:
+	 * server: oggetto Tracker sul quale chiamare i metodi
+	 * resource: stringa contenente il nome della risorsa
+	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
+	 * */
 	private String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
 		
 		try {
@@ -74,6 +104,13 @@ public class PeerClient {
 		}
 	}
 	
+	/*
+	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta del SuperPeer. Gestisce la richiesta semplice
+	 * 
+	 * Parametri:
+	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * resource: il nome della risorsa richiesta
+	 * */
 	private String simpleResourceRequest(SuperPeer server, String resource) {
 		
 		try {
@@ -85,6 +122,13 @@ public class PeerClient {
 		}
 	}
 	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del tracker. Effettua una richiesta avanzata
+	 * Parametri:
+	 * server: oggetto SuperPeer sul quale chiamare i metodi
+	 * resource: stringa contenente il nome della risorsa
+	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
+	 * */
 	private String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
 		
 		try {
@@ -100,6 +144,11 @@ public class PeerClient {
 	 * Metodi sul coordinatore
 	 * */
 	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye sul coordinatore
+	 * Parametri:
+	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
+	 * */
 	private void goodbye(SuperPeer coord) {
 		
 		try {
@@ -111,6 +160,13 @@ public class PeerClient {
 		
 	}
 	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata di getList sul coordinatore.
+	 * 
+	 * Parametri:
+	 * coord: oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * resName: stringa contenente il nome della risorsa
+	 * */
 	private Vector<String> getList(SuperPeer coord, String resName) {
 		try {
 			return coord.getList(resName);
@@ -125,6 +181,12 @@ public class PeerClient {
 	/*
 	 * Metodi su altri peer 
 	 * */
+	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata a discovery di un altro peer.
+	 * Parametri:
+	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
+	 * */
 	private float discovery(Peer p) {
 		
 		try {
@@ -137,6 +199,14 @@ public class PeerClient {
 		
 	}
 	
+	/*
+	 * Metodo per recuperare una risorsa da un altro peer.
+	 * 
+	 * Effettua la chiamata al metodo getResource del peer in questione e scrive su file lo stream di byte ricevuto
+	 * Parametri:
+	 * p: oggetto di tipo Peer sul quale chiamare la getResource
+	 * resName: stringa contenente il nome della risorsa
+	 * */
 	private boolean getResource(Peer p, String resName) {
 		byte[] filedata;
 		try {
@@ -168,6 +238,13 @@ public class PeerClient {
 		return true;
 	}
 	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata a election sul peer remoto.
+	 * 
+	 * Parametri:
+	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
+	 * resName: stringa contenente il nome della risorsa
+	 * */
 	private float election(Peer p, String resName) {
 		try {
 			return p.election(resName);
@@ -178,7 +255,14 @@ public class PeerClient {
 		}
 	}
 	
-	//metodo chiamato per registrare un nuovo coordinatore
+	/*
+	 * Metodo usato per gestire le eccezioni della chiamata al coordinator di un altro peer.
+	 * 
+	 * Parametri: 
+	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
+	 * resName: stringa contenente il nome della risorsa
+	 * ipCoord: stringa contenente l'indirizzo ip del coordinatore da impostare
+	 * */
 	private void coordinator(Peer p, String resName, String ipCoord) {
 		try {
 			p.coordinator(ipCoord, resName);
@@ -191,6 +275,13 @@ public class PeerClient {
 	
 	/*
 	 * Metodi privati di gestione del ciclo di vita di un peer
+	 * */
+	
+	/*
+	 * Metodo che dato in ingresso il percorso rmi di un tracker ne ritorna l'oggetto corrispondente.
+	 * 
+	 * Parametri:
+	 * server: stringa contenente il percorso rmi del tracker.
 	 * */
 	private Tracker getTracker(String server) {
 		
@@ -206,6 +297,12 @@ public class PeerClient {
 		}
 	}
 	
+	/*
+	 * Metodo che dato in ingresso il percorso rmi di un SuperPeer ne ritorna l'oggetto corrispondente.
+	 * 
+	 * Parametri:
+	 * server: stringa contenente il percorso rmi del SuperPeer.
+	 * */
 	private SuperPeer getCoord(String server) {
 		
 		try {
@@ -220,6 +317,12 @@ public class PeerClient {
 		}
 	}
 	
+	/*
+	 * Metodo che dato in ingresso il percorso rmi di un Peer ne ritorna l'oggetto corrispondente.
+	 * 
+	 * Parametri:
+	 * server: stringa contenente il percorso rmi del Peer.
+	 * */
 	private Peer getPeer(String server) {
 		
 		try {
@@ -234,6 +337,15 @@ public class PeerClient {
 		}
 	}
 	
+	/*
+	 * Metodo chiamato dal peer per avviare la procedura di elezione.
+	 * 
+	 * Chiama la election su ogni altro peer ricevendo le loro distanze medie ed elegge come coordinatore il peer
+	 * con la distanza media piu' bassa.
+	 * 
+	 * Parametri:
+	 * resName: stringa contenente il nome della risorsa per cui e' necessario eleggere un nuovo coordinatore.
+	 * */
 	private void startElection(String resName) {
 		
 		float answers[] = new float[this.resourceTable.get(resName).get().size()];
