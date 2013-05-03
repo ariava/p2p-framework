@@ -16,6 +16,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 
 	private float avgDist;
 	private String myIp;
+	static private boolean debug = false;
 	
 	protected Hashtable<String, PeerTable> resourceTable; //TODO: sincronizzare con quella del client..
 	
@@ -44,7 +45,9 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 *  chiamato solo ed esclusivamente dal SUO client.
 	 * */
 	public void syncTable(Hashtable<String, PeerTable> rt) {
-		
+		if(debug) {
+			System.out.println("chiamata la sync");
+		}
 		this.resourceTable = rt;
 		
 	}
@@ -56,6 +59,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * ip: stringa contenente l'ip del chiamante
 	 * */
 	public float discovery(String ip) throws RemoteException {
+		
+		if(debug) {
+			System.out.println("Chiamata la discovery() dal peer con ip "+ip);
+		}
 		//TODO: hopcount..
 		return 4;
 		
@@ -69,6 +76,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * */
 	public byte[] getResource(String resName) throws RemoteException {
 
+		if(debug) {
+			System.out.println("Chiamata la getResource() per la risorsa "+resName);
+		}
+		
 		try {
 
 			File file = new File(resName);
@@ -100,6 +111,11 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * res: risorsa per la quale si avvia l'election
 	 * */
 	public float election(String res) throws RemoteException {
+		
+		if(debug) {
+			System.out.println("Chiamata la election() per la risorsa "+res);
+		}
+		
 		assert this.avgDist > 0 : "Called election but avgDist is not a valid number!";
 		return this.avgDist;
 		
@@ -113,6 +129,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * res: stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 * */
 	public void coordinator(String newCoord, String res) throws RemoteException {
+		if(debug) {
+			System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
+		}
+		
 		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
 		
@@ -129,13 +149,22 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("ciao");
+		
+		if(args[0].equals("debug"))
+			debug = true;
+		
+		if(debug) {
+			System.out.println("Avviato il PeerServer");
+		}
+		
 		System.setSecurityManager(new RMISecurityManager());
 		
 		try {
 			PeerServer obj = new PeerServer();
 			Naming.rebind("Peer"+InetAddress.getLocalHost().getHostAddress(), obj);
-			System.out.println("Peer"+InetAddress.getLocalHost().getHostAddress());
+			if(debug) {
+				System.out.println("Effettuato il binding con nome: Peer"+InetAddress.getLocalHost().getHostAddress());
+			}
 		}
 		catch (Exception e) {
 			System.out.println("non va: "+e.getMessage());
