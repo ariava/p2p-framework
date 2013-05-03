@@ -1,8 +1,13 @@
+import java.io.Serializable;
 import java.util.Vector;
 
 
-public class PeerTable {
+public class PeerTable implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Vector<PeerTableData> data;
 	
 	public PeerTable() {
@@ -10,6 +15,7 @@ public class PeerTable {
 	}
 	
 	public PeerTable(PeerTableData d) {
+		this.data = new Vector<PeerTableData>();
 		this.data.add(d);
 	}
 	
@@ -96,5 +102,6 @@ public class PeerTable {
 		}
 		return this.data.get(pos).peer;
 	}
+
 	
 }

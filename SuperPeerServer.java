@@ -7,7 +7,7 @@ import java.util.*;
 public class SuperPeerServer extends PeerServer implements SuperPeer {
 
 	private static final long serialVersionUID = 1L;
-	private final String name = "SuperpeerServer";
+	private final String name = "SuperPeer";
 	private String ip = null;
 	private String id;
 	

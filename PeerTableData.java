@@ -1,6 +1,8 @@
+import java.io.Serializable;
 
 
-public class PeerTableData {
+
+public class PeerTableData implements Serializable {
 
 	public String peer;
 	public float dist;
