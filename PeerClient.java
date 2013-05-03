@@ -24,8 +24,8 @@ public class PeerClient {
 		this.avgDist = -1;
 		this.resourceTable = new Hashtable<String, PeerTable>();
 		
-		String ps = "rmi://"+this.myIp+"/"+"Peer";
-		myPS = self.getPeer(ps);
+		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
+		this.myPS = self.getPeer(ps);
 		
 	}
 	
@@ -49,6 +49,7 @@ public class PeerClient {
 		catch (Exception e){
 			
 			System.out.println("Something went wrong while registering resources "+resources);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -303,6 +304,7 @@ public class PeerClient {
 		catch (Exception e) {
 			
 			System.out.println("Error while getting the remote object: "+e.getMessage());
+			e.printStackTrace();
 			return null;
 			
 		}
@@ -323,6 +325,7 @@ public class PeerClient {
 		catch (Exception e) {
 			
 			System.out.println("Error while getting the remote object: "+e.getMessage());
+			e.printStackTrace();
 			return null;
 			
 		}
@@ -337,12 +340,13 @@ public class PeerClient {
 	private Peer getPeer(String server) {
 		
 		try {
-			PeerServer obj = (PeerServer)Naming.lookup(server);
+			Peer obj = (Peer)Naming.lookup(server);
 			return obj;
 		}
 		catch (Exception e) {
 			
 			System.out.println("Error while getting the remote object: "+e.getMessage());
+			e.printStackTrace();
 			return null;
 			
 		}
@@ -364,7 +368,7 @@ public class PeerClient {
 		//per ogni peer nella lista chiama la election su di loro per ottenere le loro avgDist
 		for(int i=0;i<this.resourceTable.get(resName).get().size();++i) {
 			String server = this.resourceTable.get(resName).get().get(i).peer;
-			server = "rmi://"+server+"/"+"PeerServer";
+			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
 			assert p != null : "Peer object is undefined!";
@@ -391,7 +395,7 @@ public class PeerClient {
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
 		for(int i=0;i<this.resourceTable.get(resName).get().size();++i) {
 			String server = this.resourceTable.get(resName).get().get(i).peer;
-			server = "rmi://"+server+"/"+"PeerServer";
+			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
 			assert p != null : "Peer object is undefined!";
@@ -413,6 +417,9 @@ public class PeerClient {
 		
 		String server = "rmi://"+tracker+"/"+"Tracker";
 		
+		self = new PeerClient();
+		
+		System.out.println(self);
 		Tracker tr = self.getTracker(server);
 		
 		assert tr != null : "Tracker object is undefined!";
@@ -486,7 +493,7 @@ public class PeerClient {
 			for(int i=0;i<ipList.size();++i) {
 				
 				String peer = ipList.get(i);
-				peer = "rmi://"+peer+"/"+"Peer";
+				peer = "rmi://"+peer+"/"+"Peer"+peer;
 				Peer p = self.getPeer(peer);
 				
 				assert p != null : "Peer object is undefined!";
@@ -501,7 +508,7 @@ public class PeerClient {
 			self.avgDist = pt.getAvgDist();
 			
 			String closestPeer = pt.getMinDistPeer();
-			closestPeer = "rmi://"+closestPeer+"/"+"Peer";
+			closestPeer = "rmi://"+closestPeer+"/"+"Peer"+closestPeer;
 			Peer p = self.getPeer(closestPeer);
 			
 			assert p != null : "Peer object is undefined!";

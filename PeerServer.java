@@ -129,12 +129,13 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	public static void main(String[] args) {
-	
+		System.out.println("ciao");
 		System.setSecurityManager(new RMISecurityManager());
 		
 		try {
 			PeerServer obj = new PeerServer();
-			Naming.rebind("PeerServer"+InetAddress.getLocalHost().getHostAddress(), obj);
+			Naming.rebind("Peer"+InetAddress.getLocalHost().getHostAddress(), obj);
+			System.out.println("Peer"+InetAddress.getLocalHost().getHostAddress());
 		}
 		catch (Exception e) {
 			System.out.println("non va: "+e.getMessage());

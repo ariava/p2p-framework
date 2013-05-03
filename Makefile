@@ -9,7 +9,7 @@ java:
 	javac *.java
 
 rmi:
-	rmic SuperPeerServer; rmic TrackerServer
+	rmic SuperPeerServer; rmic TrackerServer; rmic PeerServer;
 
 clean:
 	rm *.class
