@@ -20,6 +20,8 @@ public class SuperPeerClient {
 	 * tracker: riferimento al tracker
 	 * */
 	public SuperPeerClient (SuperPeer server, Tracker tracker) {
+		assert(server != null);
+		assert(tracker != null);
 		this.server = server;
 		this.tracker = tracker;
 		this.startupListRetriever();
@@ -54,8 +56,11 @@ public class SuperPeerClient {
 	 *          il nuovo coordinatore
 	 * */
 	public void setCoordinator(String risorsa) {
+		assert(risorsa != null && risorsa != "");
 		try {
-			tracker.cambioCoordinatore(server.getIP(), risorsa);
+			String coord_ip = server.getIP();
+			assert(coord_ip != null && coord_ip != "");
+			tracker.cambioCoordinatore(coord_ip, risorsa);
 		} catch (RemoteException e) {
 			System.out.println("Exception while setting coordinator: " + e.getMessage());
 			e.printStackTrace();

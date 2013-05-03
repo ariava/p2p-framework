@@ -75,6 +75,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * */
 	public Vector<String> register(String requestor_ip, Vector<String> resources)
 			throws RemoteException {
+		assert(requestor_ip != null && requestor_ip != "");
+		assert(resources != null && resources.size() != 0);
 		Vector<String> coordinators = new Vector<String>();
 		for (int i = 0 ; i < resources.size() ; i++) {
 			String coord = this.coordTable.get(resources.get(i));
@@ -104,6 +106,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * stringa vuota se non esiste
 	 * */
 	public String request(String resource) throws RemoteException {
+		assert(resource != null && resource != "");
 		String coordinator = "";
 		String coord = this.coordTable.get(resource);
 		if (coord != null)
@@ -123,6 +126,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * true se l'IP è raggiungibile, false se non lo è
 	 * */
 	private boolean pingIP(String ip) {
+		assert(ip != null && ip != "");
 		boolean reachable = false;
 		try {
 			InetAddress address = InetAddress.getByName(ip);
@@ -209,6 +213,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * una lista di indirizzi IP dei possessori della risorsa richiesta
 	 * */
 	public Vector<String> getList(String resource_name) throws RemoteException {
+		assert(resource_name != null && resource_name != "");
 		PeerTable pt = resourceTable.get(resource_name);
 		if (pt == null)
 			return null;
@@ -219,6 +224,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		Vector<String> possessors = new Vector<String>();
 		for(int i = 0 ; i < data.size() ; i++)
 			possessors.add(data.get(i).peer);
+		assert(possessors.size() != 0);
 		return possessors;
 	}
 	
@@ -233,6 +239,11 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * suo coordinatore.
 	 * */
 	public void setList(Hashtable<String, String> table) {
+		/*
+		 * Se esiste un coordinatore (ed esiste perché si sta invocando
+		 * questo metodo), allora la tabella non può essere vuota.
+		 */
+		assert(table != null && table.size() != 0);
 		this.coordTable = table;
 	}
 	
@@ -244,7 +255,6 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * */
 	public static void main(String[] args) {
 		System.setSecurityManager(new RMISecurityManager());
-		
 		try {
 			SuperPeerServer server = new SuperPeerServer();
 			Naming.rebind(server.getName(), server);
