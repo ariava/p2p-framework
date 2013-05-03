@@ -210,20 +210,22 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * resource_name: identificativo univoco della risorsa per la quale si
 	 *                effettua la richiesta dei possessori
 	 * Valore di ritorno:
-	 * una lista di indirizzi IP dei possessori della risorsa richiesta
+	 * una lista non vuota di indirizzi IP dei possessori della risorsa richiesta
 	 * */
 	public Vector<String> getList(String resource_name) throws RemoteException {
 		assert(resource_name != null && resource_name != "");
-		PeerTable pt = resourceTable.get(resource_name);
-		if (pt == null)
-			return null;
-		Vector<PeerTableData> data = pt.get();
-		if (data.size() == 0)
-			return null;
 		/* Costruzione di una lista degli IP possessori della richiesta */
 		Vector<String> possessors = new Vector<String>();
-		for(int i = 0 ; i < data.size() ; i++)
-			possessors.add(data.get(i).peer);
+		/* Ricerca nella tabella delle risorse */
+		PeerTable pt = resourceTable.get(resource_name);
+		if (pt != null) {
+			Vector<PeerTableData> data = pt.get();
+			assert(data != null);
+			for(int i = 0 ; i < data.size() ; i++)
+				possessors.add(data.get(i).peer);
+		}
+		/* Aggiunta dell'ip del coordinatore */
+		possessors.add(this.ip);
 		assert(possessors.size() != 0);
 		return possessors;
 	}
