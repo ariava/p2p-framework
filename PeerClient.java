@@ -13,6 +13,7 @@ import java.util.Vector;
 public class PeerClient {
 
 	static private PeerClient self = null;
+	private Peer myPS = null;
 	private String myIp;
 	private float avgDist;
 	private Hashtable<String, PeerTable> resourceTable;
@@ -22,6 +23,9 @@ public class PeerClient {
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		this.avgDist = -1;
 		this.resourceTable = new Hashtable<String, PeerTable>();
+		
+		String ps = "rmi://"+this.myIp+"/"+"Peer";
+		myPS = self.getPeer(ps);
 		
 	}
 	
@@ -402,12 +406,12 @@ public class PeerClient {
 		}
 	}
 	
-	public static void main(String args[]) {
+	public static void main(String args[]) throws UnknownHostException {
 		
 		String tracker = args[0];
 		String mode = args[1];
 		
-		String server = "rmi://"+tracker+"/"+"ServerImpl";
+		String server = "rmi://"+tracker+"/"+"Tracker";
 		
 		Tracker tr = self.getTracker(server);
 		
@@ -426,20 +430,33 @@ public class PeerClient {
 			for(int i=0;i<coords.size();++i) {
 				self.resourceTable.put(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
 				if(coords.get(i) != self.myIp) {
-					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeerServer";
+					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
 					SuperPeer c = self.getCoord(coord);
 					
 					assert c != null : "SuperPeer object is undefined!";
 					
 					self.registerResources(c, resNames);
 				}
+				else {
+					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
+					SuperPeer c = self.getCoord(coord);
+					self = new SuperPeerClient(c,tr);
+				}
 					
+			}
+			try {
+				self.myPS.syncTable(self.resourceTable);
+			} catch (RemoteException e) {
+				System.out.println("Unable to sync table with my server! I'll die horribly");
+				
+				e.printStackTrace();
+				System.exit(1);
 			}
 		} else {
 			//request resource prova.txt
 			String resName = "prova.txt";
 			String prevC = self.simpleResourceRequest(tr, resName);
-			String coord = "rmi://"+prevC+"/"+"SuperPeerServer";
+			String coord = "rmi://"+prevC+"/"+"SuperPeer";
 			
 			SuperPeer c = self.getCoord(coord);
 			
@@ -456,7 +473,7 @@ public class PeerClient {
 				}
 				
 				prevC = self.advancedResourceRequest(tr, resName, prevC);
-				coord = "rmi://"+prevC+"/"+"SuperPeerServer";				
+				coord = "rmi://"+prevC+"/"+"SuperPeer";				
 				SuperPeer c1 = self.getCoord(coord);
 				
 				assert c1 != null : "SuperPeer object is undefined!"; //FIXME: ha senso questa assert? come gestisce rmi il non
@@ -469,7 +486,7 @@ public class PeerClient {
 			for(int i=0;i<ipList.size();++i) {
 				
 				String peer = ipList.get(i);
-				peer = "rmi://"+peer+"/"+"PeerServer";
+				peer = "rmi://"+peer+"/"+"Peer";
 				Peer p = self.getPeer(peer);
 				
 				assert p != null : "Peer object is undefined!";
@@ -484,7 +501,7 @@ public class PeerClient {
 			self.avgDist = pt.getAvgDist();
 			
 			String closestPeer = pt.getMinDistPeer();
-			closestPeer = "rmi://"+closestPeer+"/"+"PeerServer";
+			closestPeer = "rmi://"+closestPeer+"/"+"Peer";
 			Peer p = self.getPeer(closestPeer);
 			
 			assert p != null : "Peer object is undefined!";

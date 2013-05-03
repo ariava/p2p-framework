@@ -35,6 +35,21 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
+	 * Metodo orribile per sincronizzare la tabella del client con quella del rispettivo server
+	 * 
+	 *  Parametri:
+	 *  rt: l'oggetto di tipo Hashtable da sostituire con la propria tabella
+	 *  
+	 *  XXX: problema di sicurezza, non ci sono controlli sul fatto che questo metodo possa essere
+	 *  chiamato solo ed esclusivamente dal SUO client.
+	 * */
+	public void syncTable(Hashtable<String, PeerTable> rt) {
+		
+		this.resourceTable = rt;
+		
+	}
+	
+	/*
 	 * Metodo che dato l'indirizzo ip del chiamante ritorna la distanza in termini di hopcount dalla macchina corrente.
 	 * 
 	 * Parametri: 

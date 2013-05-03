@@ -1,7 +1,8 @@
+import java.net.UnknownHostException;
 import java.rmi.*;
 import java.util.Calendar;
 
-public class SuperPeerClient {
+public class SuperPeerClient extends PeerClient {
 	static private SuperPeer server = null;
 	static private Tracker tracker = null;
 	
@@ -19,7 +20,8 @@ public class SuperPeerClient {
 	 * server: riferimento al server coordinatore
 	 * tracker: riferimento al tracker
 	 * */
-	public SuperPeerClient (SuperPeer server, Tracker tracker) {
+	public SuperPeerClient (SuperPeer server, Tracker tracker) throws UnknownHostException {
+		//super();
 		assert(server != null);
 		assert(tracker != null);
 		this.server = server;
