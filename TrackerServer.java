@@ -215,7 +215,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	System.setSecurityManager(new RMISecurityManager());
         try {
             TrackerServer obj = new TrackerServer();
-            Naming.rebind("helloserver", obj);
+            Naming.rebind("Tracker", obj);
             System.out.println("Il server è in esecuzione, digitare CTRL+C per terminarlo.");
         }
         catch(Exception e) {
