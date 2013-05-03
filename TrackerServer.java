@@ -71,18 +71,18 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		Vector<String> ipCoordinatori = new Vector<String>();
 		
-		for (int i = 0; i < risorse.capacity(); i++) {
-			if (table.containsKey(risorse.elementAt(i))) {
-				ipCoordinatori.add(table.get(risorse.elementAt(i)));
+		for (int i = 0; i < risorse.size(); i++) {
+			if (table.containsKey(risorse.get(i))) {
+				ipCoordinatori.add(table.get(risorse.get(i)));
 			}
 			else {
-				table.put(risorse.elementAt(i), ip);
+				table.put(risorse.get(i), ip);
 				this.setTimestamp();
 				ipCoordinatori.add(ip);
 			}
 		}
 		
-		assert ipCoordinatori.capacity() == risorse.capacity() : "Dimensione vettori non bilanciata";
+		assert ipCoordinatori.size() == risorse.size() : "Dimensione vettori non bilanciata";
 		
 		return ipCoordinatori;
 	}
