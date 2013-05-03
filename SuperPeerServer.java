@@ -13,6 +13,9 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	
 	private Hashtable<String, String> coordTable = null;
 	
+	/* TODO: incapsulare in una macro */
+	private static boolean debug = true;
+	
 	/*
 	 * Costruttore della classe SuperPeerServer.
 	 * Il costruttore si occupa di inizializzare le variabili private quali
@@ -23,12 +26,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		super();
 		try {
 			this.ip = InetAddress.getLocalHost().getHostAddress();
+			if (debug)
+				System.out.println("Impostazione IP " + ip);
 		} catch (UnknownHostException e) {
 			System.out.println("Error while getting IP: " + e.getMessage());
 			e.printStackTrace();
 		}
 		this.coordTable = new Hashtable<String, String>();
 		this.id = name + ":" + ip;
+		if (debug)
+			System.out.println("Impostazione id " + id);
 	}
 	
 	/*
@@ -64,6 +71,32 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/*
+	 * Metodo di debug che stampa un vettore di stringhe.
+	 * 
+	 * Parametri:
+	 * vec: vettore di stringhe
+	 * */
+	private void printStringVector(Vector<String> vec) {
+		for (int i = 0 ; i < vec.size() ; i++)
+			System.out.println("Elemento " + i+1 + ": " + vec.get(i));
+	}
+	
+	/*
+	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
+	 * 
+	 * Parametri:
+	 * table: tabella hash dei coordinatori
+	 * */
+	private void printCoordTable(Hashtable<String, String> table) {
+		assert(table != null && table.size() != 0);
+		Enumeration<String> e = table.keys();
+		while(e.hasMoreElements()) {
+			String key = e.nextElement();
+			System.out.println("Risorsa: " + key + " - Coord: " + table.get(key));
+		}
+	}
+	
+	/*
 	 * Metodo invocato da un peer per registrare una nuova risorsa nella rete peer-to-peer
 	 * quando il peer invocante si trova già nella rete.
 	 * 
@@ -91,6 +124,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			coordinators.add(coord);
 		}
 		assert(resources.size() == coordinators.size());
+		if (debug)
+			this.printStringVector(coordinators);
 		return coordinators;
 	}
 	
@@ -111,6 +146,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		String coord = this.coordTable.get(resource);
 		if (coord != null)
 			coordinator = coord;
+		if (debug)
+			System.out.println("Richiesta semplice: coord " + coordinator + " trovato per la risorsa " + resource);
 		return coordinator;
 	}
 	
@@ -131,6 +168,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		try {
 			InetAddress address = InetAddress.getByName(ip);
             reachable = address.isReachable(2000);
+            if (debug)
+				System.out.println("IP " + ip + ": raggiungibilità " + reachable);
         } catch (Exception e) {
             System.out.println("Error in ping: " + e.getMessage());
             e.printStackTrace();
@@ -155,14 +194,24 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			throws RemoteException {
 		assert(last_coord != null && last_coord != "");
 		assert(resource != null && resource != "");
+		if (debug)
+			System.out.println("Richiesta avanzata: vecchio coordinatore " + last_coord + " per risorsa " + resource);
 		/* Se il coordinatore è cambiato, ritorniamo il nuovo */
 		String new_coord = this.coordTable.get(resource);
-		if (new_coord != null && last_coord != new_coord)
+		if (new_coord != null && last_coord != new_coord) {
+			if (debug)
+				System.out.println("Richiesta avanzata: nuovo coordinatore: " + new_coord);
 			return new_coord;
+		}
 		/* Altrimenti, verifichiamo che il vecchio coordinatore sia giù */
 		boolean last_coord_is_alive = this.pingIP(last_coord);
-		if (last_coord_is_alive)
+		if (last_coord_is_alive) {
+			if (debug)
+				System.out.println("Richiesta avanzata: vecchio coordinatore ancora vivo ");
 			return last_coord;
+		}
+		if (debug)
+			System.out.println("Richiesta avanzata: nessun coordinatore disponibile");
 		/*
 		 * A questo punto del codice, il vecchio coordinatore non è più valido:
 		 * rimuoviamo la entry della tabella dei coordinatori.
@@ -184,12 +233,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * */
 	public void goodbye(String peer_ip) throws RemoteException {
 		assert(peer_ip != null && peer_ip != "");
+		if (debug)
+			System.out.println("Uscita pulita dell'host " + peer_ip);
 		Enumeration<String> e = resourceTable.keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
 			PeerTable pt = resourceTable.get(key);
 			PeerTableData ptd = pt.getIP(peer_ip);
 			if (ptd != null) {
+				if (debug)
+					System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella della risorsa " + key);
 				pt.remove(ptd);
 				resourceTable.put(key, pt);
 			}
@@ -197,8 +250,11 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		e = coordTable.keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
-			if (coordTable.get(key) == peer_ip)
+			if (coordTable.get(key) == peer_ip) {
+				if (debug)
+					System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella coordinatori per la risorsa " + key);
 				coordTable.remove(key);
+			}
 		}			
 	}
 	
@@ -227,6 +283,10 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		/* Aggiunta dell'ip del coordinatore */
 		possessors.add(this.ip);
 		assert(possessors.size() != 0);
+		if (debug) {
+			System.out.println("Possessori della risorsa " + resource_name);
+			this.printStringVector(possessors);
+		}
 		return possessors;
 	}
 	
@@ -246,6 +306,10 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		 * questo metodo), allora la tabella non può essere vuota.
 		 */
 		assert(table != null && table.size() != 0);
+		if (debug) {
+			System.out.println("Impostazione della tabella dei coordinatori");
+			this.printCoordTable(table);
+		}
 		this.coordTable = table;
 	}
 	
@@ -260,6 +324,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		try {
 			SuperPeerServer server = new SuperPeerServer();
 			Naming.rebind(server.getName(), server);
+			if (debug)
+				System.out.println("Bind con nome " + server.getName());
 		} catch (Exception e) {
 			System.out.println("Error while binding server: " + e.getMessage());
 			e.printStackTrace();
