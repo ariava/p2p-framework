@@ -105,10 +105,6 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		if (debug) {
 			System.out.println("Registrazione effettuata");
-			System.out.println("I coordinatori sono:");
-			for (int i = 0; i < ipCoordinatori.size(); i++) {
-				System.out.println(ipCoordinatori.get(i));
-			}
 			this.stampaTabella();
 		}
 		
@@ -125,17 +121,20 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	if (debug) {
     		System.out.println("Inizio richiesta semplice per la risorsa " + risorsa + "...");
+    		System.out.println();
     	}
     	
     	if (table.containsKey(risorsa)) {
     		if (debug) {
     			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + table.get(risorsa));
+    			System.out.println();
     		}
     		return table.get(risorsa);
     	}
     	else {
     		if (debug) {
     			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
+    			System.out.println();
     		}
     		return "";
     	}
@@ -281,12 +280,14 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	if (timestamp.compareTo(this.timestamp) < 0) {
     		if (debug) {
         		System.out.println("Ritorno la mia tabella (aggiornata) al peer che l'ha richiesta");
+        		System.out.println();
         	}
     		return table;
     	}
     	else {
     		if (debug) {
         		System.out.println("Il peer ha già la tabella aggiornata percui non gli passo nulla");
+        		System.out.println();
         	}
     		return null;
     	}
