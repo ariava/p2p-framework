@@ -13,6 +13,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private boolean debug = true;
+	
 	private String timestamp;
 	private Hashtable<String, String> table;
 	
@@ -27,6 +29,19 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	      Pattern pattern = Pattern.compile(PATTERN);
 	      Matcher matcher = pattern.matcher(ip);
 	      return matcher.matches();             
+	}
+	
+	private void stampaTabella() {
+		
+		Enumeration<String> enumKey = table.keys();
+		System.out.println("*** TABELLA TRACKER ***");
+		System.out.println("timestamp: " + timestamp);
+		while(enumKey.hasMoreElements()) {
+		    String key = enumKey.nextElement();
+		    String val = table.get(key);   
+		    System.out.println("risorsa: " + key + " | coordinatore: " + val);
+		    System.out.println();
+		}
 	}
 	
 	/*
@@ -69,6 +84,10 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		assert this.validate(ip) == true : "Indirizzo ip non valido";
 		
+		if (debug) {
+			System.out.println("Inizio registrazione risorse del peer " + ip + "...");
+		}
+		
 		Vector<String> ipCoordinatori = new Vector<String>();
 		
 		for (int i = 0; i < risorse.size(); i++) {
@@ -84,6 +103,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		assert ipCoordinatori.size() == risorse.size() : "Dimensione vettori non bilanciata";
 		
+		if (debug) {
+			System.out.println("Registrazione effettuata");
+			System.out.println("I coordinatori sono:");
+			for (int i = 0; i < ipCoordinatori.size(); i++) {
+				System.out.println(ipCoordinatori.get(i));
+			}
+			this.stampaTabella();
+		}
+		
 		return ipCoordinatori;
 	}
 	
@@ -95,10 +123,20 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 */
     public String richiesta(String risorsa) throws RemoteException {
     	
+    	if (debug) {
+    		System.out.println("Inizio richiesta semplice per la risorsa " + risorsa + "...");
+    	}
+    	
     	if (table.containsKey(risorsa)) {
+    		if (debug) {
+    			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + table.get(risorsa));
+    		}
     		return table.get(risorsa);
     	}
     	else {
+    		if (debug) {
+    			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
+    		}
     		return "";
     	}
     }
@@ -119,18 +157,36 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	assert this.validate(ipPrecedente) == true : "Indirizzo ip non valido";
     	
+    	if (debug) {
+    		System.out.println("Inizio richiesta per la risorsa " + risorsa + " dato che in precedenza ho risposto con il coordinatore " + ipPrecedente + "...");
+    	}
+    	
     	String coordinatore_corrente = this.richiesta(risorsa);
     	
     	if (coordinatore_corrente.equals(ipPrecedente)) {
     		if (this.pingUrl(coordinatore_corrente)) {
+    			if (debug) {
+    				System.out.println("Il ping del coordinatore" + coordinatore_corrente + "ha dato esito positivo");
+        			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatore_corrente);
+        			this.stampaTabella();
+        		}
     			return coordinatore_corrente;
     		}
     		else {
     			this.eliminateCoordinatorFromTable(ipPrecedente);
+    			if (debug) {
+    				System.out.println("Il ping del coordinatore " + coordinatore_corrente + " ha dato esito negativo");
+        			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
+        			this.stampaTabella();
+        		}
     			return "";
     		}
     	}
     	else {
+    		if (debug) {
+    			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatore_corrente);
+    			this.stampaTabella();
+    		}
     		return coordinatore_corrente;
     	}
     }
@@ -142,6 +198,10 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     private boolean pingUrl(String address) {
     	
     	boolean status = false;
+    	
+    	if (debug) {
+    		System.out.println("Inizio ping...");
+    	}
     	
         try {
             InetAddress adr = InetAddress.getByName(address);
@@ -160,6 +220,10 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * coordinator è valore
      */
     private void eliminateCoordinatorFromTable(String coordinator) {
+    	
+    	if (debug) {
+    		System.out.println("Elimino tutte le risorse delle quali è coordinatore " + coordinator);
+    	}
     	
     	Enumeration<String> enumKey = table.keys();
 		while(enumKey.hasMoreElements()) {
@@ -183,10 +247,19 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	assert this.validate(ip) == true : "Indirizzo ip non valido";
     	
+    	if (debug) {
+    		System.out.println("Inizio cambio coordinatore...");
+    	}
+    	
     	// se la chiave esiste già viene fatto un replace
     	// se la chiave non esiste, viene aggiunta
     	table.put(risorsa, ip);
     	this.setTimestamp();
+    	
+    	if (debug) {
+    		System.out.println("Cambio coordinatore eseguito");
+    		this.stampaTabella();
+    	}
     	
     	assert table.get(risorsa) == ip : "Non è stato cambiato il coordinatore per la risorsa " + risorsa;
     }
@@ -201,10 +274,20 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	assert timestamp.length() == this.timestamp.length() : "I due timestamp hanno dimensione diversa";
     	
+    	if (debug) {
+    		System.out.println("Chiamata la getList da parte di un peer");
+    	}
+    	
     	if (timestamp.compareTo(this.timestamp) < 0) {
+    		if (debug) {
+        		System.out.println("Ritorno la mia tabella (aggiornata) al peer che l'ha richiesta");
+        	}
     		return table;
     	}
     	else {
+    		if (debug) {
+        		System.out.println("Il peer ha già la tabella aggiornata percui non gli passo nulla");
+        	}
     		return null;
     	}
     }
