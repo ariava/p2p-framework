@@ -11,9 +11,8 @@ public class SuperPeerClient extends PeerClient {
 	static private Thread listRetriever = null;
 	
 	static private String timestamp;
-	
-	/* TODO: sostituire con una macro attivabile a tempo di compilazione */
-	static private boolean debug = true;
+
+	static private boolean debug;
 	
 	/*
 	 * Costruttore della classe SuperPeerClient.
@@ -63,7 +62,7 @@ public class SuperPeerClient extends PeerClient {
 		Enumeration<String> e = table.keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
-			System.out.println("Risorsa: " + key + " - Coord: " + table.get(key));
+			System.out.println("Risorsa: " + key + " | Coord: " + table.get(key));
 		}
 	}
 	
@@ -82,8 +81,10 @@ public class SuperPeerClient extends PeerClient {
 		try {
 			String coord_ip = server.getIP();
 			assert(coord_ip != null && coord_ip != "");
-			if (debug)
-				System.out.println("Impostazione di " + coord_ip + " per la risorsa " + risorsa);
+			if (debug) {
+				System.out.println("SuperPeerClient - Impostazione del coordinatore");
+			    System.out.println("Impostazione di " + coord_ip + " per la risorsa " + risorsa);
+			}
 			tracker.cambioCoordinatore(coord_ip, risorsa);
 		} catch (RemoteException e) {
 			System.out.println("Exception while setting coordinator: " + e.getMessage());
@@ -100,7 +101,7 @@ public class SuperPeerClient extends PeerClient {
 	private void startupListRetriever() {
 		  assert(listRetriever == null);
 		  if (debug)
-			  System.out.println("Avviamento del thread di rinfresco della tabella");
+			  System.out.println("SuperPeerClient: avviamento del thread di rinfresco della tabella");
 		  listRetriever = new Thread(
 				  new Runnable() {
 		                public void run() {
@@ -136,14 +137,24 @@ public class SuperPeerClient extends PeerClient {
 	 * */
 	@SuppressWarnings("deprecation")
 	private void stopListRetriever() {
+		if (debug)
+			System.out.println("SuperPeerClient: tentativo di arresto del thread di rinfresco della coordTable");
 		if (listRetriever != null) {
 			if (debug)
-				System.out.println("Arresto del thread di rinfresco della coordTable");
+				System.out.println("Thread in funzione, arrestato");
 			listRetriever.stop();
 			listRetriever = null;
 		} else {
 			if (debug)
-				System.out.println("Tentativo di arresto del thread di rinfresco: già arrestato");
+				System.out.println("Thread non attivo");
 		}
+	}
+	
+	/*
+	 * Metodo accessibile al Peer da cui questa classe deriva per impostare
+	 * la modalità di debug.
+	 * */
+	protected void setDebug(boolean value) {
+		this.debug = value;
 	}
 }
