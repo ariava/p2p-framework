@@ -12,4 +12,4 @@ rmi:
 	rmic SuperPeerServer; rmic TrackerServer; rmic PeerServer;
 
 clean:
-	rm *.class
+	rm *.class; rm *.txt;
