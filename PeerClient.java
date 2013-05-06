@@ -1,6 +1,5 @@
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -8,7 +7,6 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.Vector;
-
 
 public class PeerClient {
 
@@ -19,8 +17,9 @@ public class PeerClient {
 	private Hashtable<String, PeerTable> resourceTable;
 	static private boolean debug = false;
 	
+	
 	public PeerClient() throws UnknownHostException {
-		this.self = this;
+		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		this.avgDist = -1;
 		this.resourceTable = new Hashtable<String, PeerTable>();
@@ -480,11 +479,15 @@ public class PeerClient {
 	}
 	
 	public static void main(String args[]) throws UnknownHostException {
+		
+		
+		
 		if(debug) {
 			System.out.println("Avviato il client");
 		}
 		String tracker = args[0];
 		String mode = args[1];
+		String resName = args[2];
 		
 		
 		String server = "rmi://"+tracker+"/"+"Tracker";
@@ -503,7 +506,7 @@ public class PeerClient {
 				System.out.println("Client in modalita' registrazione");
 			}
 			Vector<String> resNames = new Vector<String>();
-			resNames.add("prova.txt");
+			resNames.add(resName);
 			
 			//register new resources
 			Vector<String> coords = self.registerResources(tr, resNames);
@@ -544,8 +547,7 @@ public class PeerClient {
 			if(debug) {
 				System.out.println("Client in modalita' request");
 			}
-			//request resource prova.txt
-			String resName = "prova.txt";
+			
 			String prevC = self.simpleResourceRequest(tr, resName);
 			String coord = "rmi://"+prevC+"/"+"SuperPeer";
 			
