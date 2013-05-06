@@ -3,6 +3,12 @@
 #
 #
 
+trackerserver: all
+	java -Djava.rmi.server.codebase=file:`pwd`/ TrackerServer
+
+peerserver: all
+	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer
+
 all: java rmi
 
 java:
