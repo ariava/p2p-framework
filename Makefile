@@ -3,13 +3,13 @@
 #
 #
 
-trackerserver: all
+all: java rmi
+
+trackerserver: java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ TrackerServer
 
-peerserver: all
+peerserver: java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer
-
-all: java rmi
 
 java:
 	javac *.java
