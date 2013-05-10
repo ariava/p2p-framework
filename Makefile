@@ -5,13 +5,13 @@
 
 all: java rmi
 
-tracker: java rmi
+tracker: clean java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ TrackerServer
 
-peerserver: java rmi
+peerserver: clean java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer debug
 
-superpeerserver: java rmi
+superpeerserver: clean java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ SuperPeerServer debug
 
 java:
@@ -21,4 +21,4 @@ rmi:
 	rmic SuperPeerServer; rmic TrackerServer; rmic PeerServer;
 
 clean:
-	rm *.class; rm *.txt;
+	rm *.class; rm *.txt, rm resources/*;

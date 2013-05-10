@@ -86,7 +86,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	
 			byte buffer[] = new byte[(int)file.length()];
 	
-			BufferedInputStream input = new	BufferedInputStream(new FileInputStream(resName));
+			BufferedInputStream input = new	BufferedInputStream(new FileInputStream("resources/"+resName));
 	
 			input.read(buffer,0,buffer.length);
 	
