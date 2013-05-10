@@ -7,6 +7,7 @@ public interface SuperPeer extends Peer {
 	public String request(String resource) throws RemoteException;
 	public String request(String resource, String last_coord) throws RemoteException;
 	public void goodbye(String peer_ip) throws RemoteException;
+	public void goodbye(String peer_ip, String resName) throws RemoteException;
 	public Vector<String> getList(String resource_name) throws RemoteException;
 	public void setList(Hashtable<String, String> table) throws RemoteException;
 	

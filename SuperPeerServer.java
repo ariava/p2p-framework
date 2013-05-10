@@ -276,6 +276,35 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/*
+	 * Metodo invocato da un peer per uscire dalla rete in modo "pulito".
+	 * 
+	 * Parametri:
+	 * peer_ip: indirizzo Ip del peer invocante il metodo
+	 * resName: stringa contenente il nome della risorsa da rimuovere
+	 * */
+	public void goodbye(String peer_ip, String resName) throws RemoteException {
+		assert(peer_ip != null && peer_ip != "");
+		if (debug)
+			System.out.println("SuperPeerServer: rimozione della risorsa "+resName+" dall'host " + peer_ip);
+		
+		PeerTable pt = resourceTable.get(resName);
+		PeerTableData ptd = pt.getIP(peer_ip);
+		if (ptd != null) {
+			if (debug)
+				System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella della risorsa " + resName);
+			pt.remove(ptd);
+			resourceTable.put(resName, pt);
+		}
+		
+		if (coordTable.get(resName) == peer_ip) {
+			if (debug)
+				System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella coordinatori per la risorsa " + resName);
+			coordTable.remove(resName);
+		}
+					
+	}
+	
+	/*
 	 * Metodo invocato da un peer quando ha appena ricevuto dal root tracker
 	 * l'informazione di chi sia il coordinatore per la risorsa richiesta.
 	 * 

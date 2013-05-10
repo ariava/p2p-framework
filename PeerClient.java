@@ -10,12 +10,12 @@ import java.util.Vector;
 
 public class PeerClient {
 
-	static private PeerClient self = null;
-	private Peer myPS = null;
-	private String myIp;
-	private float avgDist;
-	private Hashtable<String, PeerTable> resourceTable;
-	static private boolean debug = false;
+	static public PeerClient self = null;
+	public Peer myPS = null;
+	public String myIp;
+	public float avgDist;
+	public Hashtable<String, PeerTable> resourceTable;
+	static public boolean debug = true;
 	
 	
 	public PeerClient() throws UnknownHostException {
@@ -41,7 +41,7 @@ public class PeerClient {
 	 * server: oggetto di tipo tracker sul quale chiamare il metodo
 	 * resources: Vector<String> contenente i nomi delle risorse da registrare
 	 * */
-	private Vector<String> registerResources(Tracker server, Vector<String> resources) {
+	public Vector<String> registerResources(Tracker server, Vector<String> resources) {
 		assert server != null : "Tracker object is undefined!";
 		
 		if(debug) {
@@ -67,7 +67,7 @@ public class PeerClient {
 	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
 	 * resources: Vector<String> contenente i nomi delle risorse da registrare
 	 * */
-	private Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
+	public Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
 		assert server != null : "SuperPeer object is undefined!";
 		
 		if(debug) {
@@ -92,7 +92,7 @@ public class PeerClient {
 	 * server: oggetto di tipo tracker
 	 * resource: il nome della risorsa richiesta
 	 * */
-	private String simpleResourceRequest(Tracker server, String resource) {
+	public String simpleResourceRequest(Tracker server, String resource) {
 		assert server != null : "Tracker object is undefined!";
 		
 		if(debug) {
@@ -114,7 +114,7 @@ public class PeerClient {
 	 * resource: stringa contenente il nome della risorsa
 	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
 	 * */
-	private String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
+	public String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
 		assert server != null : "Tracker object is undefined!";
 		
 		if(debug) {
@@ -137,7 +137,7 @@ public class PeerClient {
 	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
 	 * resource: il nome della risorsa richiesta
 	 * */
-	private String simpleResourceRequest(SuperPeer server, String resource) {
+	public String simpleResourceRequest(SuperPeer server, String resource) {
 		assert server != null : "SuperPeer object is undefined!";
 		
 		if(debug) {
@@ -160,7 +160,7 @@ public class PeerClient {
 	 * resource: stringa contenente il nome della risorsa
 	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
 	 * */
-	private String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
+	public String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
 		assert server != null : "SuperPeer object is undefined!";
 		
 		if(debug) {
@@ -185,7 +185,7 @@ public class PeerClient {
 	 * Parametri:
 	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
 	 * */
-	private void goodbye(SuperPeer coord) {
+	public void goodbye(SuperPeer coord) {
 		assert coord != null : "SuperPeer object is undefined!";
 		
 		if(debug) {
@@ -196,8 +196,27 @@ public class PeerClient {
 		}
 		catch (Exception e) {
 			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
-		}
+		}	
+	}
+	
+	/*
+	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye per una particolare risorsa sul coordinatore
+	 * Parametri:
+	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
+	 * resName: stringa contenente il nome della risorsa per la quale ci si rimuove
+	 * */
+	public void goodbye(SuperPeer coord, String resName) {
+		assert coord != null : "SuperPeer object is undefined!";
 		
+		if(debug) {
+			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
+		}
+		try {
+			coord.goodbye(this.myIp, resName);
+		}
+		catch (Exception e) {
+			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
+		}	
 	}
 	
 	/*
@@ -207,7 +226,7 @@ public class PeerClient {
 	 * coord: oggetto di tipo SuperPeer sul quale chiamare il metodo
 	 * resName: stringa contenente il nome della risorsa
 	 * */
-	private Vector<String> getList(SuperPeer coord, String resName) {
+	public Vector<String> getList(SuperPeer coord, String resName) {
 		assert coord != null : "SuperPeer object is undefined!";
 		
 		if(debug) {
@@ -232,7 +251,7 @@ public class PeerClient {
 	 * Parametri:
 	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
 	 * */
-	private float discovery(Peer p) {
+	public float discovery(Peer p) {
 		assert p != null : "Peer object is undefined!";
 		
 		if(debug) {
@@ -256,7 +275,7 @@ public class PeerClient {
 	 * p: oggetto di tipo Peer sul quale chiamare la getResource
 	 * resName: stringa contenente il nome della risorsa
 	 * */
-	private boolean getResource(Peer p, String resName) {
+	public boolean getResource(Peer p, String resName) {
 		assert p != null : "Peer object is undefined!";
 		
 		if(debug) {
@@ -300,7 +319,7 @@ public class PeerClient {
 	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
 	 * resName: stringa contenente il nome della risorsa
 	 * */
-	private float election(Peer p, String resName) {
+	public float election(Peer p, String resName) {
 		assert p != null : "Peer object is undefined!";
 		
 		if(debug) {
@@ -324,7 +343,7 @@ public class PeerClient {
 	 * resName: stringa contenente il nome della risorsa
 	 * ipCoord: stringa contenente l'indirizzo ip del coordinatore da impostare
 	 * */
-	private void coordinator(Peer p, String resName, String ipCoord) {
+	public void coordinator(Peer p, String resName, String ipCoord) {
 		assert p != null : "Peer object is undefined!";
 		
 		if(debug) {
@@ -342,7 +361,7 @@ public class PeerClient {
 	}
 	
 	/*
-	 * Metodi privati di gestione del ciclo di vita di un peer
+	 * Metodi pubblici di gestione del ciclo di vita di un peer
 	 * */
 	
 	/*
@@ -351,7 +370,7 @@ public class PeerClient {
 	 * Parametri:
 	 * server: stringa contenente il percorso rmi del tracker.
 	 * */
-	private Tracker getTracker(String server) {
+	public Tracker getTracker(String server) {
 		if(debug) {
 			System.out.println("Chiamata la getTracker, faccio il lookup di "+server);
 		}
@@ -374,7 +393,7 @@ public class PeerClient {
 	 * Parametri:
 	 * server: stringa contenente il percorso rmi del SuperPeer.
 	 * */
-	private SuperPeer getCoord(String server) {
+	public SuperPeer getCoord(String server) {
 		if(debug) {
 			System.out.println("Chiamata la getCoord, faccio il lookup di "+server);
 		}
@@ -397,10 +416,11 @@ public class PeerClient {
 	 * Parametri:
 	 * server: stringa contenente il percorso rmi del Peer.
 	 * */
-	private Peer getPeer(String server) {
+	public Peer getPeer(String server) {
 		if(debug) {
 			System.out.println("Chiamata la getPeer, faccio il lookup di "+server);
 		}
+				
 		try {
 			Peer obj = (Peer)Naming.lookup(server);
 			return obj;
@@ -423,7 +443,7 @@ public class PeerClient {
 	 * Parametri:
 	 * resName: stringa contenente il nome della risorsa per cui e' necessario eleggere un nuovo coordinatore.
 	 * */
-	private void startElection(String resName) {
+	public void startElection(String resName) {
 		
 		if(debug) {
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
@@ -478,7 +498,7 @@ public class PeerClient {
 		}
 	}
 	
-	public static void main(String args[]) throws UnknownHostException {
+	/*public static void main(String args[]) throws UnknownHostException {
 		
 		
 		
@@ -609,5 +629,5 @@ public class PeerClient {
 		
 		
 	}
-
+*/
 }
