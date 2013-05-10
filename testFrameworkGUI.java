@@ -441,7 +441,7 @@ public class testFrameworkGUI {
 					
 					//se sono io il coord faccio partire l'election
 					if(pc.myIp.equals(coord)) {
-						pc.startElection(model.getValueAt(i, 0).toString());					
+						pc.startElection(model.getValueAt(i, 0).toString(),true);					
 					}
 					
 					model.removeRow(selectedRows[i]);

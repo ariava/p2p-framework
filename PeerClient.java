@@ -452,7 +452,7 @@ public class PeerClient {
 	 * Parametri:
 	 * resName: stringa contenente il nome della risorsa per cui e' necessario eleggere un nuovo coordinatore.
 	 * */
-	public void startElection(String resName) {
+	public void startElection(String resName,boolean noSelf) {
 		
 		if(debug) {
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
@@ -489,16 +489,30 @@ public class PeerClient {
 		//tra tutto quello che ho ricevuto trovo quello col minimo (considerando anche me stesso)
 		float min = 0;
 		try {
-			min = this.myPS.getAvgDist();
+			if(!noSelf)
+				min = this.myPS.getAvgDist();
+			else
+				min = 999;
 		} catch (RemoteException e1) {
 			System.out.println("Unable to get avgDist from server");
 			e1.printStackTrace();
 		}
-		String peerMin = this.myIp;
+		String peerMin = "";
+		if(!noSelf)
+			peerMin = this.myIp;
+		
 		for(int i=0;i<answers.length;++i) {
-			if(answers[i] < min) { 
-				min = answers[i];
-				peerMin = peers[i];
+			if(answers[i] < min) {
+				if(!noSelf) {
+					min = answers[i];
+					peerMin = peers[i];
+				}
+				else
+					if(!peers[i].equals(this.myIp)) {
+						min = answers[i];
+						peerMin = peers[i];
+					}
+						
 			}
 		}
 		if(debug) {
