@@ -16,6 +16,7 @@ public class PeerClient {
 	public float avgDist;
 	public Hashtable<String, PeerTable> resourceTable;
 	static public boolean debug = true;
+	public String trackerIp = null;
 	
 	
 	public PeerClient() throws UnknownHostException {
@@ -26,7 +27,17 @@ public class PeerClient {
 		
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
+	}
+	
+	public PeerClient(String tr) throws UnknownHostException {
+		self = this;
+		this.myIp = InetAddress.getLocalHost().getHostAddress();
+		this.avgDist = -1;
+		this.resourceTable = new Hashtable<String, PeerTable>();
 		
+		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
+		this.myPS = self.getPeer(ps);
+		this.trackerIp = tr;
 	}
 	
 	/*
@@ -498,7 +509,15 @@ public class PeerClient {
 				System.out.println("Exception while announcing coordinator: " + e.getMessage());
 				e.printStackTrace();
 			}
-			//TODO: il nuovo coordinatore deve notificarlo al tracker poi..arianna?
+			
+			String tracker = "rmi://"+this.trackerIp+"/Tracker";
+			Tracker tr = this.getTracker(tracker);
+			try {
+				tr.cambioCoordinatore(peerMin, resName);
+			} catch (RemoteException e) {
+				System.out.println("Unable to change coordinator: "+e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 	

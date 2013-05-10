@@ -159,7 +159,7 @@ public class testFrameworkGUI {
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
 				
 				try {
-					pc = new PeerClient();
+					pc = new PeerClient(txtIpTracker.getText());
 				} catch (UnknownHostException e) {
 					System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
 					e.printStackTrace();
@@ -401,6 +401,11 @@ public class testFrameworkGUI {
 					String server = "rmi://"+coord+"/"+"SuperPeer";
 					SuperPeer c = pc.getCoord(server);
 					pc.goodbye(c, model.getValueAt(i, 0).toString());
+					
+					//se sono io il coord faccio partire l'election
+					if(pc.myIp.equals(coord)) {
+						pc.startElection(model.getValueAt(i, 0).toString());					
+					}
 					
 					model.removeRow(selectedRows[i]);
 				}
