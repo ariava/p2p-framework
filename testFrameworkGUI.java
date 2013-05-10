@@ -312,7 +312,7 @@ public class testFrameworkGUI {
                 System.out.println(f.getAbsolutePath());
                 
                 copyFile(f.getAbsolutePath(),"resources/"+f.getName());
-                String resName = "resources/"+f.getName();
+                String resName = f.getName();
                 /********************************/
                 if(debug) {
     				System.out.println("Client in modalita' registrazione");

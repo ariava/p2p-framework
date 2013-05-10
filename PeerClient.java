@@ -294,7 +294,7 @@ public class PeerClient {
 			System.out.println("Something went wrong while retrieving the data from the peer and he handled the exception");
 			return false;
 		}
-		File file = new File(resName);
+		File file = new File("resources/"+resName);
 		try {
 			BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file.getName()));
 	

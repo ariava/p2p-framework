@@ -9,7 +9,7 @@ trackerserver: java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ TrackerServer
 
 peerserver: java rmi
-	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer
+	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer debug
 
 java:
 	javac *.java
