@@ -452,7 +452,7 @@ public class PeerClient {
 	 * Parametri:
 	 * resName: stringa contenente il nome della risorsa per cui e' necessario eleggere un nuovo coordinatore.
 	 * */
-	public void startElection(String resName,boolean noSelf) {
+	public void startElection(String resName,boolean noSelf, Tracker tr) {
 		
 		if(debug) {
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
@@ -533,8 +533,6 @@ public class PeerClient {
 				e.printStackTrace();
 			}
 			
-			String tracker = "rmi://"+this.trackerIp+"/Tracker";
-			Tracker tr = this.getTracker(tracker);
 			try {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
