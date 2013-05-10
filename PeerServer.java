@@ -29,7 +29,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	public PeerServer() throws RemoteException, UnknownHostException {
 		
 		super();
-		this.avgDist = -1;
+		this.avgDist = 0;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		resourceTable = new Hashtable<String, PeerTable>();
 		
@@ -52,6 +52,19 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
+	/*
+	 * Getter di avgDist
+	 * */
+	public float getAvgDist() {
+		return this.avgDist;
+	}
+	
+	/*
+	 * Setter di avgDist
+	 * */
+	public void setAvgDist(float avg) {
+		this.avgDist = avg;
+	}
 	/*
 	 * Metodo che dato l'indirizzo ip del chiamante ritorna la distanza in termini di hopcount dalla macchina corrente.
 	 * 
@@ -147,9 +160,11 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			e.printStackTrace();
 		}
 		this.resourceTable.put(resName, pt);
-		
+		System.out.println("Tabella ora:");
+		this.resourceTable.get(resName).print();
 		//ricalcolo avgdist
-		this.avgDist = this.resourceTable.get(resName).getAvgDist();
+		this.avgDist = this.resourceTable.get(resName).getAvgDist(this.myIp);
+		System.out.println("La nuova distanza media calcolata e': "+this.avgDist);
 		
 		Vector<String >poss = new Vector<String>();
 		for(int i=0;i<pt.get().size();++i) {

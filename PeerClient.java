@@ -13,7 +13,6 @@ public class PeerClient {
 	static public PeerClient self = null;
 	public Peer myPS = null;
 	public String myIp;
-	public float avgDist;
 	static public boolean debug = true;
 	public String trackerIp = null;
 	
@@ -21,7 +20,6 @@ public class PeerClient {
 	public PeerClient() throws UnknownHostException {
 		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
-		this.avgDist = -1;
 			
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
@@ -30,7 +28,6 @@ public class PeerClient {
 	public PeerClient(String tr) throws UnknownHostException {
 		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
-		this.avgDist = -1;
 		
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
@@ -272,7 +269,7 @@ public class PeerClient {
 		}
 		catch (Exception e) {
 			System.out.println("Something went wrong while retrieving distances: "+e.getMessage());
-			return -1;
+			return 0;
 		}
 		
 	}
@@ -343,7 +340,7 @@ public class PeerClient {
 		}
 		catch (Exception e) {
 			System.out.println("Something went wrong while polling for election candidates: "+e.getMessage());
-			return -1;
+			return 0;
 		}
 	}
 	
@@ -490,7 +487,13 @@ public class PeerClient {
 		}
 		
 		//tra tutto quello che ho ricevuto trovo quello col minimo (considerando anche me stesso)
-		float min = this.avgDist;
+		float min = 0;
+		try {
+			min = this.myPS.getAvgDist();
+		} catch (RemoteException e1) {
+			System.out.println("Unable to get avgDist from server");
+			e1.printStackTrace();
+		}
 		String peerMin = this.myIp;
 		for(int i=0;i<answers.length;++i) {
 			if(answers[i] < min) { 

@@ -77,13 +77,14 @@ public class PeerTable implements Serializable {
 	/*
 	 * Ritorna la distanza media dei peer nella PeerTable
 	 * */
-	public float getAvgDist() {
+	public float getAvgDist(String myIp) {
 		float avg = 0;
 		int i;
 		for(i=0;i<this.data.size();++i) {
-			avg += this.data.get(i).dist;
+			if(!this.data.get(i).peer.equals(myIp))
+				avg += this.data.get(i).dist;
 		}
-		return avg/i;
+		return avg/(i-1);
 	}
 	
 	/*

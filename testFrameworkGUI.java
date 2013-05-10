@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Vector;
@@ -263,7 +264,11 @@ public class testFrameworkGUI {
 					e1.printStackTrace();
 				}
 				
-				pc.avgDist = pt.getAvgDist();
+				try {
+					pc.myPS.setAvgDist(pt.getAvgDist(InetAddress.getLocalHost().getHostAddress()));
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 				
 				String closestPeer = pt.getMinDistPeer();
 				closestPeer = "rmi://"+closestPeer+"/"+"Peer"+closestPeer;
@@ -274,7 +279,15 @@ public class testFrameworkGUI {
 				//richiedi la risorsa..
 				if(pc.getResource(p, resName)) {
 					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					model.addRow(new Object[]{resName}); 
+					model.addRow(new Object[]{resName});
+					//aggiorna la distanza media dato che a sto punto saro' stato aggiunto nella tabella..
+					try {
+						pc.myPS.setAvgDist(pc.myPS.getTable().get(resName).getAvgDist(pc.myIp));
+						System.out.println("Nuova avgDist: "+pc.myPS.getAvgDist());
+					} catch (RemoteException e1) {
+						System.out.println("Unable to set new avgDist");
+						e1.printStackTrace();
+					}
 				}
 				else
 					JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..","Warning!",JOptionPane.WARNING_MESSAGE);
