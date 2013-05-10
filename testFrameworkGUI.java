@@ -144,7 +144,7 @@ public class testFrameworkGUI {
 		panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
 		
 		txtIpTracker = new JTextField();
-		txtIpTracker.setText("ip tracker");
+		txtIpTracker.setText("192.168.0.15");
 		panel_4.add(txtIpTracker);
 		txtIpTracker.setColumns(10);
 		
@@ -306,7 +306,7 @@ public class testFrameworkGUI {
                 
                 File f = null;
                 
-                if(selezione == JFileChooser.APPROVE_OPTION) 
+                //if(selezione == JFileChooser.APPROVE_OPTION) 
                 	f = fc.getSelectedFile();
 				
                 System.out.println(f.getAbsolutePath());
@@ -328,7 +328,10 @@ public class testFrameworkGUI {
     			//add coordinators in the hashtable
     			for(int i=0;i<coords.size();++i) {
     				pc.resourceTable.put(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
-    				if(coords.get(i) != pc.myIp) {
+    				
+    				System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
+    				
+    				if(!coords.get(i).equals(pc.myIp)) {
     					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
     					SuperPeer c = pc.getCoord(coord);
     					
