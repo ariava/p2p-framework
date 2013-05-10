@@ -5,11 +5,14 @@
 
 all: java rmi
 
-trackerserver: java rmi
+tracker: java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ TrackerServer
 
 peerserver: java rmi
 	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer debug
+
+superpeerserver: java rmi
+	java -Djava.rmi.server.codebase=file:`pwd`/ SuperPeerServer debug
 
 java:
 	javac *.java

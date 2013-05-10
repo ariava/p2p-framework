@@ -82,7 +82,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 		try {
 
-			File file = new File(resName);
+			File file = new File("resources/"+resName);
 	
 			byte buffer[] = new byte[(int)file.length()];
 	
