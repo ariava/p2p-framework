@@ -443,8 +443,13 @@ public class testFrameworkGUI {
 					if(pc.myIp.equals(coord)) {
 						pc.startElection(model.getValueAt(i, 0).toString(),true,tr);					
 					}
-					
+					try {
+						pc.myPS.getTable().get(model.getValueAt(i, 0).toString()).print();
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
 					model.removeRow(selectedRows[i]);
+					
 				}
 			}
 		});
