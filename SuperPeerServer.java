@@ -10,6 +10,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	private final String name = "SuperPeer";
 	private String ip = null;
 	private String id;
+	private Peer myPS;
 	
 	private Hashtable<String, String> coordTable = null;
 
@@ -35,6 +36,17 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		this.id = name + ":" + ip;
 		if (debug)
 			System.out.println("Id del SuperPeerServer: " + id);
+		
+		String ps = "rmi://"+this.ip+"/Peer"+this.ip;
+		try {
+			this.myPS = (Peer)Naming.lookup(ps);
+		}
+		catch (Exception e) {
+			
+			System.out.println("Error while getting the remote object: "+e.getMessage());
+			e.printStackTrace();
+			
+		}
 	}
 	
 	/*
@@ -235,7 +247,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		 */
 		this.coordTable.remove(resource);
 		/* Rimuoviamo la entry anche dalla resourceTable della risorsa */
-		PeerTable pt = this.resourceTable.get(resource);
+		PeerTable pt = this.myPS.getTable().get(resource);
 		if (pt != null)
 			pt.getCoord().coordinator = false;
 		/* Ritorniamo una stringa vuota perché non esiste un coordinatore valido */
@@ -252,16 +264,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		assert(peer_ip != null && peer_ip != "");
 		if (debug)
 			System.out.println("SuperPeerServer: uscita pulita dell'host " + peer_ip);
-		Enumeration<String> e = resourceTable.keys();
+		Enumeration<String> e = myPS.getTable().keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
-			PeerTable pt = resourceTable.get(key);
+			PeerTable pt = myPS.getTable().get(key);
 			PeerTableData ptd = pt.getIP(peer_ip);
 			if (ptd != null) {
 				if (debug)
 					System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella della risorsa " + key);
 				pt.remove(ptd);
-				resourceTable.put(key, pt);
+				this.myPS.addToTable(key, pt);
 			}
 		}
 		e = coordTable.keys();
@@ -287,13 +299,14 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		if (debug)
 			System.out.println("SuperPeerServer: rimozione della risorsa "+resName+" dall'host " + peer_ip);
 		
-		PeerTable pt = resourceTable.get(resName);
+		System.out.println(resName);
+		PeerTable pt = myPS.getTable().get(resName);
 		PeerTableData ptd = pt.getIP(peer_ip);
 		if (ptd != null) {
 			if (debug)
 				System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella della risorsa " + resName);
 			pt.remove(ptd);
-			resourceTable.put(resName, pt);
+			myPS.addToTable(resName, pt);
 		}
 		
 		if (coordTable.get(resName) == peer_ip) {
@@ -319,7 +332,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		/* Costruzione di una lista degli IP possessori della richiesta */
 		Vector<String> possessors = new Vector<String>();
 		/* Ricerca nella tabella delle risorse */
-		PeerTable pt = resourceTable.get(resource_name);
+		PeerTable pt = this.myPS.getTable().get(resource_name);
 		if (pt != null) {
 			Vector<PeerTableData> data = pt.get();
 			assert(data != null);
