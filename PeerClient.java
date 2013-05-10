@@ -296,7 +296,9 @@ public class PeerClient {
 		}
 		File file = new File("resources/"+resName);
 		try {
-			BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file.getName()));
+			if(debug)
+				System.out.println("resources/"+file.getName());
+			BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("resources/"+file.getName()));
 	
 			output.write(filedata,0,filedata.length);
 	
