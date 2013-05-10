@@ -379,10 +379,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * stessa JVM. 
 	 * */
 	public static void main(String[] args) {
-		// TODO: usare un argument parser?
-		//if (args.length > 0)
-		//	debug = args[0] == "debug" ? true : false;
-		debug = true;
+		if (args.length > 0)
+			debug = args[0].equals("debug") ? true : false;
 		System.setSecurityManager(new RMISecurityManager());
 		try {
 			SuperPeerServer server = new SuperPeerServer();
