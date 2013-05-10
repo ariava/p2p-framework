@@ -174,7 +174,7 @@ public class testFrameworkGUI {
 				}
 				
 				lblStatus.setText("Status: Online");
-				
+				pc.trackerIp = txtIpTracker.getText();
 			}
 		});
 		panel_4.add(btnConnect);
