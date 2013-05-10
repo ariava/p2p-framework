@@ -131,7 +131,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	private void addNewPeer(String resName, String ip) {
 		Peer p = null;
 		try {
-			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer");
+			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
 		}
 		catch (Exception e) {
 			
