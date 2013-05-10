@@ -4,34 +4,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import javax.swing.BoxLayout;
-import java.awt.GridLayout;
-import java.awt.CardLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JFileChooser;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.UIManager;
-import javax.swing.JTextArea;
-import javax.swing.JSeparator;
-import javax.swing.JInternalFrame;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import java.awt.event.ActionListener;
 
 
 public class testFrameworkGUI {
@@ -114,6 +98,10 @@ public class testFrameworkGUI {
 		txtIpTracker.setColumns(10);
 		
 		JButton btnConnect = new JButton("   Connect    ");
+		btnConnect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		panel_4.add(btnConnect);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
@@ -128,6 +116,10 @@ public class testFrameworkGUI {
 		txtInsertFileTo.setColumns(10);
 		
 		JButton btnNewButton = new JButton("Download...");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		panel_2.add(btnNewButton);
 		
 		JPanel panel_3 = new JPanel();
@@ -139,6 +131,10 @@ public class testFrameworkGUI {
 		panel_3.add(lblFileSacricati);
 		
 		JButton btnImport = new JButton("Import...");
+		btnImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnImport.setBounds(573, 82, 117, 25);
 		panel_3.add(btnImport);
 		
@@ -149,10 +145,18 @@ public class testFrameworkGUI {
 		panel_3.add(table);
 		
 		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnDelete.setBounds(573, 119, 117, 25);
 		panel_3.add(btnDelete);
 		
 		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnRefresh.setBounds(573, 156, 117, 25);
 		panel_3.add(btnRefresh);
 		panel.setLayout(null);
