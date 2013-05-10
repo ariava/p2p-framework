@@ -335,6 +335,14 @@ public class testFrameworkGUI {
     					assert c != null : "SuperPeer object is undefined!";
     					
     					pc.registerResources(c, resNames);
+    					try {
+    	    				pc.myPS.syncTable(pc.resourceTable);
+    	    			} catch (RemoteException ex) {
+    	    				System.out.println("Unable to sync table with my server! I'll die horribly");
+    	    				
+    	    				ex.printStackTrace();
+    	    				System.exit(1);
+    	    			}
     				}
     				else {
     					if(debug) {
@@ -343,22 +351,29 @@ public class testFrameworkGUI {
     					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
     					SuperPeer c = pc.getCoord(coord);
     					try {
-							pc = new SuperPeerClient(c,tr);
+							pc = new SuperPeerClient(pc,c,tr);
+							
 						} catch (UnknownHostException e1) {
 							System.out.println("Unable to become the new coordinator: "+e1.getMessage());
+							e1.printStackTrace();
+						}
+    					try {
+							c.syncTable(pc.resourceTable);
+						} catch (RemoteException e1) {
+							System.out.println("Non va la sync col superpeer");
 							e1.printStackTrace();
 						}
     				}
     					
     			}
-    			try {
+    			/*try {
     				pc.myPS.syncTable(pc.resourceTable);
     			} catch (RemoteException ex) {
     				System.out.println("Unable to sync table with my server! I'll die horribly");
     				
     				ex.printStackTrace();
     				System.exit(1);
-    			}
+    			}*/
     			/************************************/
     			DefaultTableModel model = (DefaultTableModel) table.getModel();
     			model.addRow(new Object[]{resName});

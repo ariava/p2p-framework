@@ -212,10 +212,12 @@ public class PeerClient {
 			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
 		}
 		try {
+			System.out.println(this.myIp+"   "+resName);
 			coord.goodbye(this.myIp, resName);
 		}
 		catch (Exception e) {
 			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
+			e.printStackTrace();
 		}	
 	}
 	

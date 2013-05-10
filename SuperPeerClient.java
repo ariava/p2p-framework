@@ -24,12 +24,17 @@ public class SuperPeerClient extends PeerClient {
 	 * server: riferimento al server coordinatore
 	 * tracker: riferimento al tracker
 	 * */
-	public SuperPeerClient (SuperPeer server, Tracker tracker) throws UnknownHostException {
+	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker) throws UnknownHostException {
 		//super();
 		assert(server != null);
 		assert(tracker != null);
 		this.server = server;
 		this.tracker = tracker;
+		
+		this.resourceTable = pc.resourceTable;
+		this.myIp = pc.myIp;
+		
+		
 		this.startupListRetriever();
 	}
 	
