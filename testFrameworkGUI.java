@@ -376,13 +376,15 @@ public class testFrameworkGUI {
 				int[] selectedRows = table.getSelectedRows();
 				
 				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
-					model.removeRow(selectedRows[i]);
+					
 					PeerTable pt = pc.resourceTable.get(model.getValueAt(i, 0));
 					
 					String coord = pt.getCoord().peer;
 					String server = "rmi://"+coord+"/"+"SuperPeer";
 					SuperPeer c = pc.getCoord(server);
 					pc.goodbye(c, model.getValueAt(i, 0).toString());
+					
+					model.removeRow(selectedRows[i]);
 				}
 			}
 		});
