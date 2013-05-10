@@ -294,7 +294,7 @@ public class PeerClient {
 		
 		byte[] filedata;
 		try {
-			filedata = p.getResource(resName);
+			filedata = p.getResource(resName,this.myIp);
 		}
 		catch (Exception e) {
 			System.out.println("Something went wrong while retrieving the data from the peer: "+e.getMessage());

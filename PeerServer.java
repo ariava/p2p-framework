@@ -73,8 +73,9 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * 
 	 * Parametri: 
 	 * resName: stringa contenente il nome della risorsa richiesta
+	 * ip: indirizzo ip del chiamante, usato  per aggiungerlo alla tabella dopo
 	 * */
-	public byte[] getResource(String resName) throws RemoteException {
+	public byte[] getResource(String resName,String ip) throws RemoteException {
 
 		if(debug) {
 			System.out.println("Chiamata la getResource() per la risorsa "+resName);
@@ -92,6 +93,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	
 			input.close();
 			assert buffer.length > 0 : "Something went wrong while reading file, but no exception were rised..";
+			this.addNewPeer(resName, ip);
 			return(buffer);
 
 		} catch(Exception e){
@@ -103,6 +105,54 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			return(null);
 
 		}
+	}
+	
+	/*
+	 * blablabla TODO:commenta
+	 * */
+	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
+		int labelnum = 0;
+		for (Vector<String> vec : vecs) {
+			System.out.print("[");
+			System.out.print(labels[labelnum] + ": ");
+			for (int i = 0 ; i < vec.size() ; i++) {
+				System.out.print(vec.get(i));
+				if (i != vec.size()-1)
+					System.out.print(", ");
+			}
+			System.out.println("]");
+			labelnum++;
+		}
+	}
+	/*
+	 * Metodo (privato) per aggiungere un peer alla tabella dei possessori della risorsa dopo che gli e' stata data
+	 * */
+	@SuppressWarnings("unchecked")
+	private void addNewPeer(String resName, String ip) {
+		Peer p = null;
+		try {
+			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer");
+		}
+		catch (Exception e) {
+			
+			System.out.println("Error while getting the remote object: "+e.getMessage());
+			e.printStackTrace();			
+		}
+		
+		PeerTable pt = this.resourceTable.get(resName);
+		try {
+			pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false ));
+		} catch (RemoteException e) {
+			System.out.println("Discovery failed.."+e.getMessage());
+			e.printStackTrace();
+		}
+		this.resourceTable.put(resName, pt);
+		Vector<String >poss = new Vector<String>();
+		for(int i=0;i<pt.get().size();++i) {
+			poss.add( pt.get().get(i).peer);
+		}
+		printStringVectors(new String[]{"Possessori"}, poss);
+		
 	}
 	
 	/*

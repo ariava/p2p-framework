@@ -318,85 +318,86 @@ public class testFrameworkGUI {
                 
                 File f = null;
                 
-                //if(selezione == JFileChooser.APPROVE_OPTION) 
+                if(selezione == JFileChooser.APPROVE_OPTION) {
                 	f = fc.getSelectedFile();
-				
-                System.out.println(f.getAbsolutePath());
-                
-                copyFile(f.getAbsolutePath(),"resources/"+f.getName());
-                String resName = f.getName();
-                /********************************/
-                if(debug) {
-    				System.out.println("Client in modalita' registrazione");
-    			}
-    			Vector<String> resNames = new Vector<String>();
-    			resNames.add(resName);
-    			
-    			//register new resources
-    			Vector<String> coords = pc.registerResources(tr, resNames);
-    			
-    			assert coords.size() == resNames.size() : "coords and resNames size doesn't match!";
-    			
-    			//add coordinators in the hashtable
-    			for(int i=0;i<coords.size();++i) {
-    				try {
-						pc.myPS.addToTable(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
-					} catch (RemoteException e2) {
-						System.out.println("Unable to add an element to resourceTable");
-						e2.printStackTrace();
-					}
-    				
-    				System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
-    				
-    				if(!coords.get(i).equals(pc.myIp)) {
-    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
-    					SuperPeer c = pc.getCoord(coord);
-    					
-    					assert c != null : "SuperPeer object is undefined!";
-    					
-    					pc.registerResources(c, resNames);
-    					/*try {
-    	    				pc.myPS.syncTable(pc.resourceTable);
-    	    			} catch (RemoteException ex) {
-    	    				System.out.println("Unable to sync table with my server! I'll die horribly");
-    	    				
-    	    				ex.printStackTrace();
-    	    				System.exit(1);
-    	    			}TODO:remove*/
-    				}
-    				else {
-    					if(debug) {
-    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
-    					}
-    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
-    					SuperPeer c = pc.getCoord(coord);
-    					try {
-							pc = new SuperPeerClient(pc,c,tr);
-							
-						} catch (UnknownHostException e1) {
-							System.out.println("Unable to become the new coordinator: "+e1.getMessage());
-							e1.printStackTrace();
+					
+	                System.out.println(f.getAbsolutePath());
+	                
+	                copyFile(f.getAbsolutePath(),"resources/"+f.getName());
+	                String resName = f.getName();
+	                /********************************/
+	                if(debug) {
+	    				System.out.println("Client in modalita' registrazione");
+	    			}
+	    			Vector<String> resNames = new Vector<String>();
+	    			resNames.add(resName);
+	    			
+	    			//register new resources
+	    			Vector<String> coords = pc.registerResources(tr, resNames);
+	    			
+	    			assert coords.size() == resNames.size() : "coords and resNames size doesn't match!";
+	    			
+	    			//add coordinators in the hashtable
+	    			for(int i=0;i<coords.size();++i) {
+	    				try {
+							pc.myPS.addToTable(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
+						} catch (RemoteException e2) {
+							System.out.println("Unable to add an element to resourceTable");
+							e2.printStackTrace();
 						}
-    					/*try {
-							c.syncTable(pc.resourceTable);
-						} catch (RemoteException e1) {
-							System.out.println("Non va la sync col superpeer");
-							e1.printStackTrace();
-						}TODO:remove*/
-    				}
-    					
-    			}
-    			/*try {
-    				pc.myPS.syncTable(pc.resourceTable);
-    			} catch (RemoteException ex) {
-    				System.out.println("Unable to sync table with my server! I'll die horribly");
-    				
-    				ex.printStackTrace();
-    				System.exit(1);
-    			}*/
-    			/************************************/
-    			DefaultTableModel model = (DefaultTableModel) table.getModel();
-    			model.addRow(new Object[]{resName});
+	    				
+	    				System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
+	    				
+	    				if(!coords.get(i).equals(pc.myIp)) {
+	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
+	    					SuperPeer c = pc.getCoord(coord);
+	    					
+	    					assert c != null : "SuperPeer object is undefined!";
+	    					
+	    					pc.registerResources(c, resNames);
+	    					/*try {
+	    	    				pc.myPS.syncTable(pc.resourceTable);
+	    	    			} catch (RemoteException ex) {
+	    	    				System.out.println("Unable to sync table with my server! I'll die horribly");
+	    	    				
+	    	    				ex.printStackTrace();
+	    	    				System.exit(1);
+	    	    			}TODO:remove*/
+	    				}
+	    				else {
+	    					if(debug) {
+	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
+	    					}
+	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
+	    					SuperPeer c = pc.getCoord(coord);
+	    					try {
+								pc = new SuperPeerClient(pc,c,tr);
+								
+							} catch (UnknownHostException e1) {
+								System.out.println("Unable to become the new coordinator: "+e1.getMessage());
+								e1.printStackTrace();
+							}
+	    					/*try {
+								c.syncTable(pc.resourceTable);
+							} catch (RemoteException e1) {
+								System.out.println("Non va la sync col superpeer");
+								e1.printStackTrace();
+							}TODO:remove*/
+	    				}
+	    					
+	    			}
+	    			/*try {
+	    				pc.myPS.syncTable(pc.resourceTable);
+	    			} catch (RemoteException ex) {
+	    				System.out.println("Unable to sync table with my server! I'll die horribly");
+	    				
+	    				ex.printStackTrace();
+	    				System.exit(1);
+	    			}*/
+	    			/************************************/
+	    			DefaultTableModel model = (DefaultTableModel) table.getModel();
+	    			model.addRow(new Object[]{resName});
+                }
 			}
 		});
 		btnImport.setBounds(573, 82, 117, 25);
