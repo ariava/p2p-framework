@@ -103,5 +103,20 @@ public class PeerTable implements Serializable {
 		return this.data.get(pos).peer;
 	}
 
+	/**
+	 * Stampa la tabella
+	 * */
+	public void print() {
+		System.out.println("Stampa della peerTable");
+		for(int i=0;i<data.size();++i) {
+			
+			System.out.println("Ip: "+data.get(i).peer);
+			System.out.println("Dst: "+data.get(i).dist);
+			System.out.println(data.get(i).coordinator);
+			System.out.println(data.get(i).down);
+			System.out.println(" ");
+			
+		}
+	}
 	
 }

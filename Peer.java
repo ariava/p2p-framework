@@ -8,5 +8,7 @@ public interface Peer extends Remote {
 	public float election(String res)throws RemoteException; 
 	public void coordinator(String newCoord, String res)throws RemoteException;
 	public void syncTable(Hashtable<String, PeerTable> rt) throws RemoteException;
+	public Hashtable<String, PeerTable> getTable() throws RemoteException;
+	public void addToTable(String r, PeerTable p) throws RemoteException;
 
 }

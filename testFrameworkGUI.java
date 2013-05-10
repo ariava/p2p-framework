@@ -247,9 +247,21 @@ public class testFrameworkGUI {
 					PeerTableData pd = new PeerTableData(ipList.get(i),pc.discovery(p),false,ipList.get(i)==prevC?true:false);
 					pt.add(pd);
 				}
-				pc.resourceTable.put(resName, pt);
 				
-				pt = pc.resourceTable.get(resName);
+				pt.print();
+				try {
+					pc.myPS.addToTable(resName, pt);
+				} catch (RemoteException e2) {
+					System.out.println("Problems while adding an entry to the resource table.");
+					e2.printStackTrace();
+				}
+				
+				try {
+					pt = pc.myPS.getTable().get(resName);
+				} catch (RemoteException e1) {
+					System.out.println("Problems while getting the resource table");
+					e1.printStackTrace();
+				}
 				
 				pc.avgDist = pt.getAvgDist();
 				
@@ -327,7 +339,12 @@ public class testFrameworkGUI {
     			
     			//add coordinators in the hashtable
     			for(int i=0;i<coords.size();++i) {
-    				pc.resourceTable.put(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
+    				try {
+						pc.myPS.addToTable(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
+					} catch (RemoteException e2) {
+						System.out.println("Unable to add an element to resourceTable");
+						e2.printStackTrace();
+					}
     				
     				System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
     				
@@ -338,14 +355,14 @@ public class testFrameworkGUI {
     					assert c != null : "SuperPeer object is undefined!";
     					
     					pc.registerResources(c, resNames);
-    					try {
+    					/*try {
     	    				pc.myPS.syncTable(pc.resourceTable);
     	    			} catch (RemoteException ex) {
     	    				System.out.println("Unable to sync table with my server! I'll die horribly");
     	    				
     	    				ex.printStackTrace();
     	    				System.exit(1);
-    	    			}
+    	    			}TODO:remove*/
     				}
     				else {
     					if(debug) {
@@ -360,12 +377,12 @@ public class testFrameworkGUI {
 							System.out.println("Unable to become the new coordinator: "+e1.getMessage());
 							e1.printStackTrace();
 						}
-    					try {
+    					/*try {
 							c.syncTable(pc.resourceTable);
 						} catch (RemoteException e1) {
 							System.out.println("Non va la sync col superpeer");
 							e1.printStackTrace();
-						}
+						}TODO:remove*/
     				}
     					
     			}
@@ -395,7 +412,13 @@ public class testFrameworkGUI {
 				
 				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
 					
-					PeerTable pt = pc.resourceTable.get(model.getValueAt(i, 0));
+					PeerTable pt = null;
+					try {
+						pt = pc.myPS.getTable().get(model.getValueAt(i, 0));
+					} catch (RemoteException e1) {
+						System.out.println("Unable to get resourceTable from my server");
+						e1.printStackTrace();
+					}
 					
 					String coord = pt.getCoord().peer;
 					String server = "rmi://"+coord+"/"+"SuperPeer";

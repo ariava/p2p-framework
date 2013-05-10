@@ -31,7 +31,6 @@ public class SuperPeerClient extends PeerClient {
 		this.server = server;
 		this.tracker = tracker;
 		
-		this.resourceTable = pc.resourceTable;
 		this.myIp = pc.myIp;
 		
 		

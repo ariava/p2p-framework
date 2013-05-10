@@ -148,6 +148,27 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(res, pt);
 	}
 	
+	/*
+	 * Getter della resourceTable
+	 * */
+	public Hashtable<String, PeerTable> getTable() {		
+		return this.resourceTable;		
+	}
+	
+	/*
+	 * Metodo che aggiunge una entry alla resourceTable
+	 * 
+	 * Parametri:
+	 * resName: il nome della risorsa
+	 * pt: la peerTable da aggiungere a quella risorsa
+	 * */
+	public void addToTable(String resName, PeerTable pt) {
+		
+		this.resourceTable.put(resName, pt);
+		
+	}
+
+	
 	public static void main(String[] args) {
 		
 		if(args[0].equals("debug"))

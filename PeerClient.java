@@ -14,7 +14,6 @@ public class PeerClient {
 	public Peer myPS = null;
 	public String myIp;
 	public float avgDist;
-	public Hashtable<String, PeerTable> resourceTable;
 	static public boolean debug = true;
 	public String trackerIp = null;
 	
@@ -23,8 +22,7 @@ public class PeerClient {
 		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		this.avgDist = -1;
-		this.resourceTable = new Hashtable<String, PeerTable>();
-		
+			
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
 	}
@@ -33,7 +31,6 @@ public class PeerClient {
 		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		this.avgDist = -1;
-		this.resourceTable = new Hashtable<String, PeerTable>();
 		
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
@@ -463,12 +460,21 @@ public class PeerClient {
 		if(debug) {
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
 		}
+		Hashtable<String, PeerTable> rt = null;
+		try {
+			rt = this.myPS.getTable();
+		} catch (RemoteException e1) {
+			System.out.println("Unable to get ResourceTable from my server: "+e1.getMessage());
+			e1.printStackTrace();
+		}
 		
-		float answers[] = new float[this.resourceTable.get(resName).get().size()];
-		String peers[] = new String[this.resourceTable.get(resName).get().size()];
+		assert rt != null:"Unable to get resourceTable..";
+		
+		float answers[] = new float[rt.get(resName).get().size()];
+		String peers[] = new String[rt.get(resName).get().size()];
 		//per ogni peer nella lista chiama la election su di loro per ottenere le loro avgDist
-		for(int i=0;i<this.resourceTable.get(resName).get().size();++i) {
-			String server = this.resourceTable.get(resName).get().get(i).peer;
+		for(int i=0;i<rt.get(resName).get().size();++i) {
+			String server = rt.get(resName).get().get(i).peer;
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
@@ -480,7 +486,7 @@ public class PeerClient {
 				System.out.println("Exception in election procedure: " + e.getMessage());
 				e.printStackTrace();
 			}
-			peers[i] = this.resourceTable.get(resName).get().get(i).peer;
+			peers[i] = rt.get(resName).get().get(i).peer;
 		}
 		
 		//tra tutto quello che ho ricevuto trovo quello col minimo (considerando anche me stesso)
@@ -496,8 +502,8 @@ public class PeerClient {
 			System.out.println("Election: il nuovo coordinatore e': "+peerMin+", ha distanza media "+min);
 		}
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
-		for(int i=0;i<this.resourceTable.get(resName).get().size();++i) {
-			String server = this.resourceTable.get(resName).get().get(i).peer;
+		for(int i=0;i<rt.get(resName).get().size();++i) {
+			String server = rt.get(resName).get().get(i).peer;
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
