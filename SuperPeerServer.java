@@ -76,7 +76,6 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * labels: etichette dei vettori di stringhe
 	 * vecs: un numero variabile di vettori di stringhe
 	 * */
-	@SafeVarargs
 	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {

@@ -39,6 +39,7 @@ public class testFrameworkGUI {
 	private JFrame frmTestFrameworkGui;
 	private JTextField txtInsertFileTo;
 	private JTable table;
+	private JTextField txtIpTracker;
 
 	/**
 	 * Launch the application.
@@ -81,25 +82,39 @@ public class testFrameworkGUI {
 		JPanel panel = new JPanel();
 		
 		JPanel panel_1 = new JPanel();
+		
+		JPanel panel_4 = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(frmTestFrameworkGui.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panel_4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
 						.addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
 						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addGap(33)
-					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap(41, Short.MAX_VALUE)
+					.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 347, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
+		
+		txtIpTracker = new JTextField();
+		txtIpTracker.setText("ip tracker");
+		panel_4.add(txtIpTracker);
+		txtIpTracker.setColumns(10);
+		
+		JButton btnConnect = new JButton("   Connect    ");
+		panel_4.add(btnConnect);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_2 = new JPanel();
