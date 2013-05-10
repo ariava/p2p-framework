@@ -147,6 +147,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			e.printStackTrace();
 		}
 		this.resourceTable.put(resName, pt);
+		
+		//ricalcolo avgdist
+		this.avgDist = this.resourceTable.get(resName).getAvgDist();
+		
 		Vector<String >poss = new Vector<String>();
 		for(int i=0;i<pt.get().size();++i) {
 			poss.add( pt.get().get(i).peer);
