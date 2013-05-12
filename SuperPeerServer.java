@@ -279,7 +279,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		e = coordTable.keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
-			if (coordTable.get(key) == peer_ip) {
+			if (coordTable.get(key).equals(peer_ip)) {
 				if (debug)
 					System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella coordinatori per la risorsa " + key);
 				coordTable.remove(key);
@@ -309,7 +309,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			myPS.addToTable(resName, pt);
 		}
 		
-		if (coordTable.get(resName) == peer_ip) {
+		if (coordTable.get(resName).equals(peer_ip)) {
 			if (debug)
 				System.out.println("Rimozione dell'ip " + peer_ip + " dalla tabella coordinatori per la risorsa " + resName);
 			coordTable.remove(resName);
