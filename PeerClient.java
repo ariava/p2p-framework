@@ -40,8 +40,8 @@ public class PeerClient {
 	
 
 	/*
-	 * Metodo privato utilizzato per chiamare il metodo registrazione del tracker, utilizzato per gestire le eventuali
-	 * eccezioni.
+	 * Metodo privato utilizzato per chiamare il metodo registrazione del tracker,
+	 * utilizzato per gestire le eventuali eccezioni.
 	 * Parametri:
 	 * server: oggetto di tipo tracker sul quale chiamare il metodo
 	 * resources: Vector<String> contenente i nomi delle risorse da registrare
@@ -66,8 +66,8 @@ public class PeerClient {
 	}
 	
 	/*
-	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer, utilizzato per gestire le eventuali
-	 * eccezioni.
+	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer,
+	 * utilizzato per gestire le eventuali eccezioni.
 	 * Parametri:
 	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
 	 * resources: Vector<String> contenente i nomi delle risorse da registrare
@@ -91,7 +91,8 @@ public class PeerClient {
 	}
 	
 	/*
-	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta del tracker. Gestisce la richiesta semplice
+	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta
+	 * del tracker. Gestisce la richiesta semplice.
 	 * 
 	 * Parametri:
 	 * server: oggetto di tipo tracker
@@ -113,7 +114,8 @@ public class PeerClient {
 	}
 	
 	/*
-	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del tracker. Effettua una richiesta avanzata
+	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del
+	 * tracker. Effettua una richiesta avanzata.
 	 * Parametri:
 	 * server: oggetto Tracker sul quale chiamare i metodi
 	 * resource: stringa contenente il nome della risorsa
@@ -136,7 +138,8 @@ public class PeerClient {
 	}
 	
 	/*
-	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta del SuperPeer. Gestisce la richiesta semplice
+	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta
+	 * del SuperPeer. Gestisce la richiesta semplice
 	 * 
 	 * Parametri:
 	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
@@ -446,13 +449,16 @@ public class PeerClient {
 	/*
 	 * Metodo chiamato dal peer per avviare la procedura di elezione.
 	 * 
-	 * Chiama la election su ogni altro peer ricevendo le loro distanze medie ed elegge come coordinatore il peer
-	 * con la distanza media piu' bassa.
+	 * Chiama la election su ogni altro peer ricevendo le loro distanze medie ed
+	 * elegge come coordinatore il peer con la distanza media piu' bassa.
 	 * 
 	 * Parametri:
-	 * resName: stringa contenente il nome della risorsa per cui e' necessario eleggere un nuovo coordinatore.
+	 * resName: stringa contenente il nome della risorsa per cui e' necessario
+	 *          eleggere un nuovo coordinatore;
+	 * noSelf : true se l'elezione non deve coinvolgere il peer invocante;
+	 * tr     : riferimento al tracker.
 	 * */
-	public void startElection(String resName,boolean noSelf, Tracker tr) {
+	public void startElection(String resName, boolean noSelf, Tracker tr) {
 		
 		if(debug) {
 			System.out.println("Chiamata la election() per la risorsa: "+resName);

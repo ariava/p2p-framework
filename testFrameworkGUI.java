@@ -65,37 +65,36 @@ public class testFrameworkGUI {
 	}
 
 	/**
-	 * TODO: commenta
+	 * Metodo privato che copia un file.
 	 * 
+	 * Parametri:
+	 * src: percorso assoluto del file;
+	 * dst: percorso assoluto della destinazione scelta.
 	 */
 	private void copyFile(String src, String dst) {
 		
 		InputStream inStream = null;
         OutputStream outStream = null;
         try{
- 
-            File file1 =new File(src);
-            File file2 =new File(dst);
+        	File file1 =new File(src);
+        	File file2 =new File(dst);
  
             inStream = new FileInputStream(file1);
             outStream = new FileOutputStream(file2); 
             
- 
             byte[] buffer = new byte[1024];
- 
             int length;
             while ((length = inStream.read(buffer)) > 0){
-                outStream.write(buffer, 0, length);
+            	outStream.write(buffer, 0, length);
             }
  
-            if (inStream != null)inStream.close();
-            if (outStream != null)outStream.close();
+            if (inStream != null) inStream.close();
+            if (outStream != null) outStream.close();
  
-            System.out.println("File Copied..");
+            System.out.println("File " + src + " Copied");
         }catch(IOException e){
-            e.printStackTrace();
+        	e.printStackTrace();
         }
-
 	}
 	
 	/**
@@ -230,8 +229,11 @@ public class testFrameworkGUI {
 					coord = "rmi://"+prevC+"/"+"SuperPeer";				
 					SuperPeer c1 = pc.getCoord(coord);
 					
-					assert c1 != null : "SuperPeer object is undefined!"; //FIXME: ha senso questa assert? come gestisce rmi il non
-																		   //		 rispondere..? fa ritornare un null?
+					/*
+					 * FIXME: ha senso questa assert? come gestisce rmi il non
+					 * rispondere..? fa ritornare un null?
+					 **/
+					assert c1 != null : "SuperPeer object is undefined!";
 					
 					ipList = pc.getList(c1, resName);
 				}
@@ -245,28 +247,31 @@ public class testFrameworkGUI {
 					
 					assert p != null : "Peer object is undefined!";
 					
-					PeerTableData pd = new PeerTableData(ipList.get(i),pc.discovery(p),false,ipList.get(i)==prevC?true:false);
+					PeerTableData pd = new PeerTableData(ipList.get(i), pc.discovery(p),
+														 false, ipList.get(i)==prevC?true:false);
 					pt.add(pd);
 				}
 				
-				pt.print();
+				if (debug)
+					pt.print();
 				try {
 					pc.myPS.addToTable(resName, pt);
 				} catch (RemoteException e2) {
-					System.out.println("Problems while adding an entry to the resource table.");
+					System.out.println("Problems while adding an entry to the resource table:" + e2.getMessage());
 					e2.printStackTrace();
 				}
 				
 				try {
 					pt = pc.myPS.getTable().get(resName);
 				} catch (RemoteException e1) {
-					System.out.println("Problems while getting the resource table");
+					System.out.println("Problems while getting the resource table: " + e1.getMessage());
 					e1.printStackTrace();
 				}
 				
 				try {
 					pc.myPS.setAvgDist(pt.getAvgDist(InetAddress.getLocalHost().getHostAddress()));
 				} catch (Exception e1) {
+					System.out.println("Problems while setting average distance: " + e1.getMessage());
 					e1.printStackTrace();
 				}
 				
@@ -285,7 +290,7 @@ public class testFrameworkGUI {
 						pc.myPS.setAvgDist(pc.myPS.getTable().get(resName).getAvgDist(pc.myIp));
 						System.out.println("Nuova avgDist: "+pc.myPS.getAvgDist());
 					} catch (RemoteException e1) {
-						System.out.println("Unable to set new avgDist");
+						System.out.println("Unable to set new avgDist: " + e1.getMessage());
 						e1.printStackTrace();
 					}
 				}
@@ -353,13 +358,17 @@ public class testFrameworkGUI {
 	    			//add coordinators in the hashtable
 	    			for(int i=0;i<coords.size();++i) {
 	    				try {
-							pc.myPS.addToTable(resNames.get(i), new PeerTable(new PeerTableData(coords.get(i),-1,false,true)));
+	    					// XXX (Arianna): avgDist settata a "-1"?
+							pc.myPS.addToTable(resNames.get(i),
+											   new PeerTable(new PeerTableData(coords.get(i),
+											   -1, false, true)));
 						} catch (RemoteException e2) {
 							System.out.println("Unable to add an element to resourceTable");
 							e2.printStackTrace();
 						}
 	    				
-	    				System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
+	    				if (debug)
+	    					System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
 	    				
 	    				if(!coords.get(i).equals(pc.myIp)) {
 	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
@@ -416,8 +425,6 @@ public class testFrameworkGUI {
 		btnImport.setBounds(573, 82, 117, 25);
 		panel_3.add(btnImport);
 		
-		
-		
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -443,10 +450,12 @@ public class testFrameworkGUI {
 					if(pc.myIp.equals(coord)) {
 						pc.startElection(model.getValueAt(i, 0).toString(),true,tr);					
 					}
-					try {
-						pc.myPS.getTable().get(model.getValueAt(i, 0).toString()).print();
-					} catch (RemoteException e1) {
-						e1.printStackTrace();
+					if (debug) {
+						try {
+							pc.myPS.getTable().get(model.getValueAt(i, 0).toString()).print();
+						} catch (RemoteException e1) {
+							e1.printStackTrace();
+						}
 					}
 					model.removeRow(selectedRows[i]);
 					
@@ -468,6 +477,7 @@ public class testFrameworkGUI {
 		
 		frmTestFrameworkGui.getContentPane().setLayout(groupLayout);
 	}
+
 	private class SwingAction extends AbstractAction {
 		public SwingAction() {
 			putValue(NAME, "SwingAction");

@@ -87,6 +87,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * Parametri:
 	 * labels: etichette dei vettori di stringhe
 	 * vecs: un numero variabile di vettori di stringhe
+	 * XXX: cfr PeerServer, usare un'unica libreria SPOT?
 	 * */
 	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;

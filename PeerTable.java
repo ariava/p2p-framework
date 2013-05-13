@@ -28,8 +28,8 @@ public class PeerTable implements Serializable {
 	}
 	
 	/*
-	 * Ritorna un elemento di tipo PeerTableData contenente i dati relativi al coordinatore
-	 * per la risorsa a cui la PeerTable si riferisce.
+	 * Ritorna un elemento di tipo PeerTableData contenente i dati relativi
+	 * al coordinatore per la risorsa a cui la PeerTable si riferisce.
 	 * */
 	public PeerTableData getCoord() {
 		
@@ -42,8 +42,9 @@ public class PeerTable implements Serializable {
 	}
 	
 	/*
-	 * Ritorna un elemento di tipo PeerTableData contenente tutte le informazioni su un peer
-	 * avente come indirizzo ip quello passato come parametro se esiste, null altrimenti
+	 * Ritorna un elemento di tipo PeerTableData contenente tutte le informazioni
+	 * su un peer avente come indirizzo ip quello passato come parametro se esiste,
+	 * null altrimenti.
 	 * */
 	public PeerTableData getIP(String ip) {
 		for (int i=0 ; i < data.size() ; ++i) {
@@ -97,7 +98,8 @@ public class PeerTable implements Serializable {
 	/*
 	 * Ritorna l'indirizzo ip del peer con distanza piu' bassa.
 	 * 
-	 * Utilizzato prima del trasferimento di una risorsa per decidere a chi richiederla.
+	 * Utilizzato prima del trasferimento di una risorsa per decidere a
+	 * chi richiederla.
 	 * */
 	public String getMinDistPeer() {
 		float min = this.data.get(0).dist;

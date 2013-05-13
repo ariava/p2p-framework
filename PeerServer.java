@@ -24,7 +24,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	/*
 	 * Costruttore della classe PeerServer.
 	 * 
-	 * Inizializza la distanza media a -1 e l'ip all'ip corrente della macchina. Crea una hashtable vuota.
+	 * Inizializza la distanza media a 0 e l'ip all'ip corrente della
+	 * macchina. Crea una hashtable vuota.
 	 * */
 	public PeerServer() throws RemoteException, UnknownHostException {
 		
@@ -36,13 +37,14 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
-	 * Metodo orribile per sincronizzare la tabella del client con quella del rispettivo server
+	 * Metodo orribile per sincronizzare la tabella del client con quella del
+	 * rispettivo server.
 	 * 
 	 *  Parametri:
 	 *  rt: l'oggetto di tipo Hashtable da sostituire con la propria tabella
 	 *  
-	 *  XXX: problema di sicurezza, non ci sono controlli sul fatto che questo metodo possa essere
-	 *  chiamato solo ed esclusivamente dal SUO client.
+	 *  XXX: problema di sicurezza, non ci sono controlli sul fatto che questo
+	 *  metodo possa essere chiamato solo ed esclusivamente dal SUO client.
 	 * */
 	public void syncTable(Hashtable<String, PeerTable> rt) {
 		if(debug) {
@@ -66,7 +68,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.avgDist = avg;
 	}
 	/*
-	 * Metodo che dato l'indirizzo ip del chiamante ritorna la distanza in termini di hopcount dalla macchina corrente.
+	 * Metodo che dato l'indirizzo ip del chiamante ritorna la distanza in termini
+	 * di hopcount dalla macchina corrente.
 	 * 
 	 * Parametri: 
 	 * ip: stringa contenente l'ip del chiamante
@@ -121,7 +124,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
-	 * blablabla TODO:commenta
+	 * Metodo di debug che stampa un insieme di vettori di stringhe in modo "ordinato".
+	 * 
+	 * Parametri:
+	 * labels: etichette dei vettori di stringhe
+	 * vecs: un numero variabile di vettori di stringhe
+	 * XXX: cfr SuperPeerServer, usare un'unica libreria SPOT?
 	 * */
 	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
@@ -138,7 +146,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		}
 	}
 	/*
-	 * Metodo (privato) per aggiungere un peer alla tabella dei possessori della risorsa dopo che gli e' stata data
+	 * Metodo (privato) per aggiungere un peer alla tabella dei possessori della risorsa
+	 * dopo che gli e' stata data
 	 * */
 	@SuppressWarnings("unchecked")
 	private void addNewPeer(String resName, String ip) {
@@ -175,7 +184,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
-	 * Metodo invocato da un altro peer una volta avviata la procedura di elezione per ricevere i vari id (distanze medie)
+	 * Metodo invocato da un altro peer una volta avviata la procedura di
+	 * elezione per ricevere i vari id (distanze medie).
 	 * 
 	 * res: risorsa per la quale si avvia l'election
 	 * */
@@ -191,7 +201,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
-	 * Metodo invocato da un altro peer per annunciare il nuovo coordinatore per una risorsa.
+	 * Metodo invocato da un altro peer per annunciare il nuovo coordinatore per
+	 * una risorsa.
 	 * 
 	 * Parametri:
 	 * newCoord: stringa contenente l'ip del nuovo coordinatore
@@ -240,7 +251,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	
 	public static void main(String[] args) {
 		
-		if(args[0].equals("debug"))
+		if(args.length > 0 && args[0].equals("debug"))
 			debug = true;
 		
 		if(debug) {
