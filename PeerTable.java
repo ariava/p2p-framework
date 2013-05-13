@@ -87,7 +87,6 @@ public class PeerTable implements Serializable {
 		for(i=0;i<this.data.size();++i) {
 			System.out.println("myIp: "+myIp+"    "+this.data.get(i).peer+": "+this.data.get(i).dist);
 			if(!this.data.get(i).peer.equals(myIp)) {
-				System.out.println("getAvgDist(): trovato il mio stesso IP " + myIp);
 				avg += this.data.get(i).dist;
 				num_samples++;
 			}
