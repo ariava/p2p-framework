@@ -213,7 +213,7 @@ public class PeerClient {
 	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
 	 * resName: stringa contenente il nome della risorsa per la quale ci si rimuove
 	 * */
-	public void goodbye(SuperPeer coord, String resName) {
+	public void goodbye(SuperPeer coord, String resName) throws RemoteException {
 		assert coord != null : "SuperPeer object is undefined!";
 		
 		if(debug) {
@@ -227,6 +227,15 @@ public class PeerClient {
 			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
 			e.printStackTrace();
 		}	
+		
+		Vector<PeerTableData> list = this.myPS.getTable().get(resName).get();
+		
+		for(int i=0;i<list.size();++i) {
+			
+			String peer = "rmi://"+list.get(i).peer+"/Peer"+list.get(i).peer;
+			Peer p = this.getPeer(peer);
+			p.goodbye(resName, this.myIp);
+		}
 	}
 	
 	/*
