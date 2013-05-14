@@ -265,10 +265,10 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		assert(peer_ip != null && peer_ip != "");
 		if (debug)
 			System.out.println("SuperPeerServer: uscita pulita dell'host " + peer_ip);
-		Enumeration<String> e = myPS.getTable().keys();
+		Enumeration<String> e = this.myPS.getTable().keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
-			PeerTable pt = myPS.getTable().get(key);
+			PeerTable pt = this.myPS.getTable().get(key);
 			PeerTableData ptd = pt.getIP(peer_ip);
 			if (ptd != null) {
 				if (debug)
