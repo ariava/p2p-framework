@@ -28,6 +28,8 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 
 import  java.io.*;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 public class testFrameworkGUI {
 
@@ -152,7 +154,7 @@ public class testFrameworkGUI {
 		lblStatus.setBounds(12, 12, 685, 15);
 		panel.add(lblStatus);
 		
-		JButton btnConnect = new JButton("   Connect    ");
+		JButton btnConnect = new JButton("Connect");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -177,6 +179,17 @@ public class testFrameworkGUI {
 			}
 		});
 		panel_4.add(btnConnect);
+		
+		JSeparator separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		panel_4.add(separator);
+		
+		JButton btnDisconnect = new JButton("Disconnect");
+		btnDisconnect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		panel_4.add(btnDisconnect);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_2 = new JPanel();
@@ -464,14 +477,6 @@ public class testFrameworkGUI {
 		});
 		btnDelete.setBounds(573, 119, 117, 25);
 		panel_3.add(btnDelete);
-		
-		JButton btnRefresh = new JButton("Refresh");
-		btnRefresh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnRefresh.setBounds(573, 156, 117, 25);
-		panel_3.add(btnRefresh);
 		panel.setLayout(null);
 		
 		
