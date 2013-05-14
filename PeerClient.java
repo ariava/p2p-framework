@@ -236,6 +236,8 @@ public class PeerClient {
 			Peer p = this.getPeer(peer);
 			p.goodbye(resName, this.myIp);
 		}
+		System.out.println("***Tabella dopo goodbye***");
+		this.myPS.getTable().get(resName).print();
 	}
 	
 	/*

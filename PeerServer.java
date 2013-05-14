@@ -72,6 +72,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 		PeerTable pt = this.resourceTable.get(resName);
 		
+		System.out.println("Sto rimuovendo la risorsa " + resName + " con ip " + ip);
 		pt.remove(pt.getIP(ip));
 		this.resourceTable.put(resName, pt);
 	}
