@@ -470,6 +470,16 @@ public class testFrameworkGUI {
 							e1.printStackTrace();
 						}
 					}
+					
+					//rimuovo dalla tabella del peer..
+					try {
+						PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(i, 0).toString());
+						ptable.get().remove(ptable.getIP(pc.myIp));
+						pc.myPS.addToTable(pc.myIp, ptable);
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
+					
 					model.removeRow(selectedRows[i]);
 					
 				}
@@ -487,10 +497,8 @@ public class testFrameworkGUI {
 		public SwingAction() {
 			putValue(NAME, "SwingAction");
 			putValue(SHORT_DESCRIPTION, "Some short description");
-			System.out.println("ciaoooooaaaaaaaaaaa");
 		}
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("ciaooooo");
 		}
 	}
 }
