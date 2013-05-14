@@ -33,7 +33,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			e.printStackTrace();
 		}
 		this.coordTable = new Hashtable<String, String>();
-		this.id = name + ":" + ip;
+		this.id = name + ip;
 		if (debug)
 			System.out.println("Id del SuperPeerServer: " + id);
 		
@@ -384,9 +384,9 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		System.setSecurityManager(new RMISecurityManager());
 		try {
 			SuperPeerServer server = new SuperPeerServer();
-			Naming.rebind(server.getName(), server);
+			Naming.rebind(server.getId(), server);
 			if (debug)
-				System.out.println("Bind del SuperPeerServer con nome " + server.getName());
+				System.out.println("Bind del SuperPeerServer con nome " + server.getId());
 		} catch (Exception e) {
 			System.out.println("Error while binding server: " + e.getMessage());
 			e.printStackTrace();

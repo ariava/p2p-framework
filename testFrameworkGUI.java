@@ -222,7 +222,7 @@ public class testFrameworkGUI {
 				}
 				
 				String prevC = pc.simpleResourceRequest(tr, resName);
-				String coord = "rmi://"+prevC+"/"+"SuperPeer";
+				String coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
 				
 				SuperPeer c = pc.getCoord(coord);
 				
@@ -239,7 +239,7 @@ public class testFrameworkGUI {
 					}
 					
 					prevC = pc.advancedResourceRequest(tr, resName, prevC);
-					coord = "rmi://"+prevC+"/"+"SuperPeer";				
+					coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;				
 					SuperPeer c1 = pc.getCoord(coord);
 					
 					/*
@@ -384,7 +384,7 @@ public class testFrameworkGUI {
 	    					System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
 	    				
 	    				if(!coords.get(i).equals(pc.myIp)) {
-	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
+	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
 	    					SuperPeer c = pc.getCoord(coord);
 	    					
 	    					assert c != null : "SuperPeer object is undefined!";
@@ -403,7 +403,7 @@ public class testFrameworkGUI {
 	    					if(debug) {
 	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
 	    					}
-	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer";
+	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
 	    					SuperPeer c = pc.getCoord(coord);
 	    					try {
 								pc = new SuperPeerClient(pc,c,tr);
@@ -455,7 +455,7 @@ public class testFrameworkGUI {
 					}
 					
 					String coord = pt.getCoord().peer;
-					String server = "rmi://"+coord+"/"+"SuperPeer";
+					String server = "rmi://"+coord+"/"+"SuperPeer"+coord;
 					SuperPeer c = pc.getCoord(server);
 					pc.goodbye(c, model.getValueAt(i, 0).toString());
 					
