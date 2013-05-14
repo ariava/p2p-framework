@@ -5,6 +5,8 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -165,15 +167,21 @@ public class testFrameworkGUI {
 		panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
 		
 		txtIpTracker = new JTextField();
-		txtIpTracker.setText("192.168.0.15");
+		txtIpTracker.setText("insert tracker ip");
 		panel_4.add(txtIpTracker);
-		txtIpTracker.setColumns(10);
+		txtIpTracker.setColumns(10);		
+		txtIpTracker.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+            	txtIpTracker.setText("");
+            }
+        });
 		
 		final JLabel lblStatus = new JLabel("Status: Offline");
 		lblStatus.setBounds(12, 12, 685, 15);
 		panel.add(lblStatus);
 		
 		final JButton btnConnect = new JButton("    Connect   ");
+		final JButton btnNewButton = new JButton("Download...");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -196,6 +204,7 @@ public class testFrameworkGUI {
 				if (btnConnect.getText().equals("    Connect   ")) {
 					txtIpTracker.setEnabled(false);
 					txtInsertFileTo.setEnabled(true);
+					btnNewButton.setEnabled(true);
 					btnConnect.setText("Disconnect");
 					lblStatus.setText("Status: Online");
 				}
@@ -203,6 +212,7 @@ public class testFrameworkGUI {
 					close();
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
+					btnNewButton.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 				}
@@ -223,8 +233,13 @@ public class testFrameworkGUI {
 		txtInsertFileTo.setEnabled(false);
 		panel_2.add(txtInsertFileTo);
 		txtInsertFileTo.setColumns(10);
+		txtInsertFileTo.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+            	txtInsertFileTo.setText("");
+            }
+        });
 		
-		JButton btnNewButton = new JButton("Download...");
+		btnNewButton.setEnabled(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
