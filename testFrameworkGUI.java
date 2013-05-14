@@ -5,6 +5,8 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -14,7 +16,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import java.awt.Color;
-import javax.swing.AbstractAction;
 import javax.swing.UIManager;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -28,8 +29,7 @@ import java.rmi.RemoteException;
 import java.util.Vector;
 
 import  java.io.*;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
+
 
 public class testFrameworkGUI {
 
@@ -105,6 +105,19 @@ public class testFrameworkGUI {
 	public testFrameworkGUI() {
 		initialize();
 	}
+	
+	/*
+	 * Il client esce in modo pulito
+	 */
+	private void close() {
+		String coord = "rmi://"+pc.myIp+"/"+"SuperPeer"+pc.myIp;
+    	SuperPeer c = pc.getCoord(coord);
+    	try {
+			c.goodbye(pc.myIp);
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -114,7 +127,13 @@ public class testFrameworkGUI {
 		frmTestFrameworkGui.setResizable(false);
 		frmTestFrameworkGui.setTitle("test Framework GUI");
 		frmTestFrameworkGui.setBounds(100, 100, 733, 493);
-		frmTestFrameworkGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frmTestFrameworkGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frmTestFrameworkGui.addWindowStateListener(new WindowAdapter() {
+	        public void windowClosing(WindowEvent e) {
+	        	close();
+	        }
+	    });
 		
 		JPanel panel = new JPanel();
 		
@@ -154,7 +173,7 @@ public class testFrameworkGUI {
 		lblStatus.setBounds(12, 12, 685, 15);
 		panel.add(lblStatus);
 		
-		JButton btnConnect = new JButton("Connect");
+		final JButton btnConnect = new JButton("    Connect   ");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -174,22 +193,24 @@ public class testFrameworkGUI {
 					lblStatus.setText("Status: Offline");
 				}
 				
-				lblStatus.setText("Status: Online");
+				if (btnConnect.getText().equals("    Connect   ")) {
+					txtIpTracker.setEnabled(false);
+					txtInsertFileTo.setEnabled(true);
+					btnConnect.setText("Disconnect");
+					lblStatus.setText("Status: Online");
+				}
+				else {
+					close();
+					txtIpTracker.setEnabled(true);
+					txtInsertFileTo.setEnabled(false);
+					btnConnect.setText("    Connect   ");
+					lblStatus.setText("Status: Offline");
+				}
+				
 				pc.trackerIp = txtIpTracker.getText();
 			}
 		});
 		panel_4.add(btnConnect);
-		
-		JSeparator separator = new JSeparator();
-		separator.setOrientation(SwingConstants.VERTICAL);
-		panel_4.add(separator);
-		
-		JButton btnDisconnect = new JButton("Disconnect");
-		btnDisconnect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		panel_4.add(btnDisconnect);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_2 = new JPanel();
@@ -199,6 +220,7 @@ public class testFrameworkGUI {
 		
 		txtInsertFileTo = new JTextField();
 		txtInsertFileTo.setText("insert file to download...");
+		txtInsertFileTo.setEnabled(false);
 		panel_2.add(txtInsertFileTo);
 		txtInsertFileTo.setColumns(10);
 		
@@ -496,12 +518,4 @@ public class testFrameworkGUI {
 		frmTestFrameworkGui.getContentPane().setLayout(groupLayout);
 	}
 
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
-	}
 }
