@@ -277,6 +277,36 @@ public class PeerClient {
 		
 	}
 	
+	private void addNewPeer(String resName, String ip) {
+		try {
+		Peer p = null;
+		try {
+			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
+		}
+		catch (Exception e) {
+			
+			System.out.println("Error while getting the remote object: "+e.getMessage());
+			e.printStackTrace();			
+		}
+		
+		PeerTable pt = this.myPS.getTable().get(resName);
+		try {
+			pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false ));
+		} catch (RemoteException e) {
+			System.out.println("Discovery failed.."+e.getMessage());
+			e.printStackTrace();
+		}
+		this.myPS.addToTable(resName, pt);
+		System.out.println("Tabella ora:");
+		this.myPS.getTable().get(resName).print();
+		//ricalcolo avgdist
+		this.myPS.setAvgDist(this.myPS.getTable().get(resName).getAvgDist(this.myIp));
+		System.out.println("La nuova distanza media calcolata e': "+this.myPS.getAvgDist());
+		}
+		catch (Exception e) {}
+		
+	}
+	
 	/*
 	 * Metodo per recuperare una risorsa da un altro peer.
 	 * 
@@ -321,6 +351,9 @@ public class PeerClient {
 			System.out.println("Something went wrong while writing the retrieved file: "+e.getMessage());
 			return false;
 		}
+		
+		this.addNewPeer(resName, this.myIp);
+		
 		return true;
 	}
 	

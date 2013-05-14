@@ -94,7 +94,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	public byte[] getResource(String resName,String ip) throws RemoteException {
 
 		if(debug) {
-			System.out.println("Chiamata la getResource() per la risorsa "+resName);
+			System.out.println("Chiamata la getResource() dal peer "+ip+" per la risorsa "+resName);
 		}
 		
 		try {

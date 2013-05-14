@@ -457,6 +457,7 @@ public class testFrameworkGUI {
 					String coord = pt.getCoord().peer;
 					String server = "rmi://"+coord+"/"+"SuperPeer"+coord;
 					SuperPeer c = pc.getCoord(server);
+					System.out.println("Chiamata la goodbye sul superpeer "+coord);
 					pc.goodbye(c, model.getValueAt(i, 0).toString());
 					
 					//se sono io il coord faccio partire l'election
@@ -475,6 +476,8 @@ public class testFrameworkGUI {
 					try {
 						PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(i, 0).toString());
 						ptable.get().remove(ptable.getIP(pc.myIp));
+						System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(i, 0).toString()+
+								"l'ip "+pc.myIp);
 						pc.myPS.addToTable(pc.myIp, ptable);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
