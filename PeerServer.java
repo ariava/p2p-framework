@@ -62,6 +62,21 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/*
+	 * Goodbye sul peer, rimuove il chiamante dalla propria tabella
+	 * 
+	 * Parametri:
+	 * resName: risorsa per cui il chiamante lascia
+	 * ip: indirizzo ip del chiamante
+	 * */
+	public void goodbye(String resName, String ip) throws RemoteException {
+		
+		PeerTable pt = this.resourceTable.get(resName);
+		
+		pt.remove(pt.getIP(ip));
+		this.resourceTable.put(resName, pt);
+	}
+	
+	/*
 	 * Setter di avgDist
 	 * */
 	public void setAvgDist(float avg) {

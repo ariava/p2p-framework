@@ -517,7 +517,11 @@ public class testFrameworkGUI {
 					String server = "rmi://"+coord+"/"+"SuperPeer"+coord;
 					SuperPeer c = pc.getCoord(server);
 					System.out.println("Chiamata la goodbye sul superpeer "+coord);
-					pc.goodbye(c, model.getValueAt(i, 0).toString());
+					try {
+						pc.goodbye(c, model.getValueAt(i, 0).toString());
+					} catch (RemoteException e2) {
+						e2.printStackTrace();
+					}
 					
 					//se sono io il coord faccio partire l'election
 					if(pc.myIp.equals(coord)) {

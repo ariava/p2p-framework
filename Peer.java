@@ -10,6 +10,7 @@ public interface Peer extends Remote {
 	public void syncTable(Hashtable<String, PeerTable> rt) throws RemoteException;
 	public Hashtable<String, PeerTable> getTable() throws RemoteException;
 	public void addToTable(String r, PeerTable p) throws RemoteException;
+	public void goodbye(String resName, String ip) throws RemoteException;
 	public float getAvgDist() throws RemoteException;
 	public void setAvgDist(float avg) throws RemoteException;
 
