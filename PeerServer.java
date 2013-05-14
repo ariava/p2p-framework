@@ -18,7 +18,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	private String myIp;
 	static private boolean debug = false;
 	
-	protected Hashtable<String, PeerTable> resourceTable; //TODO: sincronizzare con quella del client..
+	protected Hashtable<String, PeerTable> resourceTable;
 	
 	
 	/*
