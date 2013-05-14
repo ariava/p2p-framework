@@ -5,6 +5,8 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -166,6 +168,8 @@ public class testFrameworkGUI {
 		);
 		panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
 		
+		final JButton btnConnect = new JButton("    Connect   ");
+		
 		txtIpTracker = new JTextField();
 		txtIpTracker.setText("insert tracker ip");
 		panel_4.add(txtIpTracker);
@@ -175,12 +179,21 @@ public class testFrameworkGUI {
             	txtIpTracker.setText("");
             }
         });
+		txtIpTracker.addKeyListener
+			(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					int key = e.getKeyCode();
+					if (key == KeyEvent.VK_ENTER) {
+						btnConnect.doClick();
+					}
+				}
+	        });
 		
 		final JLabel lblStatus = new JLabel("Status: Offline");
 		lblStatus.setBounds(12, 12, 685, 15);
 		panel.add(lblStatus);
 		
-		final JButton btnConnect = new JButton("    Connect   ");
+		
 		final JButton btnNewButton = new JButton("Download...");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -237,6 +250,15 @@ public class testFrameworkGUI {
             public void mouseClicked(MouseEvent e){
             	txtInsertFileTo.setText("");
             }
+        });
+		txtInsertFileTo.addKeyListener
+		(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int key = e.getKeyCode();
+				if (key == KeyEvent.VK_ENTER) {
+					btnNewButton.doClick();
+				}
+			}
         });
 		
 		btnNewButton.setEnabled(false);
