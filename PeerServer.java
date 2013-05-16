@@ -240,6 +240,9 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			}
 			
 		}
+		//XXX (Arianna): come viene gestito il fatto di "trasformare"
+		//               in SuperPeer l'oggetto nella gui per il Peer
+		//               che è diventato coordinatore?
 		assert elected == true : "No coordinator set!";
 		this.resourceTable.put(res, pt);
 	}

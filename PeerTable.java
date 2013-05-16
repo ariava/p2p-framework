@@ -48,7 +48,7 @@ public class PeerTable implements Serializable {
 	 * */
 	public PeerTableData getIP(String ip) {
 		for (int i=0 ; i < data.size() ; ++i) {
-			if(data.get(i).peer == ip)
+			if(data.get(i).peer.equals(ip))
 				return data.get(i);
 		}
 		return null;

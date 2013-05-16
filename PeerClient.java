@@ -233,6 +233,7 @@ public class PeerClient {
 		for(int i=0;i<list.size();++i) {
 			
 			String peer = "rmi://"+list.get(i).peer+"/Peer"+list.get(i).peer;
+			System.out.println("goodbye(): uscita pulita dal PeerServer " + list.get(i));
 			Peer p = this.getPeer(peer);
 			p.goodbye(resName, this.myIp);
 		}
