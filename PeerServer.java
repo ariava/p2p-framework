@@ -72,7 +72,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 		PeerTable pt = this.resourceTable.get(resName);
 		
-		System.out.println("Sto rimuovendo la risorsa " + resName + " con ip " + ip);
+		if (debug)
+			System.out.println("Sto rimuovendo la risorsa " + resName + " con ip " + ip);
 		pt.remove(pt.getIP(ip));
 		this.resourceTable.put(resName, pt);
 	}
@@ -185,17 +186,20 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			e.printStackTrace();
 		}
 		this.resourceTable.put(resName, pt);
-		System.out.println("Tabella ora:");
-		this.resourceTable.get(resName).print();
+		if (debug) {
+			System.out.println("Tabella ora:");
+			this.resourceTable.get(resName).print();
+		}
 		//ricalcolo avgdist
 		this.avgDist = this.resourceTable.get(resName).getAvgDist(this.myIp);
-		System.out.println("La nuova distanza media calcolata e': "+this.avgDist);
+		if (debug) {
+			System.out.println("La nuova distanza media calcolata e': "+this.avgDist);
 		
-		Vector<String >poss = new Vector<String>();
-		for(int i=0;i<pt.get().size();++i) {
-			poss.add( pt.get().get(i).peer);
+			Vector<String >poss = new Vector<String>();
+			for(int i=0;i<pt.get().size();++i)
+				poss.add( pt.get().get(i).peer);
+			printStringVectors(new String[]{"Possessori"}, poss);
 		}
-		printStringVectors(new String[]{"Possessori"}, poss);
 		
 	}
 	
@@ -225,9 +229,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * res: stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 * */
 	public void coordinator(String newCoord, String res) throws RemoteException {
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
-		}
 		
 		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
@@ -273,9 +276,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		if(args.length > 0 && args[0].equals("debug"))
 			debug = true;
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Avviato il PeerServer");
-		}
 		
 		System.setSecurityManager(new RMISecurityManager());
 		

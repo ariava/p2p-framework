@@ -101,9 +101,8 @@ public class PeerClient {
 	public String simpleResourceRequest(Tracker server, String resource) {
 		assert server != null : "Tracker object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la simpleResourceRequest sul tracker: "+server.toString()+" per la risorsa "+resource);
-		}
 		try {
 			return server.richiesta(resource);
 		}
@@ -124,10 +123,9 @@ public class PeerClient {
 	public String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
 		assert server != null : "Tracker object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la advancedResourceRequest sul tracker: "+server.toString()+" per la risorsa "+resource+
 					" dato come prevCoord "+prevCoord);
-		}
 		try {
 			return server.richiesta(resource, prevCoord);
 		}
@@ -148,9 +146,8 @@ public class PeerClient {
 	public String simpleResourceRequest(SuperPeer server, String resource) {
 		assert server != null : "SuperPeer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la simpleResourceRequest sul coordinatore: "+server.toString()+" per la risorsa "+resource);
-		}
 		
 		try {
 			return server.request(resource);
@@ -171,10 +168,9 @@ public class PeerClient {
 	public String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
 		assert server != null : "SuperPeer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la advancedResourceRequest sul coordinatore: "+server.toString()+" per la risorsa "+resource+
 					" dato come prevCoord "+prevCoord);
-		}
 		try {
 			return server.request(resource, prevCoord);
 		}
@@ -196,9 +192,8 @@ public class PeerClient {
 	public void goodbye(SuperPeer coord) {
 		assert coord != null : "SuperPeer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
-		}
 		try {
 			coord.goodbye(this.myIp);
 		}
@@ -216,9 +211,8 @@ public class PeerClient {
 	public void goodbye(SuperPeer coord, String resName) throws RemoteException {
 		assert coord != null : "SuperPeer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
-		}
 		try {
 			System.out.println(this.myIp+"   "+resName);
 			coord.goodbye(this.myIp, resName);
@@ -233,12 +227,15 @@ public class PeerClient {
 		for(int i=0;i<list.size();++i) {
 			
 			String peer = "rmi://"+list.get(i).peer+"/Peer"+list.get(i).peer;
-			System.out.println("goodbye(): uscita pulita dal PeerServer " + list.get(i));
+			if (debug)
+				System.out.println("goodbye(): uscita pulita dal PeerServer " + list.get(i));
 			Peer p = this.getPeer(peer);
 			p.goodbye(resName, this.myIp);
 		}
-		System.out.println("***Tabella dopo goodbye***");
-		this.myPS.getTable().get(resName).print();
+		if (debug) {
+			System.out.println("***Tabella dopo goodbye***");
+			this.myPS.getTable().get(resName).print();
+		}
 	}
 	
 	/*
@@ -251,9 +248,8 @@ public class PeerClient {
 	public Vector<String> getList(SuperPeer coord, String resName) {
 		assert coord != null : "SuperPeer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la getList sul coordinatore: "+coord.toString()+" per la risorsa "+resName);
-		}
 		try {
 			return coord.getList(resName);
 		}
@@ -276,9 +272,8 @@ public class PeerClient {
 	public float discovery(Peer p) {
 		assert p != null : "Peer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la discovery() sul peer: "+p.toString());
-		}
 		try {
 			return p.discovery(this.myIp);
 		}
@@ -313,7 +308,8 @@ public class PeerClient {
 		this.myPS.getTable().get(resName).print();
 		//ricalcolo avgdist
 		this.myPS.setAvgDist(this.myPS.getTable().get(resName).getAvgDist(this.myIp));
-		System.out.println("La nuova distanza media calcolata e': "+this.myPS.getAvgDist());
+		if (debug)
+			System.out.println("La nuova distanza media calcolata e': "+this.myPS.getAvgDist());
 		}
 		catch (Exception e) {}
 		
@@ -330,9 +326,8 @@ public class PeerClient {
 	public boolean getResource(Peer p, String resName) {
 		assert p != null : "Peer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la getResource() sul peer: "+p.toString()+" per la risorsa "+resName);
-		}
 		
 		byte[] filedata;
 		try {
@@ -379,9 +374,8 @@ public class PeerClient {
 	public float election(Peer p, String resName) {
 		assert p != null : "Peer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la election sul peer "+p.toString());
-		}
 		
 		try {
 			return p.election(resName);
@@ -403,10 +397,9 @@ public class PeerClient {
 	public void coordinator(Peer p, String resName, String ipCoord) {
 		assert p != null : "Peer object is undefined!";
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la coordinator() sul peer "+p.toString()+" per la risorsa: "+resName+
 					", il nuovo coordinatore e' "+ipCoord);
-		}
 		
 		try {
 			p.coordinator(ipCoord, resName);
@@ -428,9 +421,8 @@ public class PeerClient {
 	 * server: stringa contenente il percorso rmi del tracker.
 	 * */
 	public Tracker getTracker(String server) {
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la getTracker, faccio il lookup di "+server);
-		}
 		try {
 			Tracker obj = (Tracker)Naming.lookup(server);
 			return obj;
@@ -451,9 +443,8 @@ public class PeerClient {
 	 * server: stringa contenente il percorso rmi del SuperPeer.
 	 * */
 	public SuperPeer getCoord(String server) {
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la getCoord, faccio il lookup di "+server);
-		}
 		try {
 			SuperPeer obj = (SuperPeer)Naming.lookup(server);
 			return obj;
@@ -474,9 +465,8 @@ public class PeerClient {
 	 * server: stringa contenente il percorso rmi del Peer.
 	 * */
 	public Peer getPeer(String server) {
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la getPeer, faccio il lookup di "+server);
-		}
 				
 		try {
 			Peer obj = (Peer)Naming.lookup(server);
@@ -505,9 +495,8 @@ public class PeerClient {
 	 * */
 	public void startElection(String resName, boolean noSelf, Tracker tr) {
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
-		}
 		Hashtable<String, PeerTable> rt = null;
 		try {
 			rt = this.myPS.getTable();
@@ -566,9 +555,8 @@ public class PeerClient {
 						
 			}
 		}
-		if(debug) {
+		if(debug)
 			System.out.println("Election: il nuovo coordinatore e': "+peerMin+", ha distanza media "+min);
-		}
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
 		for(int i=0;i<rt.get(resName).get().size();++i) {
 			String server = rt.get(resName).get().get(i).peer;
