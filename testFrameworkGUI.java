@@ -49,10 +49,6 @@ public class testFrameworkGUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
-		System.setProperty("sun.rmi.transport.tcp.handshakeTimeout", "5000");
-		System.out.println(System.getProperty("sun.rmi.transport.tcp.handshakeTimeout"));
-		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Throwable e) {
