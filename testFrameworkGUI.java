@@ -1,9 +1,12 @@
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
+
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -11,13 +14,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.datatransfer.DataFlavor;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -46,6 +53,16 @@ public class testFrameworkGUI {
 	private PeerClient pc;
 	private Tracker tr;
 	private boolean debug = true;
+	final JPopupMenu cutpasteMenu = new JPopupMenu();
+    final JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(((new ImageIcon("icons/cut.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
+    final JMenuItem copyMenuItem = new JMenuItem("Copy", new ImageIcon(((new ImageIcon("icons/copy.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
+    final JMenuItem pasteMenuItem = new JMenuItem("Paste", new ImageIcon(((new ImageIcon("icons/paste.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
+    final JPopupMenu runFileMenu = new JPopupMenu();
+    final JMenuItem runMenuItem = new JMenuItem("Run", new ImageIcon(((new ImageIcon("icons/runFile.jpg")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
+	
+	private Toolkit toolkit = Toolkit.getDefaultToolkit();
+	private java.awt.datatransfer.Clipboard clipboard = toolkit.getSystemClipboard();
+	
 
 	/**
 	 * Launch the application.
@@ -142,6 +159,24 @@ public class testFrameworkGUI {
 			e1.printStackTrace();
 		}
 	}
+	
+	private void enabledDisabledMenuItems(String component) {
+		Transferable clipboardContent = clipboard.getContents(null);
+		if(clipboardContent!=null && (clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor))) {
+			pasteMenuItem.setEnabled(true);
+		}
+		else {
+			pasteMenuItem.setEnabled(false);
+		}
+		if ((component.equals("txtIpTracker") ? txtIpTracker : txtInsertFileTo).getSelectedText() != null) {
+			cutMenuItem.setEnabled(true);
+			copyMenuItem.setEnabled(true);
+		}
+		else {
+			cutMenuItem.setEnabled(false);
+			copyMenuItem.setEnabled(false);
+		}
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -188,6 +223,29 @@ public class testFrameworkGUI {
 		);
 		panel_4.setLayout(new BoxLayout(panel_4, BoxLayout.X_AXIS));
 		
+	    cutpasteMenu.add(cutMenuItem);
+        cutpasteMenu.add(copyMenuItem);
+        cutpasteMenu.add(pasteMenuItem);
+        runFileMenu.add(runMenuItem);
+	    cutMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JTextField jte = (JTextField)cutpasteMenu.getInvoker();
+	            jte.cut();
+			}
+	    });
+	    copyMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JTextField jte = (JTextField)cutpasteMenu.getInvoker();
+	            jte.copy();
+			}
+	    });
+	    pasteMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JTextField jte = (JTextField)cutpasteMenu.getInvoker();
+	            jte.paste();
+			}
+	    });
+		
 		final JButton btnConnect = new JButton("    Connect   ");
 		
 		txtIpTracker = new JTextField();
@@ -196,7 +254,7 @@ public class testFrameworkGUI {
 		txtIpTracker.setColumns(10);		
 		txtIpTracker.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
-            	if (SwingUtilities.isLeftMouseButton(e) && txtIpTracker.isEnabled()) {
+            	if (SwingUtilities.isLeftMouseButton(e) && txtIpTracker.isEnabled() && txtIpTracker.getText().equals("insert tracker ip")) {
             		txtIpTracker.setText("");
             	}
             }
@@ -210,6 +268,14 @@ public class testFrameworkGUI {
 					}
 				}
 	        });
+		txtIpTracker.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	if (SwingUtilities.isRightMouseButton(e) && txtIpTracker.isEnabled()) {
+            		enabledDisabledMenuItems("txtIpTracker");
+            		cutpasteMenu.show(e.getComponent(), e.getX(), e.getY());
+            	}
+            }
+        });
 		
 		final JLabel lblStatus = new JLabel("Status: Offline");
 		lblStatus.setBounds(12, 12, 685, 15);
@@ -283,6 +349,14 @@ public class testFrameworkGUI {
 					btnNewButton.doClick();
 				}
 			}
+        });
+		txtInsertFileTo.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	if (SwingUtilities.isRightMouseButton(e) && txtInsertFileTo.isEnabled()) {
+            		enabledDisabledMenuItems("txtInsertFileTo");
+            		cutpasteMenu.show(e.getComponent(), e.getX(), e.getY());
+            	}
+            }
         });
 		
 		btnNewButton.setEnabled(false);
@@ -444,7 +518,22 @@ public class testFrameworkGUI {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBackground(Color.WHITE);
 		table.setBounds(0, 52, 550, 321);
+		table.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	if (SwingUtilities.isRightMouseButton(e)) {
+            		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
+            		}
+            	}
+            }
+        });
 		panel_3.add(table);
+		runMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// to get riga selezionata
+				System.out.println("aaaa");
+			}
+		});
 		
 		JButton btnImport = new JButton("Import...");
 		btnImport.addActionListener(new ActionListener() {
