@@ -319,7 +319,7 @@ public class testFrameworkGUI {
 					PeerTable pt = null;
 					/* Recuperiamo l'IP di un coordinatore di risorsa */
 					try {
-						pt = (PeerTable) pc.myPS.getTable().entrySet().iterator().next();
+						pt = pc.myPS.getTable().entrySet().iterator().next().getValue();
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
