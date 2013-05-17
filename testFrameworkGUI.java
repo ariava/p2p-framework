@@ -281,6 +281,12 @@ public class testFrameworkGUI {
 				}
 				
 				String prevC = pc.simpleResourceRequest(tr, resName);
+				
+				if(prevC == null) {
+					JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
 				String coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
 				
 				SuperPeer c = pc.getCoord(coord);
