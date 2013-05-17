@@ -12,7 +12,7 @@ public class SuperPeerClient extends PeerClient {
 	
 	static private String timestamp;
 
-	static private boolean debug;
+	static private boolean debug = true;
 	
 	/*
 	 * Costruttore della classe SuperPeerClient.
@@ -103,7 +103,8 @@ public class SuperPeerClient extends PeerClient {
 	 * la memorizzi internamente.
 	 * */
 	private void startupListRetriever() {
-		  assert(listRetriever == null);
+		  if(listRetriever == null)
+			  return;
 		  if (debug)
 			  System.out.println("SuperPeerClient: avviamento del thread di rinfresco della tabella");
 		  listRetriever = new Thread(
