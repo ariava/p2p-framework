@@ -57,6 +57,8 @@ public class testFrameworkGUI {
     final JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(((new ImageIcon("icons/cut.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JMenuItem copyMenuItem = new JMenuItem("Copy", new ImageIcon(((new ImageIcon("icons/copy.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JMenuItem pasteMenuItem = new JMenuItem("Paste", new ImageIcon(((new ImageIcon("icons/paste.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
+    final JPopupMenu runFileMenu = new JPopupMenu();
+    final JMenuItem runMenuItem = new JMenuItem("Run", new ImageIcon(((new ImageIcon("icons/runFile.jpg")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
 	
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	private java.awt.datatransfer.Clipboard clipboard = toolkit.getSystemClipboard();
@@ -224,6 +226,7 @@ public class testFrameworkGUI {
 	    cutpasteMenu.add(cutMenuItem);
         cutpasteMenu.add(copyMenuItem);
         cutpasteMenu.add(pasteMenuItem);
+        runFileMenu.add(runMenuItem);
 	    cutMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JTextField jte = (JTextField)cutpasteMenu.getInvoker();
@@ -515,7 +518,22 @@ public class testFrameworkGUI {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBackground(Color.WHITE);
 		table.setBounds(0, 52, 550, 321);
+		table.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+            	if (SwingUtilities.isRightMouseButton(e)) {
+            		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
+            		}
+            	}
+            }
+        });
 		panel_3.add(table);
+		runMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// to get riga selezionata
+				System.out.println("aaaa");
+			}
+		});
 		
 		JButton btnImport = new JButton("Import...");
 		btnImport.addActionListener(new ActionListener() {
