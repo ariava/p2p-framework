@@ -1,18 +1,22 @@
 #
 # Makefile for p2p-framework
 #
-#
+
+JAVAOPTS=-Djava.rmi.server.codebase=file:`pwd`/ -ea
 
 all: java rmi
 
+gui: java
+	java -ea testFrameworkGUI
+
 tracker: java rmi
-	java -Djava.rmi.server.codebase=file:`pwd`/ TrackerServer
+	java $(JAVAOPTS) TrackerServer
 
 peerserver: java rmi
-	java -Djava.rmi.server.codebase=file:`pwd`/ PeerServer debug
+	java $(JAVAOPTS) PeerServer debug
 
 superpeerserver: java rmi
-	java -Djava.rmi.server.codebase=file:`pwd`/ SuperPeerServer debug
+	java $(JAVAOPTS) SuperPeerServer debug
 
 java:
 	javac *.java

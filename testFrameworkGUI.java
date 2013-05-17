@@ -51,10 +51,6 @@ public class testFrameworkGUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
-		System.setProperty("sun.rmi.transport.tcp.handshakeTimeout", "5000");
-		System.out.println(System.getProperty("sun.rmi.transport.tcp.handshakeTimeout"));
-		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Throwable e) {
@@ -291,15 +287,18 @@ public class testFrameworkGUI {
 		
 		btnNewButton.setEnabled(false);
 		btnNewButton.addActionListener(new ActionListener() {
+			/*							LISTENER BOTTONE DI DOWNLOAD				*/
 			public void actionPerformed(ActionEvent e) {
 				
 				if(pc == null) {	
 					JOptionPane.showMessageDialog(null, "PeerClient object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				if(tr == null) {	
-					JOptionPane.showMessageDialog(null, "Tracker object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
-					return;
+				
+				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
+				tr = pc.getTracker(server);
+				if(tr == null) {
+					lblStatus.setText("Status: Offline");
 				}
 				
 				String resName = txtInsertFileTo.getText();
@@ -314,7 +313,14 @@ public class testFrameworkGUI {
 					System.out.println("Client in modalita' request");
 				}
 				
-				String prevC = pc.simpleResourceRequest(tr, resName);
+				String prevC = null;
+				if(tr != null)
+					prevC = pc.simpleResourceRequest(tr, resName);
+				else {
+					String s = "rmi://"+pc.myIp+"/SuperPeer"+pc.myIp;
+					SuperPeer sp = pc.getCoord(s);
+					prevC = pc.simpleResourceRequest(sp, resName); 
+					}
 				
 				if(prevC == null) {
 					JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
