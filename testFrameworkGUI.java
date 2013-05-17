@@ -316,10 +316,22 @@ public class testFrameworkGUI {
 				
 				String prevC = null;
 				if(tr == null || (prevC =  pc.simpleResourceRequest(tr, resName)) == null) {
-					String s = "rmi://"+pc.myIp+"/SuperPeer"+pc.myIp;
-					SuperPeer sp = pc.getCoord(s);
-					prevC = pc.simpleResourceRequest(sp, resName); 
+					PeerTable pt = null;
+					/* Recuperiamo l'IP di un coordinatore di risorsa */
+					try {
+						pt = (PeerTable) pc.myPS.getTable().entrySet().iterator().next();
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
 					}
+					if (pt != null) {
+						String s = "rmi://"+pt.getCoord().peer+"/SuperPeer"+pt.getCoord().peer;
+						SuperPeer sp = pc.getCoord(s);
+						prevC = pc.simpleResourceRequest(sp, resName);
+					} else {
+						JOptionPane.showMessageDialog(null, "Lost connection to the network!", "Error",JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
 				
 				if(prevC == null) {
 					JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
