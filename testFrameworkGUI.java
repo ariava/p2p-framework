@@ -320,7 +320,7 @@ public class testFrameworkGUI {
 					assert p != null : "Peer object is undefined!";
 					
 					PeerTableData pd = new PeerTableData(ipList.get(i), pc.discovery(p),
-														 false, ipList.get(i)==prevC?true:false);
+														 false, ipList.get(i).equals(prevC)?true:false);
 					pt.add(pd);
 				}
 				
