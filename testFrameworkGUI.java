@@ -297,6 +297,7 @@ public class testFrameworkGUI {
 				
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
 				tr = pc.getTracker(server);
+				System.out.println("Tracker: " + tr);
 				if(tr == null) {
 					lblStatus.setText("Status: Offline");
 				}
@@ -314,9 +315,7 @@ public class testFrameworkGUI {
 				}
 				
 				String prevC = null;
-				if(tr != null)
-					prevC = pc.simpleResourceRequest(tr, resName);
-				else {
+				if(tr == null || (prevC =  pc.simpleResourceRequest(tr, resName)) == null) {
 					String s = "rmi://"+pc.myIp+"/SuperPeer"+pc.myIp;
 					SuperPeer sp = pc.getCoord(s);
 					prevC = pc.simpleResourceRequest(sp, resName); 
