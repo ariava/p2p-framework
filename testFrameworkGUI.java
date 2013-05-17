@@ -71,6 +71,28 @@ public class testFrameworkGUI {
 	}
 
 	/**
+	 * Metodo privato che controlla se la risorsa e' gia' nella tabella.
+	 * 
+	 * Utilizzato in import e download per evitare di ripetere le chiamate.
+	 * 
+	 * Parametri:
+	 * resName: il nome della risorsa da controllare
+	 * */
+	private static boolean alreadyExists(String resName) {
+		
+		File resFolder = new File("resources/");
+		File[] list = resFolder.listFiles();
+		System.out.println("Stampa dei file nella cartella resources:");
+		for(int i=0;i<list.length;++i) {
+			System.out.println(list[i].getName());
+			if(list[i].getName().equals(resName))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Metodo privato che copia un file.
 	 * 
 	 * Parametri:
@@ -275,6 +297,12 @@ public class testFrameworkGUI {
 				}
 				
 				String resName = txtInsertFileTo.getText();
+				
+				if(alreadyExists(resName)) {
+					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
 				/******************************/
 				if(debug) {
 					System.out.println("Client in modalita' request");
@@ -416,7 +444,10 @@ public class testFrameworkGUI {
                 
                 if(selezione == JFileChooser.APPROVE_OPTION) {
                 	f = fc.getSelectedFile();
-					
+                	if(alreadyExists(f.getName())) {
+    					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
+    					return;
+    				}
 	                System.out.println(f.getAbsolutePath());
 	                
 	                copyFile(f.getAbsolutePath(),"resources/"+f.getName());
@@ -556,7 +587,13 @@ public class testFrameworkGUI {
 						e1.printStackTrace();
 					}
 					
+					File f = new File("resources/"+model.getValueAt(i, 0).toString()); //TODO: compatibilita' windows..? ma anche no
+					if(!f.delete())
+						JOptionPane.showMessageDialog(null, "Unable to delete file from filesystem!", "Error",JOptionPane.ERROR_MESSAGE);
+					
 					model.removeRow(selectedRows[i]);
+					
+					
 					
 				}
 			}
