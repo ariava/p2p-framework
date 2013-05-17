@@ -141,7 +141,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
     			System.out.println();
     		}
-    		return "";
+    		return null;
     	}
     }
     
@@ -183,7 +183,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
         			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
         			this.stampaTabella();
         		}
-    			return "";
+    			return null;
     		}
     	}
     	else {
