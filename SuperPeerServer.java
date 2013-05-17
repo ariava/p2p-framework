@@ -118,6 +118,12 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			System.out.println("Risorsa: " + key + " | Coord: " + table.get(key));
 		}
 	}
+	/*
+	 * Metodo che ritorna la table dei coordinatori clonata dal tracker
+	 * */
+	public  Hashtable<String, String> getCoordTable() {
+		return this.coordTable;
+	}
 	
 	/*
 	 * Metodo invocato da un peer per registrare una nuova risorsa nella rete peer-to-peer

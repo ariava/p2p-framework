@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.server.*;
 import java.rmi.*;
 import java.util.Calendar;
@@ -74,6 +75,26 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		this.table = new Hashtable<String, String>();
 		this.setTimestamp();
+	}
+	
+	/*
+	 * Metodo che ritorna l'ip del tracker,usato dal thread per fargli polling
+	 * */
+	public String getIp() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/*
+	 * Metodo che setta la lista dei coordinatori dopo che il tracker e' tornato up
+	 * */
+	public void setList( Hashtable<String, String> l) {
+		assert l!=null : "Table not defined";
+		this.table = l;
 	}
 	
 	/*

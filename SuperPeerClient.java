@@ -10,6 +10,8 @@ public class SuperPeerClient extends PeerClient {
 	
 	static private Thread listRetriever = null;
 	
+	static private String trackerIp = null;
+	
 	static private String timestamp;
 
 	static private boolean debug = true;
@@ -30,7 +32,11 @@ public class SuperPeerClient extends PeerClient {
 		assert(tracker != null);
 		this.server = server;
 		this.tracker = tracker;
-		
+		try {
+			this.trackerIp = this.tracker.getIp();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 		this.myIp = pc.myIp;
 		
 		
@@ -63,6 +69,9 @@ public class SuperPeerClient extends PeerClient {
 	 * */
 	private void printCoordTable(Hashtable<String, String> table) {
 		assert(table != null && table.size() != 0);
+		
+		System.out.println("Sono nel thread, stampo la tabella:");
+		
 		Enumeration<String> e = table.keys();
 		while(e.hasMoreElements()) {
 			String key = e.nextElement();
@@ -103,34 +112,71 @@ public class SuperPeerClient extends PeerClient {
 	 * la memorizzi internamente.
 	 * */
 	private void startupListRetriever() {
-		  if(listRetriever == null)
+		  if(listRetriever != null)
 			  return;
 		  if (debug)
 			  System.out.println("SuperPeerClient: avviamento del thread di rinfresco della tabella");
 		  listRetriever = new Thread(
 				  new Runnable() {
+					   
 		                public void run() {
-		                    try {
-		                    	/* Aggiornamento del timestamp */
-		                    	setTimestamp();
-		                    	/* Recupero della tabella dei coordinatori dal tracker */
-		                    	Hashtable<String, String> table = tracker.getList(timestamp);
-		                    	/* Impostazione della tabella sul server se non è nulla */
-		                    	if (table != null) {
-		                    		if (debug) {
-			                    		System.out.println("Thread: impostazione della coordTable al timestamp " + timestamp);
-			                    		printCoordTable(table);
+		                	
+		                	Hashtable<String, String> table = null;
+		                	boolean down = false;
+		                	
+		                	System.out.println("Avviato il thread, prelevo la tabella iniziale");
+		                	
+							try {
+								table = tracker.getList("1970-01-01 00:00:00.000");
+								setTimestamp();
+								printCoordTable(table);
+							} catch (RemoteException e1) {
+								e1.printStackTrace();
+							}
+		                	while(true) {
+			                    try {
+			                    	
+			                    	/* Faccio il lookup al tracker, che magari e' tornato..*/
+			                    	String s = "rmi://"+trackerIp+"/Tracker";
+			                    	tracker = (Tracker)Naming.lookup(s);
+			                    	
+			                    	
+			                    	
+			                    	if(down) {
+			                    		System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la table");
+			                    		tracker.setList(server.getCoordTable()); 
+			                    		down = false;
+			                    		printCoordTable(server.getCoordTable());
 			                    	}
-		                    		server.setList(table);
-		                    	} else {
-		                    		if (debug)
-		                    			System.out.println("Thread: al timestamp " + timestamp + " la tabella non è cambiata");
-		                    	}
-		                    	Thread.sleep(10000); // XXX: quale intervallo?
-		                    } catch (Exception e) {
-		                    	System.out.println("Exception in thread:" + e.getMessage());
-		                    	e.printStackTrace();
-		                    }
+			                    	else
+			                    		/* Recupero della tabella dei coordinatori dal tracker */
+			                    		table = tracker.getList(timestamp);
+			                    		
+			                    	/* Impostazione della tabella sul server se non è nulla */
+			                    	if (table != null) {
+			                    		if (debug) {
+				                    		System.out.println("Thread: impostazione della coordTable al timestamp " + timestamp);
+				                    		setTimestamp();
+				                    		printCoordTable(table);
+				                    	}
+			                    		server.setList(table);
+			                    	} else {
+			                    		if (debug) {
+			                    			System.out.println("Thread: al timestamp " + timestamp + " la tabella non è cambiata");
+			                    			
+			                    		}
+			                    	}
+			                    	Thread.sleep(5000); 
+			                    } catch (Exception e) {
+			                    	down = true;
+			                    	System.out.println("Tracker's dead baby, tracker's dead." + e.getMessage());
+			                    	try {
+										Thread.sleep(5000);
+									} catch (InterruptedException e1) {
+										e1.printStackTrace();
+									}
+			                    }
+			                }
 		                }
 		            });
 		  listRetriever.start();
