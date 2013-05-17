@@ -564,14 +564,15 @@ public class PeerClient {
 			Peer p = this.getPeer(server);
 			
 			assert p != null : "Peer object is undefined!";
-			
+			System.out.println("ORA DOVREI CHIAMARE LA COORDINATORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
 			try {
+				System.out.println(p.toString());
 				p.coordinator(peerMin, resName);
-			} catch (RemoteException e) {
+			} catch (Exception e) {
 				System.out.println("Exception while announcing coordinator: " + e.getMessage());
 				e.printStackTrace();
 			}
-			
+			System.out.println("Asdashudashfaifhdiuashduihuashiuqegflllllllllllllllllllllgi");
 			try {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {

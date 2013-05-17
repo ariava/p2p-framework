@@ -512,10 +512,18 @@ public class testFrameworkGUI {
 						System.out.println("Unable to get resourceTable from my server");
 						e1.printStackTrace();
 					}
-					
+					System.out.println("****************************tabella prima crash **********************");
+					pt.print();
 					String coord = pt.getCoord().peer;
 					String server = "rmi://"+coord+"/"+"SuperPeer"+coord;
 					SuperPeer c = pc.getCoord(server);
+					
+					
+					
+					//se sono io il coord faccio partire l'election
+					if(pc.myIp.equals(coord)) {
+						pc.startElection(model.getValueAt(i, 0).toString(),true,tr);					
+					}
 					System.out.println("Chiamata la goodbye sul superpeer "+coord);
 					try {
 						pc.goodbye(c, model.getValueAt(i, 0).toString());
@@ -523,10 +531,6 @@ public class testFrameworkGUI {
 						e2.printStackTrace();
 					}
 					
-					//se sono io il coord faccio partire l'election
-					if(pc.myIp.equals(coord)) {
-						pc.startElection(model.getValueAt(i, 0).toString(),true,tr);					
-					}
 					if (debug) {
 						try {
 							pc.myPS.getTable().get(model.getValueAt(i, 0).toString()).print();

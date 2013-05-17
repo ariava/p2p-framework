@@ -16,7 +16,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 
 	private float avgDist;
 	private String myIp;
-	static private boolean debug = false;
+	static private boolean debug = true;
 	
 	protected Hashtable<String, PeerTable> resourceTable;
 	
@@ -229,8 +229,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * res: stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 * */
 	public void coordinator(String newCoord, String res) throws RemoteException {
-		if(debug)
-			System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
+		
+		System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
 		
 		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
@@ -238,11 +238,16 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		for(int i=0;i<pt.get().size();++i) {
 			pt.get().get(i).coordinator = false;
 			if(pt.get().get(i).peer.equals(newCoord)) {
+				System.out.println("AAAAAAALLLLLLLLIIIIIIIIIIEEEEEEEEE");
 				pt.get().get(i).coordinator = true;
 				elected = true;
 			}
 			
 		}
+		
+		this.resourceTable.put(res, pt);
+		System.out.println("Stampa tabella dentro la modifica..");
+		this.resourceTable.get(res).print();
 		//XXX (Arianna): come viene gestito il fatto di "trasformare"
 		//               in SuperPeer l'oggetto nella gui per il Peer
 		//               che è diventato coordinatore?
