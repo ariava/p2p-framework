@@ -19,6 +19,8 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.JTable;
@@ -198,7 +200,9 @@ public class testFrameworkGUI {
 		txtIpTracker.setColumns(10);		
 		txtIpTracker.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
-            	txtIpTracker.setText("");
+            	if (SwingUtilities.isLeftMouseButton(e) && txtIpTracker.isEnabled()) {
+            		txtIpTracker.setText("");
+            	}
             }
         });
 		txtIpTracker.addKeyListener
@@ -216,7 +220,7 @@ public class testFrameworkGUI {
 		panel.add(lblStatus);
 		
 		
-		final JButton btnNewButton = new JButton("Download...");
+		final JButton btnNewButton = new JButton(" Download ");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -270,7 +274,9 @@ public class testFrameworkGUI {
 		txtInsertFileTo.setColumns(10);
 		txtInsertFileTo.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
-            	txtInsertFileTo.setText("");
+            	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled()) {
+            		txtInsertFileTo.setText("");
+            	}
             }
         });
 		txtInsertFileTo.addKeyListener
