@@ -541,10 +541,10 @@ public class testFrameworkGUI {
 				int[] selectedRows = table.getSelectedRows();
 				
 				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
-					
+					System.out.println("Riga selezionata: "+selectedRows[i]);
 					PeerTable pt = null;
 					try {
-						pt = pc.myPS.getTable().get(model.getValueAt(i, 0));
+						pt = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0));
 					} catch (RemoteException e1) {
 						System.out.println("Unable to get resourceTable from my server");
 						e1.printStackTrace();
@@ -559,18 +559,18 @@ public class testFrameworkGUI {
 					
 					//se sono io il coord faccio partire l'election
 					if(pc.myIp.equals(coord)) {
-						pc.startElection(model.getValueAt(i, 0).toString(),true,tr);					
+						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr);					
 					}
 					System.out.println("Chiamata la goodbye sul superpeer "+coord);
 					try {
-						pc.goodbye(c, model.getValueAt(i, 0).toString());
+						pc.goodbye(c, model.getValueAt(selectedRows[i], 0).toString());
 					} catch (RemoteException e2) {
 						e2.printStackTrace();
 					}
 					
 					if (debug) {
 						try {
-							pc.myPS.getTable().get(model.getValueAt(i, 0).toString()).print();
+							pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString()).print();
 						} catch (RemoteException e1) {
 							e1.printStackTrace();
 						}
@@ -578,16 +578,16 @@ public class testFrameworkGUI {
 					
 					//rimuovo dalla tabella del peer..
 					try {
-						PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(i, 0).toString());
+						PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString());
 						ptable.get().remove(ptable.getIP(pc.myIp));
-						System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(i, 0).toString()+
+						System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(selectedRows[i], 0).toString()+
 								"l'ip "+pc.myIp);
 						pc.myPS.addToTable(pc.myIp, ptable);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
 					
-					File f = new File("resources/"+model.getValueAt(i, 0).toString()); //TODO: compatibilita' windows..? ma anche no
+					File f = new File("resources/"+model.getValueAt(selectedRows[i], 0).toString()); //TODO: compatibilita' windows..? ma anche no
 					if(!f.delete())
 						JOptionPane.showMessageDialog(null, "Unable to delete file from filesystem!", "Error",JOptionPane.ERROR_MESSAGE);
 					
