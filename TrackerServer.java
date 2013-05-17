@@ -5,7 +5,6 @@ import java.rmi.*;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,46 +19,21 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	private Hashtable<String, String> table;
 	
 
-	public static boolean validate(String ipAddress)
-    {
-            char[] arr = ipAddress.toCharArray();
-            int charCount = 0;
-            for (int i = 0; i < arr.length; i++)
-            {
-                    if (arr[i] == '.')
-                    {
-                            charCount++;
-                    }
-            }
+	private static final String PATTERN = 
+	        "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
-            if (charCount != 3)
-            {
-                    System.out.println("Wrong Number of Octets");
-                    return false;
-            }
-
-            StringTokenizer tok = new StringTokenizer(ipAddress, ".", false);
-            int count = 0;
-            while (tok.hasMoreTokens())
-            {
-                    count++;
-                    String temp = tok.nextToken().toString();
-
-                    try
-                    {
-                            int value = Integer.parseInt(temp);
-                            if (value < 0 || value > 254)
-                            {
-                                    return false;
-                            }
-                    }
-                    catch (Exception e)
-                    {
-                            return false;
-                    }
-            }
-            return true;
-    }            
+	public boolean validate(final String ip){          
+		
+		if(ip.isEmpty()) 
+			return false;
+		
+	    Pattern pattern = Pattern.compile(PATTERN);
+	    Matcher matcher = pattern.matcher(ip);
+	    return matcher.matches();             
+	}  
 	
 	
 	private void stampaTabella() {
@@ -274,6 +248,11 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * coordinatore per una certa risorsa
      */
     public void cambioCoordinatore(String ip, String risorsa) throws RemoteException {
+    	
+    	if(ip.isEmpty()) {
+    		this.table.remove(risorsa);
+    		return;
+    	}
     	
     	assert this.validate(ip) == true : "Indirizzo ip non valido";
     	
