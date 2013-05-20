@@ -36,6 +36,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
@@ -530,8 +531,21 @@ public class testFrameworkGUI {
 		panel_3.add(table);
 		runMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// to get riga selezionata
-				System.out.println("aaaa");
+				System.out.println("AAAAAAAAAAAAAWAAAAAAAAAAAAAAAAAAA");
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				int[] selectedRows = table.getSelectedRows();
+				try {
+					System.out.println("Trying to execute the file "+model.getValueAt(selectedRows[0], 0).toString());
+					Process pr = Runtime.getRuntime().exec("gnome-open resources/"+model.getValueAt(selectedRows[0], 0).toString());
+					try {
+						pr.waitFor();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} catch (IOException e1) {
+					System.out.println("Can't execute that file, sorry :(");
+				}
 			}
 		});
 		
