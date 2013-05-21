@@ -372,10 +372,10 @@ public class testFrameworkGUI {
 				
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
 				tr = pc.getTracker(server);
-				System.out.println("Tracker: " + tr);
-				if(tr == null) {
+				if (debug)
+					System.out.println("Tracker after getTracker(): " + tr);
+				if(tr == null)
 					lblStatus.setText("Status: Offline");
-				}
 				
 				String resName = txtInsertFileTo.getText();
 				
@@ -385,9 +385,8 @@ public class testFrameworkGUI {
 				}
 				
 				/******************************/
-				if(debug) {
+				if(debug)
 					System.out.println("Client in modalita' request");
-				}
 				
 				String prevC = null;
 				if(tr == null || (prevC =  pc.simpleResourceRequest(tr, resName)) == null) {
@@ -531,19 +530,16 @@ public class testFrameworkGUI {
 		panel_3.add(table);
 		runMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("AAAAAAAAAAAAAWAAAAAAAAAAAAAAAAAAA");
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
 				int[] selectedRows = table.getSelectedRows();
 				try {
-					System.out.println("Trying to execute the file "+model.getValueAt(selectedRows[0], 0).toString());
+					if (debug)
+						System.out.println("Trying to execute the file "+model.getValueAt(selectedRows[0], 0).toString());
 					Process pr = Runtime.getRuntime().exec("gnome-open resources/"+model.getValueAt(selectedRows[0], 0).toString());
-					try {
-						pr.waitFor();
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				} catch (IOException e1) {
+					pr.waitFor();
+				} catch (InterruptedException ie) {
+					System.out.println("Subprocess execution interrupted (CTRL+C?)");
+				} catch (IOException ioe) {
 					System.out.println("Can't execute that file, sorry :(");
 				}
 			}
@@ -574,14 +570,14 @@ public class testFrameworkGUI {
     					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
     					return;
     				}
-	                System.out.println(f.getAbsolutePath());
+                	if (debug)
+                		System.out.println(f.getAbsolutePath());
 	                
 	                copyFile(f.getAbsolutePath(),"resources/"+f.getName());
 	                String resName = f.getName();
 	                /********************************/
-	                if(debug) {
+	                if(debug)
 	    				System.out.println("Client in modalita' registrazione");
-	    			}
 	    			Vector<String> resNames = new Vector<String>();
 	    			resNames.add(resName);
 	    			
@@ -612,19 +608,10 @@ public class testFrameworkGUI {
 	    					assert c != null : "SuperPeer object is undefined!";
 	    					
 	    					pc.registerResources(c, resNames);
-	    					/*try {
-	    	    				pc.myPS.syncTable(pc.resourceTable);
-	    	    			} catch (RemoteException ex) {
-	    	    				System.out.println("Unable to sync table with my server! I'll die horribly");
-	    	    				
-	    	    				ex.printStackTrace();
-	    	    				System.exit(1);
-	    	    			}TODO:remove*/
 	    				}
 	    				else {
-	    					if(debug) {
+	    					if(debug)
 	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
-	    					}
 	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
 	    					SuperPeer c = pc.getCoord(coord);
 	    					try {
@@ -634,23 +621,9 @@ public class testFrameworkGUI {
 								System.out.println("Unable to become the new coordinator: "+e1.getMessage());
 								e1.printStackTrace();
 							}
-	    					/*try {
-								c.syncTable(pc.resourceTable);
-							} catch (RemoteException e1) {
-								System.out.println("Non va la sync col superpeer");
-								e1.printStackTrace();
-							}TODO:remove*/
 	    				}
 	    					
 	    			}
-	    			/*try {
-	    				pc.myPS.syncTable(pc.resourceTable);
-	    			} catch (RemoteException ex) {
-	    				System.out.println("Unable to sync table with my server! I'll die horribly");
-	    				
-	    				ex.printStackTrace();
-	    				System.exit(1);
-	    			}*/
 	    			/************************************/
 	    			DefaultTableModel model = (DefaultTableModel) table.getModel();
 	    			model.addRow(new Object[]{resName});
@@ -667,7 +640,8 @@ public class testFrameworkGUI {
 				int[] selectedRows = table.getSelectedRows();
 				
 				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
-					System.out.println("Riga selezionata: "+selectedRows[i]);
+					if (debug)
+						System.out.println("Riga selezionata: "+selectedRows[i]);
 					PeerTable pt = null;
 					try {
 						pt = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0));
@@ -675,19 +649,19 @@ public class testFrameworkGUI {
 						System.out.println("Unable to get resourceTable from my server");
 						e1.printStackTrace();
 					}
-					System.out.println("****************************tabella prima crash **********************");
+					if (debug)
+						System.out.println("****************************tabella prima crash **********************");
 					pt.print();
 					String coord = pt.getCoord().peer;
 					String server = "rmi://"+coord+"/"+"SuperPeer"+coord;
 					SuperPeer c = pc.getCoord(server);
 					
-					
-					
 					//se sono io il coord faccio partire l'election
 					if(pc.myIp.equals(coord)) {
 						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr);					
 					}
-					System.out.println("Chiamata la goodbye sul superpeer "+coord);
+					if (debug)
+						System.out.println("Chiamata la goodbye sul superpeer "+coord);
 					try {
 						pc.goodbye(c, model.getValueAt(selectedRows[i], 0).toString());
 					} catch (RemoteException e2) {
@@ -706,8 +680,9 @@ public class testFrameworkGUI {
 					try {
 						PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString());
 						ptable.get().remove(ptable.getIP(pc.myIp));
-						System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(selectedRows[i], 0).toString()+
-								"l'ip "+pc.myIp);
+						if (debug)
+							System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(selectedRows[i], 0).toString()+
+											   "l'ip "+pc.myIp);
 						pc.myPS.addToTable(pc.myIp, ptable);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();

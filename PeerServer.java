@@ -121,22 +121,16 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			byte buffer[] = new byte[(int)file.length()];
 	
 			BufferedInputStream input = new	BufferedInputStream(new FileInputStream("resources/"+resName));
-	
 			input.read(buffer,0,buffer.length);
-	
 			input.close();
+			
 			assert buffer.length > 0 : "Something went wrong while reading file, but no exception were rised..";
 			this.addNewPeer(resName, ip);
-			return(buffer);
-
-		} catch(Exception e){
-
+			return buffer;
+		} catch(Exception e) {
 			System.out.println("Something went wrong while reading file: "+e.getMessage());
-	
 			e.printStackTrace();
-	
-			return(null);
-
+			return null;
 		}
 	}
 	
@@ -173,7 +167,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
 		}
 		catch (Exception e) {
-			
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();			
 		}
@@ -211,9 +204,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * */
 	public float election(String res) throws RemoteException {
 		
-		if(debug) {
+		if(debug)
 			System.out.println("Chiamata la election() per la risorsa "+res);
-		}
 		
 		assert this.avgDist > 0 : "Called election but avgDist is not a valid number!";
 		return this.avgDist;
@@ -238,7 +230,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		for(int i=0;i<pt.get().size();++i) {
 			pt.get().get(i).coordinator = false;
 			if(pt.get().get(i).peer.equals(newCoord)) {
-				System.out.println("AAAAAAALLLLLLLLIIIIIIIIIIEEEEEEEEE");
+				if (debug)
+					System.out.println("Trovato il nuovo coordinatore della risorsa " + res + " nella peertable");
 				pt.get().get(i).coordinator = true;
 				elected = true;
 			}
@@ -246,8 +239,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		}
 		
 		this.resourceTable.put(res, pt);
-		System.out.println("Stampa tabella dentro la modifica..");
-		this.resourceTable.get(res).print();
+		if (debug) {
+			System.out.println("Stampa tabella dentro la modifica..");
+			this.resourceTable.get(res).print();
+		}
 		//XXX (Arianna): come viene gestito il fatto di "trasformare"
 		//               in SuperPeer l'oggetto nella gui per il Peer
 		//               che è diventato coordinatore?

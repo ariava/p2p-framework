@@ -49,16 +49,14 @@ public class PeerClient {
 	public Vector<String> registerResources(Tracker server, Vector<String> resources) {
 		assert server != null : "Tracker object is undefined!";
 		
-		if(debug) {
+		if (debug) {
 			System.out.println("Chiamata la registrazione() sul tracker: "+server.toString()+" per queste risorse:");
 			System.out.println(resources.toString());
 		}
 		
 		try {	
 			return server.registrazione(this.myIp, resources);
-		}
-		catch (Exception e){
-			
+		} catch (Exception e) {
 			System.out.println("Something went wrong while registering resources "+resources);
 			e.printStackTrace();
 			return null;
@@ -82,8 +80,7 @@ public class PeerClient {
 		
 		try {	
 			return server.register(this.myIp, resources);
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			
 			System.out.println("Something went wrong while registering resources "+resources);
 			return null;
@@ -105,8 +102,7 @@ public class PeerClient {
 			System.out.println("Chiamata la simpleResourceRequest sul tracker: "+server.toString()+" per la risorsa "+resource);
 		try {
 			return server.richiesta(resource);
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			System.out.println("Something went wrong while requesting resource "+resource);
 			return null;
 		}	
@@ -151,8 +147,7 @@ public class PeerClient {
 		
 		try {
 			return server.request(resource);
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			System.out.println("Something went wrong while requesting resource "+resource);
 			return "";
 		}
@@ -173,8 +168,7 @@ public class PeerClient {
 					" dato come prevCoord "+prevCoord);
 		try {
 			return server.request(resource, prevCoord);
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			System.out.println("Something went wrong while requesting resource "+resource);
 			return "";
 		}		
@@ -196,8 +190,7 @@ public class PeerClient {
 			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
 		try {
 			coord.goodbye(this.myIp);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
 		}	
 	}
@@ -216,8 +209,7 @@ public class PeerClient {
 		try {
 			System.out.println(this.myIp+"   "+resName);
 			coord.goodbye(this.myIp, resName);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
 			e.printStackTrace();
 		}	
@@ -252,8 +244,7 @@ public class PeerClient {
 			System.out.println("Chiamata la getList sul coordinatore: "+coord.toString()+" per la risorsa "+resName);
 		try {
 			return coord.getList(resName);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong while retrieving the zone list");
 			return null;
 		}
@@ -276,8 +267,7 @@ public class PeerClient {
 			System.out.println("Chiamata la discovery() sul peer: "+p.toString());
 		try {
 			return p.discovery(this.myIp);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong while retrieving distances: "+e.getMessage());
 			return 0;
 		}
@@ -286,32 +276,31 @@ public class PeerClient {
 	
 	private void addNewPeer(String resName, String ip) {
 		try {
-		Peer p = null;
-		try {
-			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
-		}
-		catch (Exception e) {
+			Peer p = null;
+			try {
+				p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
+			} catch (Exception e) {
+				System.out.println("Error while getting the remote object: "+e.getMessage());
+				e.printStackTrace();			
+			}
 			
-			System.out.println("Error while getting the remote object: "+e.getMessage());
-			e.printStackTrace();			
-		}
-		
-		PeerTable pt = this.myPS.getTable().get(resName);
-		try {
-			pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false ));
-		} catch (RemoteException e) {
-			System.out.println("Discovery failed.."+e.getMessage());
-			e.printStackTrace();
-		}
-		this.myPS.addToTable(resName, pt);
-		System.out.println("Tabella ora:");
-		this.myPS.getTable().get(resName).print();
-		//ricalcolo avgdist
-		this.myPS.setAvgDist(this.myPS.getTable().get(resName).getAvgDist(this.myIp));
-		if (debug)
-			System.out.println("La nuova distanza media calcolata e': "+this.myPS.getAvgDist());
-		}
-		catch (Exception e) {}
+			PeerTable pt = this.myPS.getTable().get(resName);
+			try {
+				pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false ));
+			} catch (RemoteException e) {
+				System.out.println("Discovery failed.."+e.getMessage());
+				e.printStackTrace();
+			}
+			this.myPS.addToTable(resName, pt);
+			if (debug) {
+				System.out.println("Tabella ora:");
+				this.myPS.getTable().get(resName).print();
+			}
+			//ricalcolo avgdist
+			this.myPS.setAvgDist(this.myPS.getTable().get(resName).getAvgDist(this.myIp));
+			if (debug)
+				System.out.println("La nuova distanza media calcolata e': "+this.myPS.getAvgDist());
+		} catch (Exception e) {}
 		
 	}
 	
@@ -332,8 +321,7 @@ public class PeerClient {
 		byte[] filedata;
 		try {
 			filedata = p.getResource(resName,this.myIp);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong while retrieving the data from the peer: "+e.getMessage());
 			return false;
 		}
@@ -346,15 +334,10 @@ public class PeerClient {
 			if(debug)
 				System.out.println("resources/"+file.getName());
 			BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("resources/"+file.getName()));
-	
 			output.write(filedata,0,filedata.length);
-	
 			output.flush();
-	
 			output.close();
-		}
-		catch (Exception e) {
-			
+		} catch (Exception e) {
 			System.out.println("Something went wrong while writing the retrieved file: "+e.getMessage());
 			return false;
 		}
@@ -379,8 +362,7 @@ public class PeerClient {
 		
 		try {
 			return p.election(resName);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong while polling for election candidates: "+e.getMessage());
 			return 0;
 		}
@@ -403,9 +385,8 @@ public class PeerClient {
 		
 		try {
 			p.coordinator(ipCoord, resName);
-		}
-		catch (Exception e) {
-			System.out.println("Non va");
+		} catch (Exception e) {
+			System.out.println("Impossibile annunciare il nuovo coordinatore " + ipCoord);
 		}
 		
 	}
@@ -426,9 +407,7 @@ public class PeerClient {
 		try {
 			Tracker obj = (Tracker)Naming.lookup(server);
 			return obj;
-		}
-		catch (Exception e) {
-			
+		} catch (Exception e) {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -448,9 +427,7 @@ public class PeerClient {
 		try {
 			SuperPeer obj = (SuperPeer)Naming.lookup(server);
 			return obj;
-		}
-		catch (Exception e) {
-			
+		} catch (Exception e) {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -471,9 +448,7 @@ public class PeerClient {
 		try {
 			Peer obj = (Peer)Naming.lookup(server);
 			return obj;
-		}
-		catch (Exception e) {
-			
+		} catch (Exception e) {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -546,13 +521,11 @@ public class PeerClient {
 				if(!noSelf) {
 					min = answers[i];
 					peerMin = peers[i];
-				}
-				else
+				} else
 					if(!peers[i].equals(this.myIp)) {
 						min = answers[i];
 						peerMin = peers[i];
-					}
-						
+					}		
 			}
 		}
 		if(debug)
@@ -564,7 +537,8 @@ public class PeerClient {
 			Peer p = this.getPeer(server);
 			
 			assert p != null : "Peer object is undefined!";
-			System.out.println("ORA DOVREI CHIAMARE LA COORDINATORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+			if (debug)
+				System.out.println("ORA DOVREI CHIAMARE LA COORDINATOR");
 			try {
 				System.out.println(p.toString());
 				p.coordinator(peerMin, resName);
@@ -572,11 +546,12 @@ public class PeerClient {
 				System.out.println("Exception while announcing coordinator: " + e.getMessage());
 				e.printStackTrace();
 			}
-			System.out.println("Asdashudashfaifhdiuashduihuashiuqegflllllllllllllllllllllgi");
+			if (debug)
+				System.out.println("Fine dell'annuncio coordinatore");
 			try {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
-				System.out.println("Unable to change coordinator: "+e.getMessage());
+				System.out.println("Unable to change coordinator: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}

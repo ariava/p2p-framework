@@ -14,7 +14,7 @@ public class SuperPeerClient extends PeerClient {
 	
 	static private String timestamp;
 
-	static private boolean debug = true;
+	static private boolean debug;
 	
 	/*
 	 * Costruttore della classe SuperPeerClient.
@@ -118,13 +118,12 @@ public class SuperPeerClient extends PeerClient {
 			  System.out.println("SuperPeerClient: avviamento del thread di rinfresco della tabella");
 		  listRetriever = new Thread(
 				  new Runnable() {
-					   
 		                public void run() {
-		                	
 		                	Hashtable<String, String> table = null;
 		                	boolean down = false;
 		                	
-		                	System.out.println("Avviato il thread, prelevo la tabella iniziale");
+		                	if (debug)
+		                		System.out.println("Avviato il thread, prelevo la tabella iniziale");
 		                	
 							try {
 								table = tracker.getList("1970-01-01 00:00:00.000");
@@ -135,15 +134,13 @@ public class SuperPeerClient extends PeerClient {
 							}
 		                	while(true) {
 			                    try {
-			                    	
-			                    	/* Faccio il lookup al tracker, che magari e' tornato..*/
+			                    	/* Faccio il lookup al tracker, che magari e' tornato disponibile */
 			                    	String s = "rmi://"+trackerIp+"/Tracker";
 			                    	tracker = (Tracker)Naming.lookup(s);
-			                    	
-			                    	
-			                    	
+
 			                    	if(down) {
-			                    		System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la table");
+			                    		if (debug)
+			                    			System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la tabella");
 			                    		tracker.setList(server.getCoordTable()); 
 			                    		down = false;
 			                    		printCoordTable(server.getCoordTable());
@@ -161,10 +158,8 @@ public class SuperPeerClient extends PeerClient {
 				                    	}
 			                    		server.setList(table);
 			                    	} else {
-			                    		if (debug) {
+			                    		if (debug)
 			                    			System.out.println("Thread: al timestamp " + timestamp + " la tabella non è cambiata");
-			                    			
-			                    		}
 			                    	}
 			                    	Thread.sleep(5000); 
 			                    } catch (Exception e) {

@@ -67,6 +67,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	}
 	
 	/*
+	 * Costruttore della classe TrackerServer.
+	 * 
 	 * Crea una tabella vuota con chiave = nome_risorsa e valore l'indirizzo
 	 * ip (il coordinatore) per quella risorsa
 	 */
@@ -78,8 +80,12 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	}
 	
 	/*
-	 * Metodo che ritorna l'ip del tracker,usato dal thread per fargli polling
-	 * */
+	 * Metodo che ritorna l'ip del tracker, usato dal thread di servizio del
+	 * SuperPeerClient per fargli polling
+	 * 
+	 * Valore di ritorno:
+	 * una stringa contenente l'IP del TrackerServer
+	 */
 	public String getIp() {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
@@ -90,10 +96,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	}
 	
 	/*
-	 * Metodo che setta la lista dei coordinatori dopo che il tracker e' tornato up
-	 * */
-	public void setList( Hashtable<String, String> l) {
-		assert l!=null : "Table not defined";
+	 * Metodo usato per impostare la lista dei coordinatori quando il tracker è
+	 * tornato disponibile dopo un periodo di downtime
+	 * 
+	 * Parametri:
+	 * l: hashtable contenente la tabella dei coordinatori utilizzata dal
+	 *    TrackerServer
+	 */
+	public void setList(Hashtable<String, String> l) {
+		assert l != null : "Table not defined";
 		this.table = l;
 	}
 	
@@ -110,9 +121,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		assert this.validate(ip) == true : "Indirizzo ip non valido";
 		
-		if (debug) {
+		if (debug)
 			System.out.println("Inizio registrazione risorse del peer " + ip + "...");
-		}
 		
 		Vector<String> ipCoordinatori = new Vector<String>();
 		
@@ -182,9 +192,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	assert this.validate(ipPrecedente) == true : "Indirizzo ip non valido";
     	
-    	if (debug) {
+    	if (debug)
     		System.out.println("Inizio richiesta per la risorsa " + risorsa + " dato che in precedenza ho risposto con il coordinatore " + ipPrecedente + "...");
-    	}
     	
     	String coordinatore_corrente = this.richiesta(risorsa);
     	
@@ -217,16 +226,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     }
     
     /*
-     * Questo metodo ritorna true se pinga un certo indirizzo ip, ritorna
-     * false altrimenti
+     * Questo metodo ritorna true se un certo indirizzo ip è raggiungibile,
+     * ritorna false altrimenti
      */
     private boolean pingUrl(String address) {
     	
     	boolean status = false;
     	
-    	if (debug) {
+    	if (debug)
     		System.out.println("Inizio ping...");
-    	}
     	
         try {
             InetAddress adr = InetAddress.getByName(address);
@@ -246,9 +254,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      */
     private void eliminateCoordinatorFromTable(String coordinator) {
     	
-    	if (debug) {
+    	if (debug)
     		System.out.println("Elimino tutte le risorse delle quali è coordinatore " + coordinator);
-    	}
     	
     	Enumeration<String> enumKey = table.keys();
 		while(enumKey.hasMoreElements()) {
@@ -277,9 +284,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	assert this.validate(ip) == true : "Indirizzo ip non valido";
     	
-    	if (debug) {
+    	if (debug)
     		System.out.println("Inizio cambio coordinatore...");
-    	}
     	
     	// se la chiave esiste già viene fatto un replace
     	// se la chiave non esiste, viene aggiunta
@@ -295,7 +301,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     }
     
     /*
-     * Invocato periodicamente dai coordinatori.
+     * Metodo invocato periodicamente dai coordinatori.
      * Questo metodo restituisce la tabella al coordinatore solo se il timestamp
      * del coordinatore è più piccolo del timestamp del server (il server ha modificato
      * la tabella e il coordinatore ha una versione non aggiornata)
@@ -304,9 +310,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	
     	assert timestamp.length() == this.timestamp.length() : "I due timestamp hanno dimensione diversa";
     	
-    	if (debug) {
+    	if (debug)
     		System.out.println("Chiamata la getList da parte di un peer");
-    	}
     	
     	if (timestamp.compareTo(this.timestamp) < 0) {
     		if (debug) {

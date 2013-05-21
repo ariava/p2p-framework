@@ -347,7 +347,6 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			for(int i = 0 ; i < data.size() ; i++)
 				possessors.add(data.get(i).peer);
 		}
-		
 		assert(possessors.size() != 0);
 		if (debug) {
 			System.out.println("SuperPeerServer: funzione getList() per la risorsa " + resource_name);
