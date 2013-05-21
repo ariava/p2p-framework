@@ -53,7 +53,7 @@ public class testFrameworkGUI {
 	private JTextField txtIpTracker;
 	private PeerClient pc;
 	private Tracker tr;
-	private boolean debug = true;
+	private static boolean debug;
 	final JPopupMenu cutpasteMenu = new JPopupMenu();
     final JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(((new ImageIcon("icons/cut.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JMenuItem copyMenuItem = new JMenuItem("Copy", new ImageIcon(((new ImageIcon("icons/copy.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
@@ -69,6 +69,7 @@ public class testFrameworkGUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		debug = (args.length > 0 && args[0].equals("debug")) ? true : false;
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Throwable e) {
@@ -291,6 +292,7 @@ public class testFrameworkGUI {
 				
 				try {
 					pc = new PeerClient(txtIpTracker.getText());
+					pc.setDebug(debug);
 				} catch (UnknownHostException e) {
 					System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
 					e.printStackTrace();
@@ -442,6 +444,7 @@ public class testFrameworkGUI {
 				}
 				
 				PeerTable pt = new PeerTable();
+				pt.setDebug(debug);
 				for(int i=0;i<ipList.size();++i) {
 					
 					String peer = ipList.get(i);
@@ -590,9 +593,10 @@ public class testFrameworkGUI {
 	    			for(int i=0;i<coords.size();++i) {
 	    				try {
 	    					// XXX (Arianna): avgDist settata a "-1"?
-							pc.myPS.addToTable(resNames.get(i),
-											   new PeerTable(new PeerTableData(coords.get(i),
-											   -1, false, true)));
+	    					PeerTable temp = new PeerTable(new PeerTableData(coords.get(i),-1, false, true));
+	    					temp.setDebug(debug);
+							pc.myPS.addToTable(resNames.get(i), temp);
+							
 						} catch (RemoteException e2) {
 							System.out.println("Unable to add an element to resourceTable");
 							e2.printStackTrace();
@@ -616,6 +620,7 @@ public class testFrameworkGUI {
 	    					SuperPeer c = pc.getCoord(coord);
 	    					try {
 								pc = new SuperPeerClient(pc,c,tr);
+								pc.setDebug(debug);
 								
 							} catch (UnknownHostException e1) {
 								System.out.println("Unable to become the new coordinator: "+e1.getMessage());

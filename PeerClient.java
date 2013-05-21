@@ -13,7 +13,7 @@ public class PeerClient {
 	static public PeerClient self = null;
 	public Peer myPS = null;
 	public String myIp;
-	static public boolean debug = true;
+	static public boolean debug;
 	public String trackerIp = null;
 	
 	
@@ -557,5 +557,11 @@ public class PeerClient {
 		}
 	}
 	
-	
+	/*
+	 * Metodo accessibile all'applicazione da cui questa classe deriva per impostare
+	 * la modalità di debug.
+	 * */
+	protected void setDebug(boolean value) {
+		this.debug = value;
+	}
 }

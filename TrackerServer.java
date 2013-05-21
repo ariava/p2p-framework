@@ -14,7 +14,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private boolean debug = true;
+	private static boolean debug;
 	
 	private String timestamp;
 	private Hashtable<String, String> table;
@@ -332,6 +332,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     
     
     public static void main(String[] args) {
+    	debug = (args.length > 0 && args[0].equals("debug")) ? true : false;
     	System.setSecurityManager(new RMISecurityManager());
         try {
             TrackerServer obj = new TrackerServer();

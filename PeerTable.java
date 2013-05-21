@@ -4,14 +4,13 @@ import java.util.Vector;
 
 public class PeerTable implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Vector<PeerTableData> data;
+	private boolean debug;
 	
 	public PeerTable() {
 		data = new Vector<PeerTableData>();
+		debug = false;
 	}
 	
 	public PeerTable(PeerTableData d) {
@@ -79,13 +78,16 @@ public class PeerTable implements Serializable {
 	 * Ritorna la distanza media dei peer nella PeerTable
 	 * */
 	public float getAvgDist(String myIp) {
-		System.out.println("******************************************************");
-		System.out.println("Chiamata la getAvgDist");
+		if (debug) {
+			System.out.println("******************************************************");
+			System.out.println("Chiamata la getAvgDist");
+		}
 		
 		float avg = 0;
 		int i, num_samples = 0;
 		for(i=0;i<this.data.size();++i) {
-			System.out.println("myIp: "+myIp+"    "+this.data.get(i).peer+": "+this.data.get(i).dist);
+			if (debug)
+				System.out.println("myIp: "+myIp+"    "+this.data.get(i).peer+": "+this.data.get(i).dist);
 			if(!this.data.get(i).peer.equals(myIp)) {
 				avg += this.data.get(i).dist;
 				num_samples++;
@@ -128,4 +130,10 @@ public class PeerTable implements Serializable {
 		}
 	}
 	
+	/*
+	 * Imposta la modalità di debug
+	 */
+	protected void setDebug(boolean value) {
+		this.debug = value;
+	}	
 }

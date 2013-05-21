@@ -13,8 +13,6 @@ public class SuperPeerClient extends PeerClient {
 	static private String trackerIp = null;
 	
 	static private String timestamp;
-
-	static private boolean debug;
 	
 	/*
 	 * Costruttore della classe SuperPeerClient.
@@ -194,13 +192,5 @@ public class SuperPeerClient extends PeerClient {
 			if (debug)
 				System.out.println("Thread non attivo");
 		}
-	}
-	
-	/*
-	 * Metodo accessibile al Peer da cui questa classe deriva per impostare
-	 * la modalità di debug.
-	 * */
-	protected void setDebug(boolean value) {
-		this.debug = value;
 	}
 }
