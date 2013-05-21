@@ -26,7 +26,7 @@ gnome-terminal --title="Registry" -e "bash -c \"rmiregistry\";" &
 gnome-terminal --title="Varie" -e "bash -c \"make clean\";bash" &
 sleep 1
 
-if [ $1 = "$peer" -o $1 = "$all" ];
+if [ "$1" = "$peer" -o "$1" = "$all" ];
 then
 	gnome-terminal --title="PeerServer" -e "bash -c \"make peerserver\";" &
 	sleep 1
@@ -35,7 +35,7 @@ then
 
 fi
 
-if [ $1 = "$tracker" -o $1 = "$all" ]; then
+if [ "$1" = "$tracker" -o "$1" = "$all" ]; then
 	
 	gnome-terminal --title="Tracker" -e "bash -c \"make tracker\";bash"
 
