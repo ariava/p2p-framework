@@ -407,7 +407,9 @@ public class testFrameworkGUI {
 					System.out.println("Client in modalita' request");
 				
 				String prevC = null;
-				if(tr == null || (prevC = pc.simpleResourceRequest(tr, resName)).equals("exception")) {
+				if (tr != null)
+					prevC = pc.simpleResourceRequest(tr, resName);
+				if(tr == null || (prevC != null && prevC.equals("exception"))) {
 					PeerTable pt = null;
 					/* Recuperiamo l'IP di un coordinatore di risorsa */
 					try {
