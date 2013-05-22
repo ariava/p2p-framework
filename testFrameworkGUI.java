@@ -358,8 +358,9 @@ public class testFrameworkGUI {
 		txtInsertFileTo.setColumns(10);
 		txtInsertFileTo.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
-            	if (SwingUtilities.isRightMouseButton(e) && txtInsertFileTo.isEnabled()) {
+            	if (txtInsertFileTo.isEnabled()) {
             		table.clearSelection();
+            		btnDelete.setEnabled(false);
             	}
             	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled()) {
             		txtInsertFileTo.setText("");
@@ -380,7 +381,6 @@ public class testFrameworkGUI {
             	if (SwingUtilities.isRightMouseButton(e) && txtInsertFileTo.isEnabled()) {
             		enabledDisabledMenuItems("txtInsertFileTo");
             		cutpasteMenu.show(e.getComponent(), e.getX(), e.getY());
-            		table.clearSelection();
             	}
             }
         });
