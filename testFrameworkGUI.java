@@ -310,21 +310,24 @@ public class testFrameworkGUI {
 					btnNewButton.setEnabled(false);
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
 				}
 				
+				// Quando si schiaccia sul bottone Connect
 				if (btnConnect.getText().equals("    Connect   ")) {
 					txtIpTracker.setEnabled(false);
 					txtInsertFileTo.setEnabled(true);
 					btnNewButton.setEnabled(true);
 					table.setEnabled(true);
 					btnImport.setEnabled(true);
-					btnDelete.setEnabled(true);
 					btnConnect.setText("Disconnect");
 					lblStatus.setText("Status: Online");
 				}
+				
+				// Quando si schiaccia sul bottone Disconnect
 				else {
 					close();
 					txtIpTracker.setEnabled(true);
@@ -332,6 +335,7 @@ public class testFrameworkGUI {
 					btnNewButton.setEnabled(false);
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 				}
@@ -354,6 +358,9 @@ public class testFrameworkGUI {
 		txtInsertFileTo.setColumns(10);
 		txtInsertFileTo.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
+            	if (SwingUtilities.isRightMouseButton(e) && txtInsertFileTo.isEnabled()) {
+            		table.clearSelection();
+            	}
             	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled()) {
             		txtInsertFileTo.setText("");
             	}
@@ -373,6 +380,7 @@ public class testFrameworkGUI {
             	if (SwingUtilities.isRightMouseButton(e) && txtInsertFileTo.isEnabled()) {
             		enabledDisabledMenuItems("txtInsertFileTo");
             		cutpasteMenu.show(e.getComponent(), e.getX(), e.getY());
+            		table.clearSelection();
             	}
             }
         });
@@ -397,6 +405,7 @@ public class testFrameworkGUI {
 					btnNewButton.setEnabled(false);
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
@@ -435,6 +444,7 @@ public class testFrameworkGUI {
 						btnNewButton.setEnabled(false);
 						table.setEnabled(false);
 						btnImport.setEnabled(false);
+						btnDelete.setEnabled(false);
 						btnConnect.setText("    Connect   ");
 						lblStatus.setText("Status: Offline");
 						return;
@@ -628,6 +638,7 @@ public class testFrameworkGUI {
 					btnNewButton.setEnabled(false);
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
