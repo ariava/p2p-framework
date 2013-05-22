@@ -179,6 +179,7 @@ public class testFrameworkGUI {
 			copyMenuItem.setEnabled(false);
 		}
 	}
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -284,6 +285,7 @@ public class testFrameworkGUI {
 		panel.add(lblStatus);
 		
 		
+		
 		final JButton btnNewButton = new JButton(" Download ");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -296,13 +298,19 @@ public class testFrameworkGUI {
 				} catch (UnknownHostException e) {
 					System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
 					e.printStackTrace();
+					return;
 				}
 
 				tr = pc.getTracker(server);
 				
 				if(tr == null) {
 					JOptionPane.showMessageDialog(null, "Unable to connect to Tracker", "Error",JOptionPane.ERROR_MESSAGE);
+					txtIpTracker.setEnabled(true);
+					txtInsertFileTo.setEnabled(false);
+					btnNewButton.setEnabled(false);
+					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
+					return;
 				}
 				
 				if (btnConnect.getText().equals("    Connect   ")) {
@@ -376,8 +384,14 @@ public class testFrameworkGUI {
 				tr = pc.getTracker(server);
 				if (debug)
 					System.out.println("Tracker after getTracker(): " + tr);
-				if(tr == null)
+				if(tr == null) {
+					txtIpTracker.setEnabled(true);
+					txtInsertFileTo.setEnabled(false);
+					btnNewButton.setEnabled(false);
+					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
+					return;
+				}
 				
 				String resName = txtInsertFileTo.getText();
 				
@@ -405,6 +419,11 @@ public class testFrameworkGUI {
 						prevC = pc.simpleResourceRequest(sp, resName);
 					} else {
 						JOptionPane.showMessageDialog(null, "Lost connection to the network!", "Error",JOptionPane.ERROR_MESSAGE);
+						txtIpTracker.setEnabled(true);
+						txtInsertFileTo.setEnabled(false);
+						btnNewButton.setEnabled(false);
+						btnConnect.setText("    Connect   ");
+						lblStatus.setText("Status: Offline");
 						return;
 					}
 				}
@@ -561,6 +580,10 @@ public class testFrameworkGUI {
 				tr = pc.getTracker(server);
 				if(tr == null) {
 					JOptionPane.showMessageDialog(null, "You are no more connected to the network","Error!",JOptionPane.ERROR_MESSAGE);
+					txtIpTracker.setEnabled(true);
+					txtInsertFileTo.setEnabled(false);
+					btnNewButton.setEnabled(false);
+					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
 				}
