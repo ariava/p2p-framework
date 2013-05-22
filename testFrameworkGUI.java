@@ -546,6 +546,17 @@ public class testFrameworkGUI {
             public void mousePressed(MouseEvent e) {
             	if (SwingUtilities.isRightMouseButton(e)) {
             		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            			 
+            			// get the row index that contains that coordinate
+            			int rowNumber = table.rowAtPoint(e.getPoint());
+             
+            			// Get the ListSelectionModel of the JTable
+            			ListSelectionModel model = table.getSelectionModel();
+             
+            			// set the selected interval of rows. Using the "rowNumber"
+            			// variable for the beginning and end selects only that one row.
+            			model.setSelectionInterval(rowNumber, rowNumber);
+            			
             			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
             		}
             	}
