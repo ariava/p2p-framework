@@ -286,7 +286,8 @@ public class testFrameworkGUI {
 		lblStatus.setBounds(12, 12, 685, 15);
 		panel.add(lblStatus);
 		
-		
+		final JButton btnImport = new JButton("Import...");
+		final JButton btnDelete = new JButton("Delete");
 		
 		final JButton btnNewButton = new JButton(" Download ");
 		btnConnect.addActionListener(new ActionListener() {
@@ -310,6 +311,8 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.setEnabled(false);
+					btnImport.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
@@ -319,6 +322,9 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(false);
 					txtInsertFileTo.setEnabled(true);
 					btnNewButton.setEnabled(true);
+					table.setEnabled(true);
+					btnImport.setEnabled(true);
+					btnDelete.setEnabled(true);
 					btnConnect.setText("Disconnect");
 					lblStatus.setText("Status: Online");
 				}
@@ -327,6 +333,8 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.setEnabled(false);
+					btnImport.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 				}
@@ -390,6 +398,8 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.setEnabled(false);
+					btnImport.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
@@ -426,6 +436,8 @@ public class testFrameworkGUI {
 						txtIpTracker.setEnabled(true);
 						txtInsertFileTo.setEnabled(false);
 						btnNewButton.setEnabled(false);
+						table.setEnabled(false);
+						btnImport.setEnabled(false);
 						btnConnect.setText("    Connect   ");
 						lblStatus.setText("Status: Offline");
 						return;
@@ -544,6 +556,7 @@ public class testFrameworkGUI {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBackground(Color.WHITE);
 		table.setBounds(0, 52, 550, 321);
+		table.setEnabled(false);
 		table.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
             	if (SwingUtilities.isRightMouseButton(e)) {
@@ -559,7 +572,22 @@ public class testFrameworkGUI {
             			// variable for the beginning and end selects only that one row.
             			model.setSelectionInterval(rowNumber, rowNumber);
             			
+            			btnDelete.setEnabled(true);
+            			
             			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
+            		}
+            		else {
+            			table.clearSelection();
+            			btnDelete.setEnabled(false);
+            		}
+            	}
+            	else if (SwingUtilities.isLeftMouseButton(e)) {
+            		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            			btnDelete.setEnabled(true);
+            		}
+            		else {
+            			table.clearSelection();
+            			btnDelete.setEnabled(false);
             		}
             	}
             }
@@ -583,7 +611,8 @@ public class testFrameworkGUI {
 		});
 		
 		
-		JButton btnImport = new JButton("Import...");
+		
+		btnImport.setEnabled(false);
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -600,6 +629,8 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.setEnabled(false);
+					btnImport.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
@@ -682,7 +713,8 @@ public class testFrameworkGUI {
 		btnImport.setBounds(573, 82, 117, 25);
 		panel_3.add(btnImport);
 		
-		final JButton btnDelete = new JButton("Delete");
+		
+		btnDelete.setEnabled(false);
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
