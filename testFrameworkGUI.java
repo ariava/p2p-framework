@@ -55,6 +55,8 @@ public class testFrameworkGUI {
 	private Tracker tr;
 	private static boolean debug;
 	private static boolean disconnect = false;
+	private static boolean connect = true; //boolean usato per vedere se la import l'ha chiamata l'utente o il doClick su connect
+	private static File tmpFile = null;
 	final JPopupMenu cutpasteMenu = new JPopupMenu();
     final JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(((new ImageIcon("icons/cut.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JMenuItem copyMenuItem = new JMenuItem("Copy", new ImageIcon(((new ImageIcon("icons/copy.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
@@ -326,6 +328,14 @@ public class testFrameworkGUI {
 					btnImport.setEnabled(true);
 					btnConnect.setText("Disconnect");
 					lblStatus.setText("Status: Online");
+					
+					File resFolder = new File("resources/");
+					File[] list = resFolder.listFiles();
+					
+					for(int i=0;i<list.length;++i) {
+						tmpFile = list[i];
+						btnImport.doClick();
+					}
 				}
 				
 				// Quando si schiaccia sul bottone Disconnect
@@ -648,15 +658,23 @@ public class testFrameworkGUI {
 					lblStatus.setText("Status: Offline");
 					return;
 				}
-				
-				JFileChooser fc = new JFileChooser("~");
-                fc.setMultiSelectionEnabled(true);
-                int selezione = fc.showDialog(null, "Seleziona il file da aprire");
-                
-                File f = null;
-                
+				int selezione=0;
+				File f = null;
+				JFileChooser fc = null;
+				if(!connect) {
+					fc = new JFileChooser("~");
+					fc.setMultiSelectionEnabled(true);
+					selezione = fc.showDialog(null, "Seleziona il file da aprire");
+				}
+				else {
+					selezione = JFileChooser.APPROVE_OPTION;
+					
+				}
                 if(selezione == JFileChooser.APPROVE_OPTION) {
-                	f = fc.getSelectedFile();
+                	if(connect)
+                		f = tmpFile;
+                	else
+                		f = fc.getSelectedFile();
                 	if(alreadyExists(f.getName())) {
     					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
     					return;
