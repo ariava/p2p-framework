@@ -54,6 +54,7 @@ public class testFrameworkGUI {
 	private PeerClient pc;
 	private Tracker tr;
 	private static boolean debug;
+	private static boolean disconnect = false;
 	final JPopupMenu cutpasteMenu = new JPopupMenu();
     final JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(((new ImageIcon("icons/cut.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JMenuItem copyMenuItem = new JMenuItem("Copy", new ImageIcon(((new ImageIcon("icons/copy.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
@@ -61,7 +62,8 @@ public class testFrameworkGUI {
     final JPopupMenu runFileMenu = new JPopupMenu();
     final JMenuItem runMenuItem = new JMenuItem("Run", new ImageIcon(((new ImageIcon("icons/runFile.jpg")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JMenuItem deleteMenuItem = new JMenuItem("Delete", new ImageIcon(((new ImageIcon("icons/remove.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
-	
+    JButton btnDelete = null;
+    
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	private java.awt.datatransfer.Clipboard clipboard = toolkit.getSystemClipboard();
 	
@@ -150,19 +152,15 @@ public class testFrameworkGUI {
 		initialize();
 	}
 	
-	/*
+
+	/**
 	 * Il client esce in modo pulito
 	 */
 	private void close() {
-		String coord = "rmi://"+pc.myIp+"/"+"SuperPeer"+pc.myIp;
-    	SuperPeer c = pc.getCoord(coord);
-    	try {
-			c.goodbye(pc.myIp);
-		} catch (RemoteException e1) {
-			e1.printStackTrace();
-		}
+		disconnect = true;
+		btnDelete.doClick();
 	}
-	
+		
 	private void enabledDisabledMenuItems(String component) {
 		Transferable clipboardContent = clipboard.getContents(null);
 		if(clipboardContent!=null && (clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor))) {
@@ -682,10 +680,13 @@ public class testFrameworkGUI {
 		btnImport.setBounds(573, 82, 117, 25);
 		panel_3.add(btnImport);
 		
-		final JButton btnDelete = new JButton("Delete");
+		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				if(disconnect) {
+					table.setRowSelectionInterval(0, model.getRowCount()-1);
+				}
 				int[] selectedRows = table.getSelectedRows();
 				
 				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
@@ -737,15 +738,15 @@ public class testFrameworkGUI {
 						e1.printStackTrace();
 					}
 					
-					File f = new File("resources/"+model.getValueAt(selectedRows[i], 0).toString()); //TODO: compatibilita' windows..? ma anche no
-					if(!f.delete())
-						JOptionPane.showMessageDialog(null, "Unable to delete file from filesystem!", "Error",JOptionPane.ERROR_MESSAGE);
-					
-					model.removeRow(selectedRows[i]);
-					
-					
-					
+					if(!disconnect) {
+						File f = new File("resources/"+model.getValueAt(selectedRows[i], 0).toString()); //TODO: compatibilita' windows..? ma anche no
+						if(!f.delete())
+							JOptionPane.showMessageDialog(null, "Unable to delete file from filesystem!", "Error",JOptionPane.ERROR_MESSAGE);
+						
+						model.removeRow(selectedRows[i]);
+					}	
 				}
+				disconnect = false;
 			}
 		});
 		btnDelete.setBounds(573, 119, 117, 25);
