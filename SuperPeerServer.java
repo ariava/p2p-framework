@@ -258,7 +258,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		if (pt != null)
 			pt.getCoord().coordinator = false;
 		/* Ritorniamo una stringa vuota perché non esiste un coordinatore valido */
-		return "";
+		return null;
 	}
 	
 	/*
