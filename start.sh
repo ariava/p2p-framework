@@ -20,24 +20,22 @@ peer="peer"
 all="all"
 tracker="tracker"
 
-
-gnome-terminal --title="Registry" -e "bash -c \"rmiregistry\";" &
-
-gnome-terminal --title="Varie" -e "bash -c \"make clean\";bash" &
+gnome-terminal --geometry=67x10+0+0 --title="Registry" -e "bash -c \"rmiregistry\";" &
+gnome-terminal --geometry=67x10+700+0 --title="Varie" -e "bash -c \"make clean\";bash" &
 sleep 1
 
 if [ "$1" = "$peer" -o "$1" = "$all" ];
 then
-	gnome-terminal --title="PeerServer" -e "bash -c \"make peerserver\";" &
+	gnome-terminal --geometry=67x10+0+300 --title="PeerServer" -e "bash -c \"make peerserver\";" &
 	sleep 1
-	gnome-terminal --title="SuperPeerServer" -e "bash -c \"make superpeerserver\";" &
-	gnome-terminal --title="GUI" -e "bash -c \"make gui\";" &
+	gnome-terminal --geometry=67x10+700+300 --title="SuperPeerServer" -e "bash -c \"make superpeerserver\";" &
+	gnome-terminal --geometry=67x10+0+600 --title="GUI" -e "bash -c \"make gui\";" &
 
 fi
 
 if [ "$1" = "$tracker" -o "$1" = "$all" ]; then
 	
-	gnome-terminal --title="Tracker" -e "bash -c \"make tracker\";bash"
+	gnome-terminal --geometry=67x10+700+600 --title="Tracker" -e "bash -c \"make tracker\";bash"
 
 fi
 
