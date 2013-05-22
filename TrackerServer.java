@@ -19,13 +19,19 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	private String timestamp;
 	private Hashtable<String, String> table;
 	
-
 	private static final String PATTERN = 
 	        "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
+	/**
+	 * Metodo che controlla la correttezza del formato
+	 * che ha un indirizzo ip sulla stringa in input
+	 * @param ip: indirizzo ip
+	 * @return vero se la stringa in input ha il formato
+	 * di un indirizzo ip, falso altrimenti
+	 */
 	public boolean validate(final String ip){          
 		
 		if(ip.isEmpty()) 
@@ -36,7 +42,9 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	    return matcher.matches();             
 	}  
 	
-	
+	/**
+	 * Metodo che stampa la tabella posseduta dal tracker
+	 */
 	private void stampaTabella() {
 		
 		Enumeration<String> enumKey = table.keys();
@@ -50,8 +58,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		}
 	}
 	
-	/*
-	 * Setta il timestamp al momento corrente
+	/**
+	 * Metodo che setta il timestamp al momento corrente
 	 */
 	private void setTimestamp() {
 		Calendar now = Calendar.getInstance();
@@ -66,7 +74,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		assert timestamp.length() == 23 : "Il timestamp ha lunghezza " + timestamp.length();
 	}
 	
-	/*
+	/**
 	 * Costruttore della classe TrackerServer.
 	 * 
 	 * Crea una tabella vuota con chiave = nome_risorsa e valore l'indirizzo
@@ -79,12 +87,11 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		this.setTimestamp();
 	}
 	
-	/*
+	/**
 	 * Metodo che ritorna l'ip del tracker, usato dal thread di servizio del
 	 * SuperPeerClient per fargli polling
 	 * 
-	 * Valore di ritorno:
-	 * una stringa contenente l'IP del TrackerServer
+	 * @return una stringa contenente l'IP del TrackerServer
 	 */
 	public String getIp() {
 		try {
@@ -95,27 +102,33 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		return null;
 	}
 	
-	/*
+	/**
 	 * Metodo usato per impostare la lista dei coordinatori quando il tracker è
 	 * tornato disponibile dopo un periodo di downtime
 	 * 
-	 * Parametri:
-	 * l: hashtable contenente la tabella dei coordinatori utilizzata dal
-	 *    TrackerServer
+	 * @param l: hashtable contenente la tabella dei coordinatori utilizzata dal
+	 * TrackerServer
 	 */
 	public void setList(Hashtable<String, String> l) {
 		assert l != null : "Table not defined";
 		this.table = l;
 	}
 	
-	/*
-	 * Viene invocata quando un nuovo nodo vuole entrare a far parte della rete
+	/**
+	 * Metodo invocato quando un nuovo nodo vuole entrare a far parte della rete
 	 * p2p.
 	 * Questo metodo per ogni risorsa controlla se c'è già un coordinatore di zona
 	 * per quella risorsa o no.
 	 * Se si ritorna l'indirizzo del coordinatore di zona;
 	 * Se no aggiunge una entry nella tabella con chiave il nome della risorsa e con
 	 * valore l'indirizzo ip del nodo richiedente
+	 * 
+	 * @param ip: ip del nodo che vuole entrare a far parte della rete p2p
+	 * @param risorse: le risorse possedute dal nodo che vuole entrare a far
+	 * parte della rete p2p
+	 * 
+	 * @return la lista dei coordinatori delle risorse registrate dal nodo che vuole
+	 * entrare a far parte della rete p2p
 	 */
 	public Vector<String> registrazione(String ip, Vector<String> risorse) throws RemoteException {
 		
@@ -147,11 +160,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		return ipCoordinatori;
 	}
 	
-	/*
-	 * Questo metodo viene invocato quando un nodo richiede una certa risorsa.
-	 * Tale metodo controlla la tabella alla ricerca della risorsa e se c'è
-	 * restituisce il coordinatore per quella zona, altrimenti restituisce la
-	 * stringa vuota
+	/**
+	 * Metodo che viene invocato quando un nodo richiede una certa risorsa.
+	 * Tale metodo controlla la tabella alla ricerca della risorsa e, se c'è,
+	 * restituisce il coordinatore per quella zona, altrimenti restituisce null
+	 * 
+	 * @param risorsa: la risorsa che sta richiedendo un certo Peer
+	 * 
+	 * @return il coordinatore per la risorsa richiesta o null se il coordinatore
+	 * non esiste
 	 */
     public String richiesta(String risorsa) throws RemoteException {
     	
@@ -176,8 +193,9 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	}
     }
     
-    /*
-     * Se il client ha già invocato il metodo richiesta(String) ma per un qualche motivo
+    /**
+     * Metodo che viene invocato quando un Peer aveva già invocato il metodo richiesta(String) 
+     * ma per un qualche motivo
      * non è riuscito a connettersi al coordinatore, chiama questo metodo dove il secondo
      * parametro indica il coordinatore a cui non è riuscito a connettersi il client.
      * Questo metodo controlla se il coordinatore corrente per una certa risorsa è rimasto
