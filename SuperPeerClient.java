@@ -10,7 +10,7 @@ public class SuperPeerClient extends PeerClient {
 	
 	static private Thread listRetriever = null;
 	
-	static private String trackerIp = null;
+	
 	
 	static private String timestamp;
 	
@@ -24,17 +24,16 @@ public class SuperPeerClient extends PeerClient {
 	 * server: riferimento al server coordinatore
 	 * tracker: riferimento al tracker
 	 * */
-	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker) throws UnknownHostException {
+	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker, String trIp) throws UnknownHostException {
 		//super();
 		assert(server != null);
 		assert(tracker != null);
 		this.server = server;
 		this.tracker = tracker;
-		try {
-			this.trackerIp = this.tracker.getIp();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+		
+		this.trackerIp = pc.trackerIp;
+		System.out.println("L'ip del tracker impostato nel costruttore del superpeer e' "+this.trackerIp);
+		
 		this.myIp = pc.myIp;
 		
 		

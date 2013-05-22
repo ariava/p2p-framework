@@ -576,6 +576,9 @@ public class testFrameworkGUI {
 					return;
 				}
 				
+				String server = "rmi://"+pc.trackerIp+"/Tracker";
+				tr = pc.getTracker(server);
+				
 				if(tr == null) {
 					JOptionPane.showMessageDialog(null, "Tracker object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
 					txtIpTracker.setEnabled(true);
@@ -644,7 +647,7 @@ public class testFrameworkGUI {
 	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
 	    					SuperPeer c = pc.getCoord(coord);
 	    					try {
-								pc = new SuperPeerClient(pc,c,tr);
+								pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
 								pc.setDebug(debug);
 								
 							} catch (UnknownHostException e1) {
