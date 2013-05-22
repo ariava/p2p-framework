@@ -35,7 +35,7 @@ fi
 
 if [ "$1" = "$tracker" -o "$1" = "$all" ]; then
 	
-	gnome-terminal --geometry=67x10+700+600 --title="Tracker" -e "bash -c \"make tracker\";bash"
+	gnome-terminal --geometry=67x10+700+600 --title="Tracker" -e "bash -c \"make tracker\";bash" &
 
 fi
 
