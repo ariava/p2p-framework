@@ -556,12 +556,8 @@ public class testFrameworkGUI {
 					JOptionPane.showMessageDialog(null, "PeerClient object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				
-				String server = "rmi://"+pc.trackerIp+"/"+"Tracker";
-				tr = pc.getTracker(server);
-				if(tr == null) {
-					JOptionPane.showMessageDialog(null, "You are no more connected to the network","Error!",JOptionPane.ERROR_MESSAGE);
-					lblStatus.setText("Status: Offline");
+				if(tr == null) {	
+					JOptionPane.showMessageDialog(null, "Tracker object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				
