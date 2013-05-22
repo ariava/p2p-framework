@@ -664,8 +664,7 @@ public class testFrameworkGUI {
 	    			//add coordinators in the hashtable
 	    			for(int i=0;i<coords.size();++i) {
 	    				try {
-	    					// XXX (Arianna): avgDist settata a "-1"?
-	    					PeerTable temp = new PeerTable(new PeerTableData(coords.get(i),-1, false, true));
+	    					PeerTable temp = new PeerTable(new PeerTableData(coords.get(i),0, false, true));
 	    					temp.setDebug(debug);
 							pc.myPS.addToTable(resNames.get(i), temp);
 							
@@ -716,10 +715,15 @@ public class testFrameworkGUI {
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				int[] selectedRows;
+				System.out.println("\nchiamata la delete: "+disconnect+"\n");
 				if(disconnect) {
-					table.setRowSelectionInterval(0, model.getRowCount()-1);
+					selectedRows = new int[model.getRowCount()];
+					for(int i=0;i<model.getRowCount();++i)
+						selectedRows[i] = i;
 				}
-				int[] selectedRows = table.getSelectedRows();
+				else
+					selectedRows = table.getSelectedRows();
 				
 				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
 					if (debug)
@@ -780,7 +784,7 @@ public class testFrameworkGUI {
 				}
 				disconnect = false;
 				
-				table.clearSelection();
+				//table.clearSelection();
 				btnDelete.setEnabled(false);
 			}
 		});

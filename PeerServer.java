@@ -202,12 +202,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * 
 	 * res: risorsa per la quale si avvia l'election
 	 * */
-	public float election(String res) throws RemoteException {
+	public float election(String res, String ipCaller) throws RemoteException {
 		
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa "+res);
 		
-		assert this.avgDist > 0 : "Called election but avgDist is not a valid number!";
+		assert this.avgDist > 0 || ipCaller.equals(this.myIp): "Called election but avgDist is not a valid number!";
 		return this.avgDist;
 		
 	}

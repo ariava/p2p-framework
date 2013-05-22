@@ -361,7 +361,7 @@ public class PeerClient {
 			System.out.println("Chiamata la election sul peer "+p.toString());
 		
 		try {
-			return p.election(resName);
+			return p.election(resName,this.myIp);
 		} catch (Exception e) {
 			System.out.println("Something went wrong while polling for election candidates: "+e.getMessage());
 			return 0;
@@ -493,7 +493,7 @@ public class PeerClient {
 			assert p != null : "Peer object is undefined!";
 			
 			try {
-				answers[i] = p.election(resName);
+				answers[i] = p.election(resName,this.myIp);
 			} catch (RemoteException e) {
 				System.out.println("Exception in election procedure: " + e.getMessage());
 				e.printStackTrace();
@@ -528,6 +528,18 @@ public class PeerClient {
 					}		
 			}
 		}
+		
+		if(peerMin.isEmpty()) {
+			System.out.println("Election ended but no coordinator was elected");
+			try {
+				tr.cambioCoordinatore(peerMin, resName);
+			} catch (RemoteException e) {
+				System.out.println("Unable to change coordinator: " + e.getMessage());
+				e.printStackTrace();
+			}
+			return;
+		}
+		
 		if(debug)
 			System.out.println("Election: il nuovo coordinatore e': "+peerMin+", ha distanza media "+min);
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
