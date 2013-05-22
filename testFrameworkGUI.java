@@ -60,6 +60,7 @@ public class testFrameworkGUI {
     final JMenuItem pasteMenuItem = new JMenuItem("Paste", new ImageIcon(((new ImageIcon("icons/paste.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
     final JPopupMenu runFileMenu = new JPopupMenu();
     final JMenuItem runMenuItem = new JMenuItem("Run", new ImageIcon(((new ImageIcon("icons/runFile.jpg")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
+    final JMenuItem deleteMenuItem = new JMenuItem("Delete", new ImageIcon(((new ImageIcon("icons/remove.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
 	
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	private java.awt.datatransfer.Clipboard clipboard = toolkit.getSystemClipboard();
@@ -230,6 +231,7 @@ public class testFrameworkGUI {
         cutpasteMenu.add(copyMenuItem);
         cutpasteMenu.add(pasteMenuItem);
         runFileMenu.add(runMenuItem);
+        runFileMenu.add(deleteMenuItem);
 	    cutMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JTextField jte = (JTextField)cutpasteMenu.getInvoker();
@@ -567,6 +569,7 @@ public class testFrameworkGUI {
 			}
 		});
 		
+		
 		JButton btnImport = new JButton("Import...");
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -666,7 +669,7 @@ public class testFrameworkGUI {
 		btnImport.setBounds(573, 82, 117, 25);
 		panel_3.add(btnImport);
 		
-		JButton btnDelete = new JButton("Delete");
+		final JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -734,6 +737,13 @@ public class testFrameworkGUI {
 		});
 		btnDelete.setBounds(573, 119, 117, 25);
 		panel_3.add(btnDelete);
+		
+		deleteMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnDelete.doClick();
+			}
+		});
+		
 		panel.setLayout(null);
 		
 		
