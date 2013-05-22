@@ -331,11 +331,15 @@ public class testFrameworkGUI {
 					
 					File resFolder = new File("resources/");
 					File[] list = resFolder.listFiles();
-					
+					connect = true;
 					for(int i=0;i<list.length;++i) {
+						if(list[i].getName().equals(".gitignore"))
+							continue;
 						tmpFile = list[i];
 						btnImport.doClick();
+						
 					}
+					connect = false;
 				}
 				
 				// Quando si schiaccia sul bottone Disconnect
@@ -675,14 +679,14 @@ public class testFrameworkGUI {
                 		f = tmpFile;
                 	else
                 		f = fc.getSelectedFile();
-                	if(alreadyExists(f.getName())) {
+                	if(alreadyExists(f.getName()) && !connect) {
     					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
     					return;
     				}
                 	if (debug)
                 		System.out.println(f.getAbsolutePath());
-	                
-	                copyFile(f.getAbsolutePath(),"resources/"+f.getName());
+	                if(!connect)
+	                	copyFile(f.getAbsolutePath(),"resources/"+f.getName());
 	                String resName = f.getName();
 	                /********************************/
 	                if(debug)
@@ -736,7 +740,8 @@ public class testFrameworkGUI {
 	    			}
 	    			/************************************/
 	    			DefaultTableModel model = (DefaultTableModel) table.getModel();
-	    			model.addRow(new Object[]{resName});
+	    			if(!connect)
+	    				model.addRow(new Object[]{resName});
                 }
 			}
 		});
