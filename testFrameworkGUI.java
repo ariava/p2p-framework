@@ -407,7 +407,7 @@ public class testFrameworkGUI {
 					System.out.println("Client in modalita' request");
 				
 				String prevC = null;
-				if(tr == null || (prevC =  pc.simpleResourceRequest(tr, resName)) == null) {
+				if(tr == null || (prevC = pc.simpleResourceRequest(tr, resName)).equals("exception")) {
 					PeerTable pt = null;
 					/* Recuperiamo l'IP di un coordinatore di risorsa */
 					try {
@@ -546,6 +546,17 @@ public class testFrameworkGUI {
             public void mousePressed(MouseEvent e) {
             	if (SwingUtilities.isRightMouseButton(e)) {
             		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            			 
+            			// get the row index that contains that coordinate
+            			int rowNumber = table.rowAtPoint(e.getPoint());
+             
+            			// Get the ListSelectionModel of the JTable
+            			ListSelectionModel model = table.getSelectionModel();
+             
+            			// set the selected interval of rows. Using the "rowNumber"
+            			// variable for the beginning and end selects only that one row.
+            			model.setSelectionInterval(rowNumber, rowNumber);
+            			
             			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
             		}
             	}

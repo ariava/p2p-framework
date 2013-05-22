@@ -104,7 +104,7 @@ public class PeerClient {
 			return server.richiesta(resource);
 		} catch(Exception e) {
 			System.out.println("Something went wrong while requesting resource "+resource);
-			return null;
+			return "exception";
 		}	
 	}
 	
