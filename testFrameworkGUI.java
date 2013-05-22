@@ -308,30 +308,36 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
 				}
 				
+				// Quando si schiaccia sul bottone Connect
 				if (btnConnect.getText().equals("    Connect   ")) {
 					txtIpTracker.setEnabled(false);
 					txtInsertFileTo.setEnabled(true);
 					btnNewButton.setEnabled(true);
 					table.setEnabled(true);
 					btnImport.setEnabled(true);
-					btnDelete.setEnabled(true);
 					btnConnect.setText("Disconnect");
 					lblStatus.setText("Status: Online");
 				}
+				
+				// Quando si schiaccia sul bottone Disconnect
 				else {
 					close();
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 				}
@@ -354,6 +360,10 @@ public class testFrameworkGUI {
 		txtInsertFileTo.setColumns(10);
 		txtInsertFileTo.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
+            	if (txtInsertFileTo.isEnabled()) {
+            		table.clearSelection();
+            		btnDelete.setEnabled(false);
+            	}
             	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled()) {
             		txtInsertFileTo.setText("");
             	}
@@ -395,8 +405,10 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
@@ -433,8 +445,10 @@ public class testFrameworkGUI {
 						txtIpTracker.setEnabled(true);
 						txtInsertFileTo.setEnabled(false);
 						btnNewButton.setEnabled(false);
+						table.clearSelection();
 						table.setEnabled(false);
 						btnImport.setEnabled(false);
+						btnDelete.setEnabled(false);
 						btnConnect.setText("    Connect   ");
 						lblStatus.setText("Status: Offline");
 						return;
@@ -626,8 +640,10 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
+					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 					return;
