@@ -308,6 +308,7 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
 					btnDelete.setEnabled(false);
@@ -333,6 +334,7 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
 					btnDelete.setEnabled(false);
@@ -403,6 +405,7 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
 					btnDelete.setEnabled(false);
@@ -442,6 +445,7 @@ public class testFrameworkGUI {
 						txtIpTracker.setEnabled(true);
 						txtInsertFileTo.setEnabled(false);
 						btnNewButton.setEnabled(false);
+						table.clearSelection();
 						table.setEnabled(false);
 						btnImport.setEnabled(false);
 						btnDelete.setEnabled(false);
@@ -636,6 +640,7 @@ public class testFrameworkGUI {
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
+					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
 					btnDelete.setEnabled(false);
