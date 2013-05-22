@@ -778,6 +778,9 @@ public class testFrameworkGUI {
 					
 					
 				}
+				
+				table.clearSelection();
+				btnDelete.setEnabled(false);
 			}
 		});
 		btnDelete.setBounds(573, 119, 117, 25);
