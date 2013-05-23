@@ -25,4 +25,4 @@ rmi:
 	rmic SuperPeerServer; rmic TrackerServer; rmic PeerServer;
 
 clean:
-	rm -f *.class *.txt resources/*
+	rm -f *.orig *.rej *.class *.txt resources/*
