@@ -8,9 +8,7 @@ public class SuperPeerClient extends PeerClient {
 	static private SuperPeer server = null;
 	static private Tracker tracker = null;
 	
-	static private Thread listRetriever = null;
-	
-	
+	private Thread listRetriever = null;
 	
 	static private String timestamp;
 	
@@ -175,13 +173,13 @@ public class SuperPeerClient extends PeerClient {
 	}
 	
 	/*
-	 * Metodo privato per arrestare il thread incaricato di rinfrescare la
-	 * tabella dei coordinatori nel server SuperPeer.
+	 * Metodo per arrestare il thread incaricato di rinfrescare la tabella dei 
+	 * coordinatori nel server SuperPeer.
 	 * */
 	@SuppressWarnings("deprecation")
-	private void stopListRetriever() {
+	protected void stopListRetriever() {
 		if (debug)
-			System.out.println("SuperPeerClient: tentativo di arresto del thread di rinfresco della coordTable");
+			System.out.println("Tentativo di arresto del thread di rinfresco della coordTable");
 		if (listRetriever != null) {
 			if (debug)
 				System.out.println("Thread in funzione, arrestato");

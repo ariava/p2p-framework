@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.ListSelectionModel;;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
@@ -54,8 +54,10 @@ public class testFrameworkGUI {
 	private PeerClient pc;
 	private Tracker tr;
 	private static boolean debug;
+	private static boolean first_connect = true;
 	private static boolean disconnect = false;
 	private static boolean connect = true; //boolean usato per vedere se la import l'ha chiamata l'utente o il doClick su connect
+	private static boolean elected = false;
 	private static File tmpFile = null;
 	final JPopupMenu cutpasteMenu = new JPopupMenu();
     final JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(((new ImageIcon("icons/cut.png")).getImage()).getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)));
@@ -297,14 +299,18 @@ public class testFrameworkGUI {
 				
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
 				
-				try {
-					pc = new PeerClient(txtIpTracker.getText());
-					pc.setDebug(debug);
-				} catch (UnknownHostException e) {
-					System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
-					e.printStackTrace();
-					return;
-				}
+				if (first_connect) {
+					try {
+						pc = new PeerClient(txtIpTracker.getText());
+						pc.setDebug(debug);
+					} catch (UnknownHostException e) {
+						System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
+						e.printStackTrace();
+						return;
+					}
+					first_connect = false;
+				} else
+					assert pc != null : "PeerClient object not initialized but GUI already connected";
 
 				tr = pc.getTracker(server);
 				
@@ -347,6 +353,7 @@ public class testFrameworkGUI {
 				
 				// Quando si schiaccia sul bottone Disconnect
 				else {
+					System.out.println("#### Disconnessione in corso ####");
 					close();
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
@@ -728,16 +735,20 @@ public class testFrameworkGUI {
 	    				else {
 	    					if(debug)
 	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
-	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
-	    					SuperPeer c = pc.getCoord(coord);
-	    					try {
-								pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
-								pc.setDebug(debug);
-								
-							} catch (UnknownHostException e1) {
-								System.out.println("Unable to become the new coordinator: "+e1.getMessage());
-								e1.printStackTrace();
-							}
+	    					if (!elected) {
+		    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
+		    					SuperPeer c = pc.getCoord(coord);
+		    					try {
+									pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
+									System.out.println("### ISTANZIATO Riferimento al (Super)PeerClient: " + pc + " ###");
+									pc.setDebug(debug);
+									
+								} catch (UnknownHostException e1) {
+									System.out.println("Unable to become the new coordinator: "+e1.getMessage());
+									e1.printStackTrace();
+								}
+		    					elected = true;
+	    					}
 	    				}
 	    					
 	    			}
@@ -758,8 +769,15 @@ public class testFrameworkGUI {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
 				int[] selectedRows;
-				System.out.println("\nchiamata la delete: "+disconnect+"\n");
+				System.out.println();
+				System.out.println("### Chiamata la delete con disconnect == "+ disconnect + " ####");
+				System.out.println("### DISCONNESSO Riferimento al (Super)PeerClient: " + pc + " ###");
+				System.out.println();
 				if(disconnect) {
+					/* se non siamo superpeer le seguenti due istruzioni comunque non fanno danni */
+					elected = false;
+					System.out.println("### STOP LIST RETRIEVER Riferimento al (Super)PeerClient: " + pc + " ###");
+					pc.stopListRetriever();
 					selectedRows = new int[model.getRowCount()];
 					for(int i=0;i<model.getRowCount();++i)
 						selectedRows[i] = i;
@@ -785,9 +803,9 @@ public class testFrameworkGUI {
 					SuperPeer c = pc.getCoord(server);
 					
 					//se sono io il coord faccio partire l'election
-					if(pc.myIp.equals(coord)) {
+					System.out.println("**** MY IP " + pc.myIp + " COORD " + coord + " *******");
+					if(pc.myIp.equals(coord))
 						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr);					
-					}
 					if (debug)
 						System.out.println("Chiamata la goodbye sul superpeer "+coord);
 					try {

@@ -14,8 +14,7 @@ public class PeerClient {
 	public Peer myPS = null;
 	public String myIp;
 	static public boolean debug;
-	public String trackerIp = null;
-	
+	public String trackerIp = null;	
 	
 	public PeerClient() throws UnknownHostException {
 		self = this;
@@ -575,5 +574,11 @@ public class PeerClient {
 	 * */
 	protected void setDebug(boolean value) {
 		this.debug = value;
+	}
+	
+	/*
+	 * Metodo vuoto da implementare nel @SuperPeerClient.
+	 * */
+	protected void stopListRetriever() {
 	}
 }
