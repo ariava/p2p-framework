@@ -160,7 +160,10 @@ public class testFrameworkGUI {
 	 */
 	private void close() {
 		disconnect = true;
+		boolean old_enabled = btnDelete.isEnabled();
+		btnDelete.setEnabled(true);
 		btnDelete.doClick();
+		btnDelete.setEnabled(old_enabled);
 	}
 		
 	private void enabledDisabledMenuItems(String component) {
