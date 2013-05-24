@@ -636,7 +636,15 @@ public class testFrameworkGUI {
             	}
             }
         });
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2 && table.rowAtPoint(e.getPoint()) >= 0) {
+					runMenuItem.doClick();
+				}  
+			}
+		});
 		panel_3.add(table);
+		
 		runMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
