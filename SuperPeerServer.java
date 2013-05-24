@@ -152,9 +152,18 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 				coordTable.put(resources.get(i), coord);
 			}
 			PeerTable pt = this.myPS.getTable().get(resources.get(i));
-			pt.add(new PeerTableData(requestor_ip, 4,
-					 false, coord.equals(requestor_ip)?true:false));
-			this.myPS.addToTable(resources.get(i), pt);
+			boolean found = false;
+			for(int j=0;j<pt.get().size();++j) {
+				if(pt.get().get(j).peer.equals(requestor_ip)) {
+					found = true;
+					break;
+				}
+			}
+			if(!found) {
+				pt.add(new PeerTableData(requestor_ip, 4,
+						false, coord.equals(requestor_ip)?true:false));
+				this.myPS.addToTable(resources.get(i), pt); 
+				}
 			coordinators.add(coord);
 		}
 		assert(resources.size() == coordinators.size());
