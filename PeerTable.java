@@ -71,30 +71,40 @@ public class PeerTable implements Serializable {
 		return null;
 	}
 	
-	/*
-	 * Elimina un elemento dalla PeerTable
-	 * */
+	/**
+	 * Metodo che elimina un elemento dalla PeerTable
+	 * 
+	 * @param ptd elemento di tipo PeerTableData da eliminare
+	 */
 	public void remove(PeerTableData ptd) {
 		data.remove(ptd);
 	}
 	
-	/*
+	/**
 	 * Getter per la PeerTable
-	 * */
+	 * 
+	 * @return il vettore di elementi PeerTableData
+	 */
 	public Vector<PeerTableData> get() {
 		return this.data;
 	}
 	
-	/*
+	/**
 	 * Setter per la PeerTable
-	 * */
+	 * 
+	 * @param d il vettore di elementi PeerTableData
+	 */
 	public void set(Vector<PeerTableData> d) {
 		this.data = d;
 	}
 	
-	/*
-	 * Ritorna la distanza media dei peer nella PeerTable
-	 * */
+	/**
+	 * Tale metodo ritorna la distanza media dei peer nella PeerTable
+	 * 
+	 * @param indirizzo ip richiedente
+	 * 
+	 * @return la distanza media
+	 */
 	public float getAvgDist(String myIp) {
 		if (debug) {
 			System.out.println("******************************************************");
@@ -114,12 +124,14 @@ public class PeerTable implements Serializable {
 		return avg/num_samples;
 	}
 	
-	/*
-	 * Ritorna l'indirizzo ip del peer con distanza piu' bassa.
+	/**
+	 * Tale metodo ritorna l'indirizzo ip del peer con distanza piu' bassa.
 	 * 
 	 * Utilizzato prima del trasferimento di una risorsa per decidere a
 	 * chi richiederla.
-	 * */
+	 * 
+	 * @return l'indirizzo ip del peer con distanza più bassa
+	 */
 	public String getMinDistPeer() {
 		float min = this.data.get(0).dist;
 		int pos = 0;
@@ -134,7 +146,7 @@ public class PeerTable implements Serializable {
 
 	/**
 	 * Stampa la tabella
-	 * */
+	 */
 	public void print() {
 		System.out.println("Stampa della peerTable");
 		for(int i=0;i<data.size();++i) {
@@ -148,8 +160,11 @@ public class PeerTable implements Serializable {
 		}
 	}
 	
-	/*
+	/**
 	 * Imposta la modalità di debug
+	 * 
+	 * @param value vale vero se vogliamo attivare la modalità
+	 * di debug, falso altrimenti
 	 */
 	protected void setDebug(boolean value) {
 		this.debug = value;
