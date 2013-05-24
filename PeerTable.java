@@ -8,28 +8,42 @@ public class PeerTable implements Serializable {
 	private Vector<PeerTableData> data;
 	private boolean debug;
 	
+	/**
+	 * Costruttore della classe PeerTable.
+	 * 
+	 * Inizializza il vettore di oggetti PeerTableData
+	 */
 	public PeerTable() {
 		data = new Vector<PeerTableData>();
 		debug = false;
 	}
 	
+	/**
+	 * Costruttore della classe PeerTable con i dati contenuti in d
+	 * 
+	 * @param d elemento di tipo PeerTableData
+	 */
 	public PeerTable(PeerTableData d) {
 		this.data = new Vector<PeerTableData>();
 		this.data.add(d);
 	}
 	
-	/*
-	 * Aggiunge un elemento di tipo PeerTableData alla PeerTable
-	 * */
+	/**
+	 * Tale metodo aggiunge un elemento di tipo PeerTableData alla PeerTable
+	 * 
+	 * @param pd elemento di tipo PeerTableData
+	 */
 	public void add(PeerTableData pd) {
 		
 		this.data.add(pd);
 	}
 	
-	/*
-	 * Ritorna un elemento di tipo PeerTableData contenente i dati relativi
+	/**
+	 * Tale metodo ritorna un elemento di tipo PeerTableData contenente i dati relativi
 	 * al coordinatore per la risorsa a cui la PeerTable si riferisce.
-	 * */
+	 * 
+	 * @return elemento di tipo PeerTableData
+	 */
 	public PeerTableData getCoord() {
 		
 		for(int i=0;i<data.size();++i) {
@@ -40,11 +54,15 @@ public class PeerTable implements Serializable {
 		return null;
 	}
 	
-	/*
+	/**
 	 * Ritorna un elemento di tipo PeerTableData contenente tutte le informazioni
 	 * su un peer avente come indirizzo ip quello passato come parametro se esiste,
 	 * null altrimenti.
-	 * */
+	 * 
+	 * @param ip indirizzo ip del peer
+	 * 
+	 * @return elemento di tipo PeerTableData
+	 */
 	public PeerTableData getIP(String ip) {
 		for (int i=0 ; i < data.size() ; ++i) {
 			if(data.get(i).peer.equals(ip))
