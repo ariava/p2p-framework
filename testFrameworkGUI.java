@@ -127,7 +127,7 @@ public class testFrameworkGUI {
 	 * src: percorso assoluto del file;
 	 * dst: percorso assoluto della destinazione scelta.
 	 */
-	private void copyFile(String src, String dst) {
+	private boolean copyFile(String src, String dst) {
 		
 		InputStream inStream = null;
         OutputStream outStream = null;
@@ -148,8 +148,10 @@ public class testFrameworkGUI {
             if (outStream != null) outStream.close();
  
             System.out.println("File " + src + " Copied");
+            return true;
         }catch(IOException e){
         	e.printStackTrace();
+        	return false;
         }
 	}
 	
@@ -800,10 +802,17 @@ public class testFrameworkGUI {
     					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
     					return;
     				}
+                	boolean copyOk = false;
                 	if (debug)
                 		System.out.println(f.getAbsolutePath());
 	                if(!connect)
-	                	copyFile(f.getAbsolutePath(),"resources/"+f.getName());
+	                	copyOk = copyFile(f.getAbsolutePath(),"resources/"+f.getName());
+	                
+	                if(!copyOk) {
+	                	JOptionPane.showMessageDialog(null, "Failed to copy the resource! Do you have read permissions..? Or maybe the resource simply doesn't exists..", "Error",JOptionPane.ERROR_MESSAGE);
+	                	return;
+	                }
+	                
 	                String resName = f.getName();
 	                /********************************/
 	                if(debug)
