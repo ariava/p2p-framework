@@ -587,7 +587,16 @@ public class testFrameworkGUI {
 		lblFileSacricati.setBounds(12, 25, 149, 15);
 		panel_3.add(lblFileSacricati);
 		
-		table = new JTable(new DefaultTableModel(new Object[]{"Resource Name"},0));
+		table = new JTable(new DefaultTableModel(new Object[]{"Resource Name"},0) {
+			
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+			    //all cells false
+			    return false;
+			}
+		});
+		//table.sete
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBackground(Color.WHITE);
 		table.setBounds(0, 52, 550, 321);
