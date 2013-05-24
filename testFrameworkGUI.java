@@ -572,7 +572,18 @@ public class testFrameworkGUI {
 				assert c != null : "SuperPeer object is undefined!";
 				
 				Vector<String> ipList = pc.getList(c, resName);
+				int count = 0;
 				while(ipList == null) {
+					count++;
+					if(count == 3) {
+						try {
+							tr.cambioCoordinatore("",resName);
+						} catch (RemoteException e1) {
+							e1.printStackTrace();
+						}
+						JOptionPane.showMessageDialog(null, "Coordinator not found, he probably left the network unpolitely!", "Error",JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					System.out.println("Coordinator isn't responding..");
 					try {
 						Thread.sleep(5000);	//TODO: trovare un tempo di sleep realistico
@@ -861,7 +872,17 @@ public class testFrameworkGUI {
 	    			}
 	    			/************************************/
 	    			DefaultTableModel model = (DefaultTableModel) table.getModel();
-	    			if(!connect)
+	    			boolean found = false;
+	    			for(int i=0;i<model.getRowCount();++i) {
+	    				
+	    				if(model.getValueAt(i, 0).equals(resName)) {
+	    					found = true;
+	    					break;
+	    				}
+	    				
+	    			}
+	    			
+	    			if(!found) 
 	    				model.addRow(new Object[]{resName});
                 }
 			}
