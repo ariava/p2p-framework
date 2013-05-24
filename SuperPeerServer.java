@@ -142,6 +142,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		Vector<String> coordinators = new Vector<String>();
 		for (int i = 0 ; i < resources.size() ; i++) {
 			String coord = this.coordTable.get(resources.get(i));
+			System.out.println("Sono la register del SuperPeer, coord per la risorsa "+resources.get(i)+" e': "+coord);
 			if (coord == null) {
 				/*
 				 * Se non esiste un coordinatore per la risorsa, il richiedente diventa
