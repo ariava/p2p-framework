@@ -39,8 +39,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import  java.io.*;
 
@@ -51,9 +56,10 @@ public class testFrameworkGUI {
 	private JTextField txtInsertFileTo;
 	private JTable table;
 	private JTextField txtIpTracker;
-	private PeerClient pc;
+	private static PeerClient pc;
 	private Tracker tr;
 	private static boolean debug;
+	private static Lock l;
 	private static boolean first_connect = true;
 	private static boolean disconnect = false;
 	private static boolean connect = true; //boolean usato per vedere se la import l'ha chiamata l'utente o il doClick su connect
@@ -196,6 +202,56 @@ public class testFrameworkGUI {
 		frmTestFrameworkGui.setTitle("test Framework GUI");
 		frmTestFrameworkGui.setBounds(100, 100, 733, 493);
 		//frmTestFrameworkGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		l = new ReentrantLock();
+		
+		Thread electionWorker = new Thread(
+				  new Runnable() {
+		                public void run() {
+		           
+		                	if (debug)
+		                		System.out.println("Avviato il thread di elezione");
+		                	
+							
+		                	while(true) {
+		                		
+		                		l.lock();
+		                		
+		                		try {
+		                			//per ogni risorsa
+		                			Enumeration<String> e = pc.myPS.getTable().keys();
+		                			while(e.hasMoreElements()) {
+		                				String key = e.nextElement();
+			                			PeerTable pt = pc.myPS.getTable().get(key);
+			                			if(pt.getCoord().peer.equals(pc.myIp) && !elected) {
+			                				String coord = "rmi://"+pc.myIp+"/"+"SuperPeer"+pc.myIp;
+			    		    				SuperPeer c = pc.getCoord(coord);
+			                				try {
+												pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
+											} catch (UnknownHostException e1) {
+												e1.printStackTrace();
+											}
+											System.out.println("!*!*! Mi istanzio un nuovo oggetto SuperPeer! !*!*!");
+											pc.setDebug(debug);
+											elected = true;
+											break;
+			                			}
+			                			
+		                			}
+		                		} catch (RemoteException e1) {
+		                			e1.printStackTrace();
+		                		}
+								l.unlock();
+			                    try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								} 
+			                   
+			                }
+		                }
+		            });
+		/*	fine thread */
 		
 		frmTestFrameworkGui.addWindowStateListener(new WindowAdapter() {
 	        public void windowClosing(WindowEvent e) {
@@ -776,6 +832,7 @@ public class testFrameworkGUI {
 								System.out.println("Unable to register myself as coordinator in my SuperPeerServer");
 								e2.printStackTrace();
 							}
+		    				l.lock();
 		    				if (!elected) {
 		    					try {
 									pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
@@ -788,6 +845,7 @@ public class testFrameworkGUI {
 								}
 		    					elected = true;
 	    					}
+		    				l.unlock();
 	    				}
 	    					
 	    			}
