@@ -194,17 +194,21 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     }
     
     /**
-     * Metodo che viene invocato quando un Peer aveva già invocato il metodo richiesta(String) 
-     * ma per un qualche motivo
-     * non è riuscito a connettersi al coordinatore, chiama questo metodo dove il secondo
-     * parametro indica il coordinatore a cui non è riuscito a connettersi il client.
+     * Metodo che viene invocato quando un Peer aveva già invocato il metodo 
+     * {@link #richiesta(String)} ma per un qualche motivo non è riuscito a 
+     * connettersi al coordinatore.
      * Questo metodo controlla se il coordinatore corrente per una certa risorsa è rimasto
      * lo stesso di prima o se è cambiato:
      * 1) se è rimasto quello precedente, pinga (non si fida del client) il coordinatore e se
      * 	  va tutto bene ritorna ancora quel coordinatore; se non pinga effettivamente quel
-     * 	  coordinatore è andato giù e quindi viene rimosso dalla tabella e ritorna la stringa
-     *    vuota.
+     * 	  coordinatore è andato giù e quindi viene rimosso dalla tabella e ritorna null;
      * 2) se è cambiato allora restituisce semplicemente il nuovo coordinatore
+     * 
+     * @param risorsa: la risorsa che sta richiedendo un certo Peer
+     * @param ipPrecedente: il coordinatore a cui non è riuscito a connettersi il client
+     * 
+     * @return il coordinatore per la risorsa specificata o null nel caso in cui il
+     * coordinatore per quella risorsa non esiste
      */
     public String richiesta(String risorsa, String ipPrecedente) throws RemoteException {
     	
@@ -243,9 +247,12 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	}
     }
     
-    /*
-     * Questo metodo ritorna true se un certo indirizzo ip è raggiungibile,
-     * ritorna false altrimenti
+    /**
+     * Metodo che viene invocato dal tracker per pingare un nodo
+     * 
+     * @param address: l'indirizzo ip del nodo che vuole pingare
+     * 
+     * @return true se pinga, false altrimenti
      */
     private boolean pingUrl(String address) {
     	
@@ -266,9 +273,13 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
         return status;
     }
     
-    /*
-     * Questo metodo elimina tutte le entry della tabella in cui
-     * coordinator è valore
+    /**
+     * Metodo che viene invocato dal tracker per eliminare un coordinatore
+     * dalla tabella.
+     * In particolare vengono eliminate tutte le risorse associate ad un
+     * certo coordinatore.
+     *
+     *@param coordinator: il coordinatore da eliminare nella tabella
      */
     private void eliminateCoordinatorFromTable(String coordinator) {
     	
@@ -288,10 +299,13 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		assert table.containsValue(coordinator) == false : "Non è stato eliminato il coordinatore per una certa risorsa";
     }
     
-    /*
-     * Invocato dopo l'algoritmo di elezione.
-     * Questo metodo cambia/aggiunge una entry della tabella settando un nuovo
-     * coordinatore per una certa risorsa
+    /**
+     * Metodo che viene invocato da un Peer per cambiare il coordinatore per
+     * una certa risorsa o per aggiungere un nuovo coordinatore per una certa
+     * risorsa
+     * 
+     * @param ip: indirizzo ip del coordinatore (nuovo o già esistente)
+     * @param risorsa: la risorsa per il quale ip è diventato il nuovo coordinatore
      */
     public void cambioCoordinatore(String ip, String risorsa) throws RemoteException {
     	
@@ -318,11 +332,17 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	assert table.get(risorsa) == ip : "Non è stato cambiato il coordinatore per la risorsa " + risorsa;
     }
     
-    /*
-     * Metodo invocato periodicamente dai coordinatori.
-     * Questo metodo restituisce la tabella al coordinatore solo se il timestamp
-     * del coordinatore è più piccolo del timestamp del server (il server ha modificato
-     * la tabella e il coordinatore ha una versione non aggiornata)
+    /**
+     * Metodo che viene invocato periodicamente dai coordinatori per farsi
+     * restituire la tabella aggiornata posseduta dal tracker.
+     * In particolare la tabella viene restituita se e solo se il timestamp
+     * del coordinatore è più piccolo del timestamp del tracker (il server 
+     * ha modificato la tabella e il coordinatore ha una versione non aggiornata)
+     * 
+     * @param timestamp: il timestamp dell'ultima modifica effettuata dal coordinatore
+     * 
+     * @return la tabella aggiornata posseduta dal tracker o null nel caso in cui
+     * il coordinatore possiede già la tabella aggiornata
      */
     public Hashtable<String, String> getList(String timestamp) throws RemoteException {
     	
@@ -348,7 +368,13 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     }
 
     
-    
+    /**
+     * Il main inizializza il Tracker e lo fa eseguire
+     * 
+     * @param args: array passato al lancio del tracker. Il primo elemento
+     * di tale array indica se far partire il Tracker in modalità di debug
+     * (args[0] = "debug") o no (senza parametri)
+     */
     public static void main(String[] args) {
     	debug = (args.length > 0 && args[0].equals("debug")) ? true : false;
     	System.setSecurityManager(new RMISecurityManager());

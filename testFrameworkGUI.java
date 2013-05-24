@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
