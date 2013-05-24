@@ -1,12 +1,12 @@
 import java.net.*;
 import java.net.UnknownHostException;
 import java.rmi.*;
-import java.rmi.server.*;
 import java.util.*;
 
 public class SuperPeerServer extends PeerServer implements SuperPeer {
 
 	private static final long serialVersionUID = 1L;
+	
 	private final String name = "SuperPeer";
 	private String ip = null;
 	private String id;
@@ -16,12 +16,12 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 
 	private static boolean debug;
 	
-	/*
+	/**
 	 * Costruttore della classe SuperPeerServer.
 	 * Il costruttore si occupa di inizializzare le variabili private quali
 	 * tabella dei coordinatori, IP dell'host sul quale il server è in
 	 * esecuzione e identificativo del SuperPeer.
-	 * */
+	 */
 	protected SuperPeerServer() throws RemoteException, UnknownHostException {
 		super();
 		try {
@@ -49,24 +49,22 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo che restituisce il nome del server SuperPeer.
 	 * 
-	 * Valore di ritorno:
-	 * una stringa contenente il nome del server SuperPeer
-	 * */
+	 * @return una stringa contenente il nome del server SuperPeer
+	 */
 	public String getName() throws RemoteException {
 		return this.name;
 	}
 	
-	/*
-	 * Metodo accessore dell'identificativo di un server SuperPeer.
+	/**
+	 * Metodo accesso dell'identificativo di un server SuperPeer.
 	 * 
-	 * Valore di ritorno:
-	 * una stringa contenente l'identificativo del server SuperPeer.
+	 * @return una stringa contenente l'identificativo del server SuperPeer.
 	 * 
 	 * TODO: eliminare la parte remota?
-	 * */
+	 */
 	public String getId() throws RemoteException {
 		return this.id;
 	}
@@ -89,7 +87,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * vecs: un numero variabile di vettori di stringhe
 	 * XXX: cfr PeerServer, usare un'unica libreria SPOT?
 	 * */
-	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
+	private void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {
 			System.out.print("[");
@@ -135,6 +133,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * Valore di ritorno:
 	 * un vettore di indirizzi IP dei coordinatori delle risorse registrate
 	 * */
+	@SuppressWarnings("unchecked")
 	public Vector<String> register(String requestor_ip, Vector<String> resources)
 			throws RemoteException {
 		assert(requestor_ip != null && requestor_ip != "");
@@ -349,6 +348,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * Valore di ritorno:
 	 * una lista non vuota di indirizzi IP dei possessori della risorsa richiesta
 	 * */
+	@SuppressWarnings("unchecked")
 	public Vector<String> getList(String resource_name) throws RemoteException {
 		assert(resource_name != null && resource_name != "");
 		/* Costruzione di una lista degli IP possessori della richiesta */
