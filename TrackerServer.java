@@ -28,7 +28,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	/**
 	 * Metodo che controlla la correttezza del formato
 	 * che ha un indirizzo ip sulla stringa in input
-	 * @param ip: indirizzo ip
+	 * @param ip indirizzo ip
+	 * 
 	 * @return vero se la stringa in input ha il formato
 	 * di un indirizzo ip, falso altrimenti
 	 */
@@ -91,7 +92,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Metodo che ritorna l'ip del tracker, usato dal thread di servizio del
 	 * SuperPeerClient per fargli polling
 	 * 
-	 * @return una stringa contenente l'IP del TrackerServer
+	 * @return una stringa contenente l'ip del TrackerServer
 	 */
 	public String getIp() {
 		try {
@@ -106,7 +107,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Metodo usato per impostare la lista dei coordinatori quando il tracker è
 	 * tornato disponibile dopo un periodo di downtime
 	 * 
-	 * @param l: hashtable contenente la tabella dei coordinatori utilizzata dal
+	 * @param l hashtable contenente la tabella dei coordinatori utilizzata dal
 	 * TrackerServer
 	 */
 	public void setList(Hashtable<String, String> l) {
@@ -123,8 +124,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Se no aggiunge una entry nella tabella con chiave il nome della risorsa e con
 	 * valore l'indirizzo ip del nodo richiedente
 	 * 
-	 * @param ip: ip del nodo che vuole entrare a far parte della rete p2p
-	 * @param risorse: le risorse possedute dal nodo che vuole entrare a far
+	 * @param ip ip del nodo che vuole entrare a far parte della rete p2p
+	 * @param risorse le risorse possedute dal nodo che vuole entrare a far
 	 * parte della rete p2p
 	 * 
 	 * @return la lista dei coordinatori delle risorse registrate dal nodo che vuole
@@ -165,7 +166,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Tale metodo controlla la tabella alla ricerca della risorsa e, se c'è,
 	 * restituisce il coordinatore per quella zona, altrimenti restituisce null
 	 * 
-	 * @param risorsa: la risorsa che sta richiedendo un certo Peer
+	 * @param risorsa la risorsa che sta richiedendo un certo Peer
 	 * 
 	 * @return il coordinatore per la risorsa richiesta o null se il coordinatore
 	 * non esiste
@@ -204,8 +205,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * 	  coordinatore è andato giù e quindi viene rimosso dalla tabella e ritorna null;
      * 2) se è cambiato allora restituisce semplicemente il nuovo coordinatore
      * 
-     * @param risorsa: la risorsa che sta richiedendo un certo Peer
-     * @param ipPrecedente: il coordinatore a cui non è riuscito a connettersi il client
+     * @param risorsa la risorsa che sta richiedendo un certo Peer
+     * @param ipPrecedente il coordinatore a cui non è riuscito a connettersi il client
      * 
      * @return il coordinatore per la risorsa specificata o null nel caso in cui il
      * coordinatore per quella risorsa non esiste
@@ -250,9 +251,9 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     /**
      * Metodo che viene invocato dal tracker per pingare un nodo
      * 
-     * @param address: l'indirizzo ip del nodo che vuole pingare
+     * @param address l'indirizzo ip del nodo che vuole pingare
      * 
-     * @return true se pinga, false altrimenti
+     * @return vero se pinga, falso altrimenti
      */
     private boolean pingUrl(String address) {
     	
@@ -279,7 +280,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * In particolare vengono eliminate tutte le risorse associate ad un
      * certo coordinatore.
      *
-     *@param coordinator: il coordinatore da eliminare nella tabella
+     *@param coordinator il coordinatore da eliminare nella tabella
      */
     private void eliminateCoordinatorFromTable(String coordinator) {
     	
@@ -304,8 +305,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * una certa risorsa o per aggiungere un nuovo coordinatore per una certa
      * risorsa
      * 
-     * @param ip: indirizzo ip del coordinatore (nuovo o già esistente)
-     * @param risorsa: la risorsa per il quale ip è diventato il nuovo coordinatore
+     * @param ip indirizzo ip del coordinatore (nuovo o già esistente)
+     * @param risorsa la risorsa per il quale ip è diventato il nuovo coordinatore
      */
     public void cambioCoordinatore(String ip, String risorsa) throws RemoteException {
     	
@@ -339,7 +340,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * del coordinatore è più piccolo del timestamp del tracker (il server 
      * ha modificato la tabella e il coordinatore ha una versione non aggiornata)
      * 
-     * @param timestamp: il timestamp dell'ultima modifica effettuata dal coordinatore
+     * @param timestamp il timestamp dell'ultima modifica effettuata dal coordinatore
      * 
      * @return la tabella aggiornata posseduta dal tracker o null nel caso in cui
      * il coordinatore possiede già la tabella aggiornata
@@ -371,7 +372,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     /**
      * Il main inizializza il Tracker e lo fa eseguire
      * 
-     * @param args: array passato al lancio del tracker. Il primo elemento
+     * @param args array passato al lancio del tracker. Il primo elemento
      * di tale array indica se far partire il Tracker in modalità di debug
      * (args[0] = "debug") o no (senza parametri)
      */

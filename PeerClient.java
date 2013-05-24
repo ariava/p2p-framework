@@ -38,13 +38,15 @@ public class PeerClient {
 	 * */
 	
 
-	/*
+	/**
 	 * Metodo privato utilizzato per chiamare il metodo registrazione del tracker,
 	 * utilizzato per gestire le eventuali eccezioni.
-	 * Parametri:
-	 * server: oggetto di tipo tracker sul quale chiamare il metodo
-	 * resources: Vector<String> contenente i nomi delle risorse da registrare
-	 * */
+	 * 
+	 * @param server oggetto di tipo tracker sul quale chiamare il metodo
+	 * @param resources Vector<String> contenente i nomi delle risorse da registrare
+	 * 
+	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
+	 */
 	public Vector<String> registerResources(Tracker server, Vector<String> resources) {
 		assert server != null : "Tracker object is undefined!";
 		
@@ -62,13 +64,15 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer,
 	 * utilizzato per gestire le eventuali eccezioni.
-	 * Parametri:
-	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
-	 * resources: Vector<String> contenente i nomi delle risorse da registrare
-	 * */
+	 * 
+	 * @param server oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * @param resources contenente i nomi delle risorse da registrare
+	 * 
+	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
+	 */
 	public Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
 		assert server != null : "SuperPeer object is undefined!";
 		
@@ -86,14 +90,15 @@ public class PeerClient {
 		}		
 	}
 	
-	/*
+	/**
 	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta
 	 * del tracker. Gestisce la richiesta semplice.
 	 * 
-	 * Parametri:
-	 * server: oggetto di tipo tracker
-	 * resource: il nome della risorsa richiesta
-	 * */
+	 * @param server oggetto di tipo tracker
+	 * @param resource il nome della risorsa richiesta
+	 * 
+	 * @return il coordinatore della risorsa richiesta
+	 */
 	public String simpleResourceRequest(Tracker server, String resource) {
 		assert server != null : "Tracker object is undefined!";
 		
@@ -107,14 +112,16 @@ public class PeerClient {
 		}	
 	}
 	
-	/*
+	/**
 	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del
 	 * tracker. Effettua una richiesta avanzata.
-	 * Parametri:
-	 * server: oggetto Tracker sul quale chiamare i metodi
-	 * resource: stringa contenente il nome della risorsa
-	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
-	 * */
+	 * 
+	 * @param server oggetto Tracker sul quale chiamare i metodi
+	 * @param resource stringa contenente il nome della risorsa
+	 * @param prevCoord stringa contenente il nome del coordinatore ottenuto in precedenza
+	 * 
+	 * @return il coordinatore della risorsa richiesta
+	 */
 	public String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
 		assert server != null : "Tracker object is undefined!";
 		
@@ -130,14 +137,15 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta
 	 * del SuperPeer. Gestisce la richiesta semplice
 	 * 
-	 * Parametri:
-	 * server: oggetto di tipo SuperPeer sul quale chiamare il metodo
-	 * resource: il nome della risorsa richiesta
-	 * */
+	 * @param server oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * @param resource il nome della risorsa richiesta
+	 * 
+	 * @return il coordinatore della risorsa richiesta
+	 */
 	public String simpleResourceRequest(SuperPeer server, String resource) {
 		assert server != null : "SuperPeer object is undefined!";
 		
@@ -152,13 +160,16 @@ public class PeerClient {
 		}
 	}
 	
-	/*
-	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del tracker. Effettua una richiesta avanzata
-	 * Parametri:
-	 * server: oggetto SuperPeer sul quale chiamare i metodi
-	 * resource: stringa contenente il nome della risorsa
-	 * prevCoord: stringa contenente il nome del coordinatore ottenuto in precedenza
-	 * */
+	/**
+	 * Metodo per gestire le eccezioni della chiamata al metodo richiesta del tracker. 
+	 * Effettua una richiesta avanzata
+	 * 
+	 * @param server oggetto SuperPeer sul quale chiamare i metodi
+	 * @param resource stringa contenente il nome della risorsa
+	 * @param prevCoord stringa contenente il nome del coordinatore ottenuto in precedenza
+	 * 
+	 * @return il coordinatore della risorsa richiesta
+	 */
 	public String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
 		assert server != null : "SuperPeer object is undefined!";
 		
@@ -177,11 +188,11 @@ public class PeerClient {
 	 * Metodi sul coordinatore
 	 * */
 	
-	/*
+	/**
 	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye sul coordinatore
-	 * Parametri:
-	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
-	 * */
+	 * 
+	 * @param coord oggetto di tipo SuperPeer sul quale effettuare la chiamata
+	 */
 	public void goodbye(SuperPeer coord) {
 		assert coord != null : "SuperPeer object is undefined!";
 		
@@ -194,12 +205,13 @@ public class PeerClient {
 		}	
 	}
 	
-	/*
-	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye per una particolare risorsa sul coordinatore
-	 * Parametri:
-	 * coord: oggetto di tipo SuperPeer sul quale effettuare la chiamata
-	 * resName: stringa contenente il nome della risorsa per la quale ci si rimuove
-	 * */
+	/**
+	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye 
+	 * per una particolare risorsa sul coordinatore
+	 * 
+	 * @param coord oggetto di tipo SuperPeer sul quale effettuare la chiamata
+	 * @param resName stringa contenente il nome della risorsa per la quale ci si rimuove
+	 */
 	public void goodbye(SuperPeer coord, String resName) throws RemoteException {
 		assert coord != null : "SuperPeer object is undefined!";
 		
@@ -229,13 +241,14 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo per gestire le eccezioni della chiamata di getList sul coordinatore.
 	 * 
-	 * Parametri:
-	 * coord: oggetto di tipo SuperPeer sul quale chiamare il metodo
-	 * resName: stringa contenente il nome della risorsa
-	 * */
+	 * @param coord oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * @param resName stringa contenente il nome della risorsa
+	 * 
+	 * @return la lista dei Peer che hanno la risorsa resName
+	 */
 	public Vector<String> getList(SuperPeer coord, String resName) {
 		assert coord != null : "SuperPeer object is undefined!";
 		
@@ -247,18 +260,19 @@ public class PeerClient {
 			System.out.println("Something went wrong while retrieving the zone list");
 			return null;
 		}
-		
 	}
 	
 	/*
 	 * Metodi su altri peer 
 	 * */
 	
-	/*
+	/**
 	 * Metodo per gestire le eccezioni della chiamata a discovery di un altro peer.
-	 * Parametri:
-	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
-	 * */
+	 * 
+	 * @param p oggetto di tipo Peer sul quale effettuare la chiamata
+	 * 
+	 * @return la distanza in termini di hopcount al Peer p
+	 */
 	public float discovery(Peer p) {
 		assert p != null : "Peer object is undefined!";
 		
@@ -273,6 +287,12 @@ public class PeerClient {
 		
 	}
 	
+	/**
+	 * Metodo che aggiunge
+	 * 
+	 * @param resName
+	 * @param ip
+	 */
 	private void addNewPeer(String resName, String ip) {
 		try {
 			Peer p = null;
@@ -303,14 +323,17 @@ public class PeerClient {
 		
 	}
 	
-	/*
+	/**
 	 * Metodo per recuperare una risorsa da un altro peer.
 	 * 
-	 * Effettua la chiamata al metodo getResource del peer in questione e scrive su file lo stream di byte ricevuto
-	 * Parametri:
-	 * p: oggetto di tipo Peer sul quale chiamare la getResource
-	 * resName: stringa contenente il nome della risorsa
-	 * */
+	 * Effettua la chiamata al metodo getResource del peer in questione
+	 * e scrive su file lo stream di byte ricevuto
+	 * 
+	 * @param p oggetto di tipo Peer sul quale chiamare la getResource
+	 * @param resName stringa contenente il nome della risorsa
+	 * 
+	 * @return vero se il trasferimento del file è avvenuto con successo, falso altrimenti
+	 */
 	public boolean getResource(Peer p, String resName) {
 		assert p != null : "Peer object is undefined!";
 		
@@ -346,13 +369,14 @@ public class PeerClient {
 		return true;
 	}
 	
-	/*
+	/**
 	 * Metodo per gestire le eccezioni della chiamata a election sul peer remoto.
 	 * 
-	 * Parametri:
-	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
-	 * resName: stringa contenente il nome della risorsa
-	 * */
+	 * @param p oggetto di tipo Peer sul quale effettuare la chiamata
+	 * @param resName stringa contenente il nome della risorsa
+	 * 
+	 * @return la distanza media verso i Peer che hanno la risorsa resName
+	 */
 	public float election(Peer p, String resName) {
 		assert p != null : "Peer object is undefined!";
 		
@@ -367,14 +391,13 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo usato per gestire le eccezioni della chiamata al coordinator di un altro peer.
 	 * 
-	 * Parametri: 
-	 * p: oggetto di tipo Peer sul quale effettuare la chiamata
-	 * resName: stringa contenente il nome della risorsa
-	 * ipCoord: stringa contenente l'indirizzo ip del coordinatore da impostare
-	 * */
+	 * @param p oggetto di tipo Peer sul quale effettuare la chiamata
+	 * @param resName stringa contenente il nome della risorsa
+	 * @param ipCoord stringa contenente l'indirizzo ip del coordinatore da impostare
+	 */
 	public void coordinator(Peer p, String resName, String ipCoord) {
 		assert p != null : "Peer object is undefined!";
 		
@@ -394,12 +417,13 @@ public class PeerClient {
 	 * Metodi pubblici di gestione del ciclo di vita di un peer
 	 * */
 	
-	/*
+	/**
 	 * Metodo che dato in ingresso il percorso rmi di un tracker ne ritorna l'oggetto corrispondente.
 	 * 
-	 * Parametri:
-	 * server: stringa contenente il percorso rmi del tracker.
-	 * */
+	 * @param server stringa contenente il percorso rmi del tracker.
+	 * 
+	 * @return l'oggetto del tracker
+	 */
 	public Tracker getTracker(String server) {
 		if(debug)
 			System.out.println("Chiamata la getTracker, faccio il lookup di "+server);
@@ -414,12 +438,13 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo che dato in ingresso il percorso rmi di un SuperPeer ne ritorna l'oggetto corrispondente.
 	 * 
-	 * Parametri:
-	 * server: stringa contenente il percorso rmi del SuperPeer.
-	 * */
+	 * @param server stringa contenente il percorso rmi del SuperPeer.
+	 * 
+	 * @return l'oggetto SuperPeer
+	 */
 	public SuperPeer getCoord(String server) {
 		if(debug)
 			System.out.println("Chiamata la getCoord, faccio il lookup di "+server);
@@ -434,12 +459,13 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo che dato in ingresso il percorso rmi di un Peer ne ritorna l'oggetto corrispondente.
 	 * 
-	 * Parametri:
-	 * server: stringa contenente il percorso rmi del Peer.
-	 * */
+	 * @param server stringa contenente il percorso rmi del Peer.
+	 * 
+	 * @return l'oggetto Peer
+	 */
 	public Peer getPeer(String server) {
 		if(debug)
 			System.out.println("Chiamata la getPeer, faccio il lookup di "+server);
@@ -455,18 +481,17 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo chiamato dal peer per avviare la procedura di elezione.
 	 * 
 	 * Chiama la election su ogni altro peer ricevendo le loro distanze medie ed
 	 * elegge come coordinatore il peer con la distanza media piu' bassa.
 	 * 
-	 * Parametri:
-	 * resName: stringa contenente il nome della risorsa per cui e' necessario
-	 *          eleggere un nuovo coordinatore;
-	 * noSelf : true se l'elezione non deve coinvolgere il peer invocante;
-	 * tr     : riferimento al tracker.
-	 * */
+	 * @param resName stringa contenente il nome della risorsa per cui e' necessario
+	 *        eleggere un nuovo coordinatore;
+	 * @param noSelf true se l'elezione non deve coinvolgere il peer invocante;
+	 * @param tr riferimento al tracker.
+	 */
 	public void startElection(String resName, boolean noSelf, Tracker tr) {
 		
 		if(debug)
@@ -568,12 +593,14 @@ public class PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo accessibile all'applicazione da cui questa classe deriva per impostare
 	 * la modalità di debug.
-	 * */
+	 * 
+	 * @param value vale vero se voglio attivare la modalità di debug, falso altrimenti
+	 */
 	protected void setDebug(boolean value) {
-		this.debug = value;
+		PeerClient.debug = value;
 	}
 	
 	/*
