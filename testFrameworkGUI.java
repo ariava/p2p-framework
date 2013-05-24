@@ -211,19 +211,28 @@ public class testFrameworkGUI {
 		           
 		                	if (debug)
 		                		System.out.println("Avviato il thread di elezione");
-		                	
-							
+				
 		                	while(true) {
 		                		
-		                		l.lock();
+		                		if(pc == null) {
+		                			
+		                			try {
+		                				Thread.sleep(5000);
+		                			} catch (InterruptedException e) {}
+		                			continue;
+		                		}
 		                		
+		                		l.lock();
+	
 		                		try {
 		                			//per ogni risorsa
 		                			Enumeration<String> e = pc.myPS.getTable().keys();
 		                			while(e.hasMoreElements()) {
 		                				String key = e.nextElement();
 			                			PeerTable pt = pc.myPS.getTable().get(key);
-			                			if(pt.getCoord().peer.equals(pc.myIp) && !elected) {
+			                			
+			                
+			                			if(pt.getCoord() != null && pt.getCoord().peer.equals(pc.myIp) && !elected) {
 			                				String coord = "rmi://"+pc.myIp+"/"+"SuperPeer"+pc.myIp;
 			    		    				SuperPeer c = pc.getCoord(coord);
 			                				try {
@@ -251,6 +260,7 @@ public class testFrameworkGUI {
 			                }
 		                }
 		            });
+		electionWorker.start();
 		/*	fine thread */
 		
 		frmTestFrameworkGui.addWindowStateListener(new WindowAdapter() {
