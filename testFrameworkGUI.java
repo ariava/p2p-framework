@@ -341,13 +341,28 @@ public class testFrameworkGUI {
 					File resFolder = new File("resources/");
 					File[] list = resFolder.listFiles();
 					connect = true;
+					boolean wasEnabled = btnImport.isEnabled();
+					btnImport.setEnabled(true);
 					for(int i=0;i<list.length;++i) {
 						if(list[i].getName().equals(".gitignore"))
 							continue;
 						tmpFile = list[i];
+						System.out.println("Sto riregistrando la risorsa "+list[i].getName());
+
 						btnImport.doClick();
-						
+						try {
+							System.out.println("Ho finito di reimportare la risorsa "+list[i].getName()+", stampo la sua tabella");
+							PeerTable pt = pc.myPS.getTable().get(list[i].getName());
+							pt.add(new PeerTableData(pc.myIp, 0,
+									 false, pt.get().isEmpty()?true:false));
+							pc.myPS.addToTable(list[i].getName(), pt);
+							pc.myPS.getTable().get(list[i].getName()).print();
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
 					}
+					
+					btnImport.setEnabled(wasEnabled);
 					connect = false;
 				}
 				
@@ -746,15 +761,22 @@ public class testFrameworkGUI {
 	    					SuperPeer c = pc.getCoord(coord);
 	    					
 	    					assert c != null : "SuperPeer object is undefined!";
-	    					
+	    					System.out.println("Sto registrando una risorsa gia' presente nella rete: "+resNames.get(i)+", lo notifico al coordinatore, che e': "+coord);
 	    					pc.registerResources(c, resNames);
 	    				}
 	    				else {
 	    					if(debug)
 	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
-	    					if (!elected) {
-		    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
-		    					SuperPeer c = pc.getCoord(coord);
+	    					
+		    				String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
+		    				SuperPeer c = pc.getCoord(coord);
+		    				try {
+								c.register(pc.myIp, resNames);
+							} catch (RemoteException e2) {
+								System.out.println("Unable to register myself as coordinator in my SuperPeerServer");
+								e2.printStackTrace();
+							}
+		    				if (!elected) {
 		    					try {
 									pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
 									System.out.println("### ISTANZIATO Riferimento al (Super)PeerClient: " + pc + " ###");
