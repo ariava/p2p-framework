@@ -5,23 +5,26 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class SuperPeerClient extends PeerClient {
-	static private SuperPeer server = null;
-	static private Tracker tracker = null;
+	private SuperPeer server = null;
+	private Tracker tracker = null;
 	
 	private Thread listRetriever = null;
 	
-	static private String timestamp;
+	private String timestamp;
 	
-	/*
+	/**
 	 * Costruttore della classe SuperPeerClient.
 	 * Il costruttore si occupa di inizializzare le variabili private necessarie
 	 * per le funzioni di coordinatore di zona e di avviare il thread dedicato al
 	 * recupero periodico della tabella dei coordinatori dal tracker.
 	 * 
-	 * Parametri:
-	 * server: riferimento al server coordinatore
-	 * tracker: riferimento al tracker
-	 * */
+	 * XXX: il parametro trIp non viene mai utilizzato!!!!!!!!!!!!
+	 * 
+	 * @param pc riferimento al PeerClient
+	 * @param server riferimento al server coordinatore
+	 * @param tracker riferimento al tracker
+	 * @param trIp indirizzo ip del tracker
+	 */
 	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker, String trIp) throws UnknownHostException {
 		//super();
 		assert(server != null);
@@ -38,12 +41,12 @@ public class SuperPeerClient extends PeerClient {
 		this.startupListRetriever();
 	}
 	
-	/*
+	/**
 	 * Funzione privata di calcolo del timestamp, secondo un formato
 	 * comprensibile per un oggetto di tipo TrackerServer.
 	 * 
 	 * TODO: usare una libreria condivisa e lo stesso metodo SPOT?
-	 * */
+	 */
 	private void setTimestamp() {
 		Calendar now = Calendar.getInstance();
 		int year = now.get(Calendar.YEAR);
@@ -56,12 +59,11 @@ public class SuperPeerClient extends PeerClient {
 		this.timestamp = String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
 	}
 	
-	/*
+	/**
 	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
 	 * 
-	 * Parametri:
-	 * table: tabella hash dei coordinatori
-	 * */
+	 * @param table tabella hash dei coordinatori
+	 */
 	private void printCoordTable(Hashtable<String, String> table) {
 		assert(table != null && table.size() != 0);
 		
@@ -74,16 +76,15 @@ public class SuperPeerClient extends PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo per impostare il server SuperPeer come coordinatore di una risorsa data.
 	 * 
 	 * Il metodo invoca il rispettivo metodo dell'oggetto Tracker passandogli l'indirizzo
 	 * IP del nuovo coordinatore e l'identificativo univoco della risorsa data.
 	 * 
-	 * Parametri:
-	 * risorsa: stringa identificativa della risorsa della quale si vuole impostare
-	 *          il nuovo coordinatore
-	 * */
+	 * @param risorsa stringa identificativa della risorsa della quale si vuole impostare
+	 *        il nuovo coordinatore
+	 */
 	public void setCoordinator(String risorsa) {
 		assert(risorsa != null && risorsa != "");
 		try {
@@ -100,12 +101,12 @@ public class SuperPeerClient extends PeerClient {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo privato per l'avviamento di un nuovo thread.
 	 * Tale thread periodicamente richiede all'oggetto Tracker la lista dei
 	 * coordinatori aggiornata e la passa all'oggetto server SuperPeer perché
 	 * la memorizzi internamente.
-	 * */
+	 */
 	private void startupListRetriever() {
 		  if(listRetriever != null)
 			  return;
@@ -172,10 +173,10 @@ public class SuperPeerClient extends PeerClient {
 		  listRetriever.start();
 	}
 	
-	/*
+	/**
 	 * Metodo per arrestare il thread incaricato di rinfrescare la tabella dei 
 	 * coordinatori nel server SuperPeer.
-	 * */
+	 */
 	@SuppressWarnings("deprecation")
 	protected void stopListRetriever() {
 		if (debug)
