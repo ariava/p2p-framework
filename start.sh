@@ -21,7 +21,7 @@ all="all"
 tracker="tracker"
 
 gnome-terminal --geometry=67x10+0+0 --title="Registry" -e "bash -c \"rmiregistry\";" &
-#gnome-terminal --geometry=67x10+700+0 --title="Varie" -e "bash -c \"make clean\";" &
+gnome-terminal --geometry=67x10+700+0 --title="Varie" -e "bash -c \"make clean\";" &
 sleep 1
 
 if [ "$1" = "$peer" -o "$1" = "$all" ];
