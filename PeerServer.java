@@ -21,12 +21,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	protected Hashtable<String, PeerTable> resourceTable;
 	
 	
-	/*
+	/**
 	 * Costruttore della classe PeerServer.
 	 * 
 	 * Inizializza la distanza media a 0 e l'ip all'ip corrente della
 	 * macchina. Crea una hashtable vuota.
-	 * */
+	 */
 	public PeerServer() throws RemoteException, UnknownHostException {
 		
 		super();
@@ -36,16 +36,15 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
-	/*
+	/**
 	 * Metodo orribile per sincronizzare la tabella del client con quella del
 	 * rispettivo server.
 	 * 
-	 *  Parametri:
-	 *  rt: l'oggetto di tipo Hashtable da sostituire con la propria tabella
+	 * @param rt l'oggetto di tipo Hashtable da sostituire con la propria tabella
 	 *  
 	 *  XXX: problema di sicurezza, non ci sono controlli sul fatto che questo
 	 *  metodo possa essere chiamato solo ed esclusivamente dal SUO client.
-	 * */
+	 */
 	public void syncTable(Hashtable<String, PeerTable> rt) {
 		if(debug) {
 			System.out.println("chiamata la sync");
@@ -54,20 +53,21 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
-	/*
+	/**
 	 * Getter di avgDist
-	 * */
+	 * 
+	 * @return la distanza media
+	 */
 	public float getAvgDist() {
 		return this.avgDist;
 	}
 	
-	/*
+	/**
 	 * Goodbye sul peer, rimuove il chiamante dalla propria tabella
 	 * 
-	 * Parametri:
-	 * resName: risorsa per cui il chiamante lascia
-	 * ip: indirizzo ip del chiamante
-	 * */
+	 * @param resName risorsa per cui il chiamante lascia
+	 * @param ip indirizzo ip del chiamante
+	 */
 	public void goodbye(String resName, String ip) throws RemoteException {
 		
 		PeerTable pt = this.resourceTable.get(resName);
@@ -78,19 +78,23 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(resName, pt);
 	}
 	
-	/*
+	/**
 	 * Setter di avgDist
-	 * */
+	 * 
+	 * @param avg la distanza media
+	 */
 	public void setAvgDist(float avg) {
 		this.avgDist = avg;
 	}
-	/*
+	
+	/**
 	 * Metodo che dato l'indirizzo ip del chiamante ritorna la distanza in termini
 	 * di hopcount dalla macchina corrente.
 	 * 
-	 * Parametri: 
-	 * ip: stringa contenente l'ip del chiamante
-	 * */
+	 * @param ip stringa contenente l'ip del chiamante
+	 * 
+	 * @return la distanza in termini di hopcount dalla macchina corrente
+	 */
 	public float discovery(String ip) throws RemoteException {
 		
 		if(debug) {
@@ -101,13 +105,14 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
-	/*
+	/**
 	 * Metodo che ritorna un array di byte che contiene la risorsa richiesta.
 	 * 
-	 * Parametri: 
-	 * resName: stringa contenente il nome della risorsa richiesta
-	 * ip: indirizzo ip del chiamante, usato  per aggiungerlo alla tabella dopo
-	 * */
+	 * @param resName stringa contenente il nome della risorsa richiesta
+	 * @param ip indirizzo ip del chiamante, usato  per aggiungerlo alla tabella dopo
+	 * 
+	 * @return un array di byte contenente la risorsa richiesta (resName)
+	 */
 	public byte[] getResource(String resName,String ip) throws RemoteException {
 
 		if(debug) {
@@ -134,14 +139,13 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		}
 	}
 	
-	/*
+	/**
 	 * Metodo di debug che stampa un insieme di vettori di stringhe in modo "ordinato".
 	 * 
-	 * Parametri:
-	 * labels: etichette dei vettori di stringhe
-	 * vecs: un numero variabile di vettori di stringhe
+	 * @param labels etichette dei vettori di stringhe
+	 * @param vecs un numero variabile di vettori di stringhe
 	 * XXX: cfr SuperPeerServer, usare un'unica libreria SPOT?
-	 * */
+	 */
 	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {
@@ -156,10 +160,14 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			labelnum++;
 		}
 	}
-	/*
+	
+	/**
 	 * Metodo (privato) per aggiungere un peer alla tabella dei possessori della risorsa
 	 * dopo che gli e' stata data
-	 * */
+	 * 
+	 * @param resName stringa contenente il nome della risorsa da aggiungere
+	 * @param ip indirizzo ip del peer da aggiungere
+	 */
 	@SuppressWarnings("unchecked")
 	private void addNewPeer(String resName, String ip) {
 		Peer p = null;
@@ -196,12 +204,15 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un altro peer una volta avviata la procedura di
 	 * elezione per ricevere i vari id (distanze medie).
 	 * 
-	 * res: risorsa per la quale si avvia l'election
-	 * */
+	 * @param res risorsa per la quale si avvia l'election
+	 * @param ipCaller indirizzo ip del chiamante
+	 * 
+	 * @return distanza media
+	 */
 	public float election(String res, String ipCaller) throws RemoteException {
 		
 		if(debug)
@@ -212,14 +223,13 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un altro peer per annunciare il nuovo coordinatore per
 	 * una risorsa.
 	 * 
-	 * Parametri:
-	 * newCoord: stringa contenente l'ip del nuovo coordinatore
-	 * res: stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
-	 * */
+	 * @param newCoord stringa contenente l'ip del nuovo coordinatore
+	 * @param res stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
+	 */
 	public void coordinator(String newCoord, String res) throws RemoteException {
 		
 		System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
@@ -250,27 +260,33 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(res, pt);
 	}
 	
-	/*
+	/**
 	 * Getter della resourceTable
-	 * */
+	 * 
+	 * @return la tabella delle risorse
+	 */
 	public Hashtable<String, PeerTable> getTable() {		
 		return this.resourceTable;		
 	}
 	
-	/*
+	/**
 	 * Metodo che aggiunge una entry alla resourceTable
 	 * 
-	 * Parametri:
-	 * resName: il nome della risorsa
-	 * pt: la peerTable da aggiungere a quella risorsa
-	 * */
+	 * @param resName il nome della risorsa
+	 * @param pt la peerTable da aggiungere a quella risorsa
+	 */
 	public void addToTable(String resName, PeerTable pt) {
 		
 		this.resourceTable.put(resName, pt);
-		
 	}
 
-	
+	/**
+	 * Il main inizializza il PeerServer e lo fa eseguire
+	 * 
+	 * @param args array passato al lancio del PeerServer. Il primo elemento
+     * di tale array indica se far partire il PeerServer in modalità di debug
+     * (args[0] = "debug") o no (senza parametri)
+	 */
 	public static void main(String[] args) {
 		
 		if(args.length > 0 && args[0].equals("debug"))
