@@ -18,25 +18,18 @@ public class SuperPeerClient extends PeerClient {
 	 * per le funzioni di coordinatore di zona e di avviare il thread dedicato al
 	 * recupero periodico della tabella dei coordinatori dal tracker.
 	 * 
-	 * XXX: il parametro trIp non viene mai utilizzato!!!!!!!!!!!!
-	 * 
 	 * @param pc riferimento al PeerClient
 	 * @param server riferimento al server coordinatore
 	 * @param tracker riferimento al tracker
 	 * @param trIp indirizzo ip del tracker
 	 */
-	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker, String trIp) throws UnknownHostException {
-		//super();
+	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker) throws UnknownHostException {
 		assert(server != null);
 		assert(tracker != null);
 		this.server = server;
 		this.tracker = tracker;
 		
-		this.trackerIp = pc.trackerIp;
-		System.out.println("L'ip del tracker impostato nel costruttore del superpeer e' "+this.trackerIp);
-		
 		this.myIp = pc.myIp;
-		
 		
 		this.startupListRetriever();
 	}
@@ -134,7 +127,7 @@ public class SuperPeerClient extends PeerClient {
 			                    	String s = "rmi://"+trackerIp+"/Tracker";
 			                    	tracker = (Tracker)Naming.lookup(s);
 
-			                    	if(down) {
+			                    	if (down) {
 			                    		if (debug)
 			                    			System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la tabella");
 			                    		tracker.setList(server.getCoordTable()); 

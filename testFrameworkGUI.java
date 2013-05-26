@@ -131,7 +131,7 @@ public class testFrameworkGUI {
 		
 		InputStream inStream = null;
         OutputStream outStream = null;
-        try{
+        try {
         	File file1 =new File(src);
         	File file2 =new File(dst);
  
@@ -140,16 +140,15 @@ public class testFrameworkGUI {
             
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = inStream.read(buffer)) > 0){
+            while ((length = inStream.read(buffer)) > 0)
             	outStream.write(buffer, 0, length);
-            }
  
             if (inStream != null) inStream.close();
             if (outStream != null) outStream.close();
  
             System.out.println("File " + src + " Copied");
             return true;
-        }catch(IOException e){
+        } catch(IOException e) {
         	e.printStackTrace();
         	return false;
         }
@@ -164,7 +163,7 @@ public class testFrameworkGUI {
 	
 
 	/**
-	 * Il client esce in modo pulito
+	 * Metodo che consente al client di uscire in modo pulito
 	 */
 	private void close() {
 		disconnect = true;
@@ -176,17 +175,14 @@ public class testFrameworkGUI {
 		
 	private void enabledDisabledMenuItems(String component) {
 		Transferable clipboardContent = clipboard.getContents(null);
-		if(clipboardContent!=null && (clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor))) {
+		if (clipboardContent!=null && (clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor)))
 			pasteMenuItem.setEnabled(true);
-		}
-		else {
+		else
 			pasteMenuItem.setEnabled(false);
-		}
 		if ((component.equals("txtIpTracker") ? txtIpTracker : txtInsertFileTo).getSelectedText() != null) {
 			cutMenuItem.setEnabled(true);
 			copyMenuItem.setEnabled(true);
-		}
-		else {
+		} else {
 			cutMenuItem.setEnabled(false);
 			copyMenuItem.setEnabled(false);
 		}
@@ -208,39 +204,37 @@ public class testFrameworkGUI {
 		Thread electionWorker = new Thread(
 				  new Runnable() {
 		                public void run() {
-		           
 		                	if (debug)
 		                		System.out.println("Avviato il thread di elezione");
-				
-		                	while(true) {
-		                		
+		                	while(true) {	
 		                		if(pc == null) {
-		                			
 		                			try {
 		                				Thread.sleep(5000);
 		                			} catch (InterruptedException e) {}
 		                			continue;
 		                		}
-		                		
-		                		l.lock();
-	
+		                		l.lock(); /* I dati protetti dal lock sono l'attributo
+		                				   * booleano "election" e l'attributo PeerClient
+		                				   * "pc"
+		                				   */
 		                		try {
-		                			//per ogni risorsa
 		                			Enumeration<String> e = pc.myPS.getTable().keys();
 		                			while(e.hasMoreElements()) {
 		                				String key = e.nextElement();
 			                			PeerTable pt = pc.myPS.getTable().get(key);
-			                			
-			                
-			                			if(pt.getCoord() != null && pt.getCoord().peer.equals(pc.myIp) && !elected) {
+			                			// se si trova almeno una risorsa per la quale il PeerClient è coordinatore,
+			                			// allora il PeerClient deve diventare un SuperPeerClient
+			                			if (pt.getCoord() != null && pt.getCoord().peer.equals(pc.myIp) && !elected) {
 			                				String coord = "rmi://"+pc.myIp+"/"+"SuperPeer"+pc.myIp;
 			    		    				SuperPeer c = pc.getCoord(coord);
 			                				try {
-												pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
+												pc = new SuperPeerClient(pc, c, tr);
 											} catch (UnknownHostException e1) {
+												System.out.println("Thread di elezione: errore nella creazione di un SuperPeerClient");
 												e1.printStackTrace();
 											}
-											System.out.println("!*!*! Mi istanzio un nuovo oggetto SuperPeer! !*!*!");
+			                				if (debug)
+			                					System.out.println("!*!*! Mi istanzio un nuovo oggetto SuperPeer! !*!*!");
 											pc.setDebug(debug);
 											elected = true;
 											break;
@@ -256,12 +250,11 @@ public class testFrameworkGUI {
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								} 
-			                   
 			                }
 		                }
 		            });
-		electionWorker.start();
 		/*	fine thread */
+		electionWorker.start();
 		
 		frmTestFrameworkGui.addWindowStateListener(new WindowAdapter() {
 	        public void windowClosing(WindowEvent e) {
@@ -270,9 +263,7 @@ public class testFrameworkGUI {
 	    });
 		
 		JPanel panel = new JPanel();
-		
 		JPanel panel_1 = new JPanel();
-		
 		JPanel panel_4 = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(frmTestFrameworkGui.getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -339,9 +330,8 @@ public class testFrameworkGUI {
 			(new KeyAdapter() {
 				public void keyPressed(KeyEvent e) {
 					int key = e.getKeyCode();
-					if (key == KeyEvent.VK_ENTER) {
+					if (key == KeyEvent.VK_ENTER)
 						btnConnect.doClick();
-					}
 				}
 	        });
 		txtIpTracker.addMouseListener(new MouseAdapter() {
@@ -362,9 +352,7 @@ public class testFrameworkGUI {
 		final JButton btnNewButton = new JButton(" Download ");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
-				
 				if (first_connect) {
 					try {
 						pc = new PeerClient(txtIpTracker.getText());
@@ -394,7 +382,7 @@ public class testFrameworkGUI {
 					return;
 				}
 				
-				// Quando si schiaccia sul bottone Connect
+				// Quando si preme il pulsante Connect
 				if (btnConnect.getText().equals("    Connect   ")) {
 					txtIpTracker.setEnabled(false);
 					txtInsertFileTo.setEnabled(true);
@@ -413,28 +401,29 @@ public class testFrameworkGUI {
 						if(list[i].getName().equals(".gitignore"))
 							continue;
 						tmpFile = list[i];
-						System.out.println("Sto riregistrando la risorsa "+list[i].getName());
-
+						if (debug)
+							System.out.println("Sto riregistrando la risorsa "+list[i].getName());
 						btnImport.doClick();
 						try {
-							System.out.println("Ho finito di reimportare la risorsa "+list[i].getName()+", stampo la sua tabella");
+							if (debug)
+								System.out.println("Ho finito di reimportare la risorsa "+list[i].getName()+", stampo la sua tabella");
 							PeerTable pt = pc.myPS.getTable().get(list[i].getName());
 							pt.add(new PeerTableData(pc.myIp, 0,
-									 false, pt.get().isEmpty()?true:false));
+								   false, pt.get().isEmpty() ? true : false));
 							pc.myPS.addToTable(list[i].getName(), pt);
 							pc.myPS.getTable().get(list[i].getName()).print();
 						} catch (RemoteException e) {
 							e.printStackTrace();
 						}
 					}
-					
 					btnImport.setEnabled(wasEnabled);
 					connect = false;
 				}
 				
-				// Quando si schiaccia sul bottone Disconnect
+				// Quando si preme il pulsante Disconnect
 				else {
-					System.out.println("#### Disconnessione in corso ####");
+					if (debug)
+						System.out.println("#### Disconnessione in corso ####");
 					close();
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
@@ -446,7 +435,6 @@ public class testFrameworkGUI {
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
 				}
-				
 				pc.trackerIp = txtIpTracker.getText();
 			}
 		});
@@ -469,18 +457,16 @@ public class testFrameworkGUI {
             		table.clearSelection();
             		btnDelete.setEnabled(false);
             	}
-            	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled()) {
+            	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled())
             		txtInsertFileTo.setText("");
-            	}
             }
         });
 		txtInsertFileTo.addKeyListener
 		(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				int key = e.getKeyCode();
-				if (key == KeyEvent.VK_ENTER) {
+				if (key == KeyEvent.VK_ENTER)
 					btnNewButton.doClick();
-				}
 			}
         });
 		txtInsertFileTo.addMouseListener(new MouseAdapter() {
@@ -494,7 +480,7 @@ public class testFrameworkGUI {
 		
 		btnNewButton.setEnabled(false);
 		btnNewButton.addActionListener(new ActionListener() {
-			/*							LISTENER BOTTONE DI DOWNLOAD				*/
+			/*							LISTENER PULSANTE DI DOWNLOAD				*/
 			public void actionPerformed(ActionEvent e) {
 				
 				if(pc == null) {	
@@ -541,6 +527,7 @@ public class testFrameworkGUI {
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
+					/* Utilizziamolo per richiedere la risorsa */
 					if (pt != null) {
 						String s = "rmi://"+pt.getCoord().peer+"/SuperPeer"+pt.getCoord().peer;
 						SuperPeer sp = pc.getCoord(s);
@@ -586,7 +573,7 @@ public class testFrameworkGUI {
 					}
 					System.out.println("Coordinator isn't responding..");
 					try {
-						Thread.sleep(5000);	//TODO: trovare un tempo di sleep realistico
+						Thread.sleep(5000);
 					} catch (InterruptedException ex) {
 						System.out.println("Exception while sleeping: " + ex.getMessage());
 						ex.printStackTrace();
@@ -607,7 +594,7 @@ public class testFrameworkGUI {
 				
 				PeerTable pt = new PeerTable();
 				pt.setDebug(debug);
-				for(int i=0;i<ipList.size();++i) {
+				for(int i=0 ; i<ipList.size() ; ++i) {
 					
 					String peer = ipList.get(i);
 					peer = "rmi://"+peer+"/"+"Peer"+peer;
@@ -688,7 +675,6 @@ public class testFrameworkGUI {
 			    return false;
 			}
 		});
-		//table.sete
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setBackground(Color.WHITE);
 		table.setBounds(0, 52, 550, 321);
@@ -711,16 +697,13 @@ public class testFrameworkGUI {
             			btnDelete.setEnabled(true);
             			
             			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
-            		}
-            		else {
+            		} else {
             			table.clearSelection();
             			btnDelete.setEnabled(false);
             		}
-            	}
-            	else if (SwingUtilities.isLeftMouseButton(e)) {
-            		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            	} else if (SwingUtilities.isLeftMouseButton(e)) {
+            		if (table.rowAtPoint(e.getPoint()) >= 0)
             			btnDelete.setEnabled(true);
-            		}
             		else {
             			table.clearSelection();
             			btnDelete.setEnabled(false);
@@ -730,9 +713,8 @@ public class testFrameworkGUI {
         });
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2 && table.rowAtPoint(e.getPoint()) >= 0) {
-					runMenuItem.doClick();
-				}  
+				if (e.getClickCount() == 2 && table.rowAtPoint(e.getPoint()) >= 0)
+					runMenuItem.doClick();  
 			}
 		});
 		panel_3.add(table);
@@ -759,7 +741,6 @@ public class testFrameworkGUI {
 		btnImport.setEnabled(false);
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				if(pc == null) {	
 					JOptionPane.showMessageDialog(null, "PeerClient object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
@@ -784,17 +765,15 @@ public class testFrameworkGUI {
 				int selezione=0;
 				File f = null;
 				JFileChooser fc = null;
-				if(!connect) {
+				if (!connect) {
 					fc = new JFileChooser("~");
 					fc.setMultiSelectionEnabled(true);
 					selezione = fc.showDialog(null, "Seleziona il file da aprire");
-				}
-				else {
+				} else
 					selezione = JFileChooser.APPROVE_OPTION;
-					
-				}
-                if(selezione == JFileChooser.APPROVE_OPTION) {
-                	if(connect)
+				
+                if (selezione == JFileChooser.APPROVE_OPTION) {
+                	if (connect)
                 		f = tmpFile;
                 	else
                 		f = fc.getSelectedFile();
@@ -807,7 +786,6 @@ public class testFrameworkGUI {
                 		System.out.println(f.getAbsolutePath());
 	                if(!connect)
 	                	copyOk = copyFile(f.getAbsolutePath(),"resources/"+f.getName());
-	                
 	                if(!copyOk) {
 	                	JOptionPane.showMessageDialog(null, "Failed to copy the resource! Do you have read permissions..? Or maybe the resource simply doesn't exists..", "Error",JOptionPane.ERROR_MESSAGE);
 	                	return;
@@ -830,8 +808,7 @@ public class testFrameworkGUI {
 	    				try {
 	    					PeerTable temp = new PeerTable(new PeerTableData(coords.get(i),0, false, true));
 	    					temp.setDebug(debug);
-							pc.myPS.addToTable(resNames.get(i), temp);
-							
+							pc.myPS.addToTable(resNames.get(i), temp);	
 						} catch (RemoteException e2) {
 							System.out.println("Unable to add an element to resourceTable");
 							e2.printStackTrace();
@@ -840,15 +817,15 @@ public class testFrameworkGUI {
 	    				if (debug)
 	    					System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
 	    				
-	    				if(!coords.get(i).equals(pc.myIp)) {
+	    				if (!coords.get(i).equals(pc.myIp)) {
 	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
 	    					SuperPeer c = pc.getCoord(coord);
 	    					
 	    					assert c != null : "SuperPeer object is undefined!";
-	    					System.out.println("Sto registrando una risorsa gia' presente nella rete: "+resNames.get(i)+", lo notifico al coordinatore, che e': "+coord);
+	    					if (debug)
+	    						System.out.println("Sto registrando una risorsa gia' presente nella rete: "+resNames.get(i)+", lo notifico al coordinatore, che e': "+coord);
 	    					pc.registerResources(c, resNames);
-	    				}
-	    				else {
+	    				} else {
 	    					if(debug)
 	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
 	    					
@@ -863,8 +840,9 @@ public class testFrameworkGUI {
 		    				l.lock();
 		    				if (!elected) {
 		    					try {
-									pc = new SuperPeerClient(pc,c,tr,pc.trackerIp);
-									System.out.println("### ISTANZIATO Riferimento al (Super)PeerClient: " + pc + " ###");
+									pc = new SuperPeerClient(pc, c, tr);
+									if (debug)
+										System.out.println("### ISTANZIATO Riferimento al (Super)PeerClient: " + pc + " ###");
 									pc.setDebug(debug);
 									
 								} catch (UnknownHostException e1) {
@@ -880,16 +858,13 @@ public class testFrameworkGUI {
 	    			/************************************/
 	    			DefaultTableModel model = (DefaultTableModel) table.getModel();
 	    			boolean found = false;
-	    			for(int i=0;i<model.getRowCount();++i) {
-	    				
+	    			for (int i=0 ; i<model.getRowCount() ; ++i) {
 	    				if(model.getValueAt(i, 0).equals(resName)) {
 	    					found = true;
 	    					break;
-	    				}
-	    				
+	    				}	
 	    			}
-	    			
-	    			if(!found) 
+	    			if (!found) 
 	    				model.addRow(new Object[]{resName});
                 }
 			}
@@ -904,23 +879,26 @@ public class testFrameworkGUI {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
 				int[] selectedRows;
-				System.out.println();
-				System.out.println("### Chiamata la delete con disconnect == "+ disconnect + " ####");
-				System.out.println("### DISCONNESSO Riferimento al (Super)PeerClient: " + pc + " ###");
-				System.out.println();
+				if (debug) {
+					System.out.println();
+					System.out.println("### Chiamata la delete con disconnect == "+ disconnect + " ####");
+					System.out.println("### DISCONNESSO Riferimento al (Super)PeerClient: " + pc + " ###");
+					System.out.println();
+				}
 				if(disconnect) {
 					/* se non siamo superpeer le seguenti due istruzioni comunque non fanno danni */
 					elected = false;
-					System.out.println("### STOP LIST RETRIEVER Riferimento al (Super)PeerClient: " + pc + " ###");
+					if (debug)
+						System.out.println("### STOP LIST RETRIEVER Riferimento al (Super)PeerClient: " + pc + " ###");
 					pc.stopListRetriever();
 					selectedRows = new int[model.getRowCount()];
-					for(int i=0;i<model.getRowCount();++i)
+					for(int i=0 ; i<model.getRowCount() ; ++i)
 						selectedRows[i] = i;
 				}
 				else
 					selectedRows = table.getSelectedRows();
 				
-				for(int i=selectedRows.length-1;i>=0 && selectedRows.length>0;--i) {
+				for (int i=selectedRows.length-1 ; i>=0 && selectedRows.length>0 ; --i) {
 					if (debug)
 						System.out.println("Riga selezionata: "+selectedRows[i]);
 					PeerTable pt = null;
@@ -930,15 +908,17 @@ public class testFrameworkGUI {
 						System.out.println("Unable to get resourceTable from my server");
 						e1.printStackTrace();
 					}
-					if (debug)
+					if (debug) {
 						System.out.println("****************************tabella prima crash **********************");
-					pt.print();
+						pt.print();
+					}
 					String coord = pt.getCoord().peer;
 					String server = "rmi://"+coord+"/"+"SuperPeer"+coord;
 					SuperPeer c = pc.getCoord(server);
 					
-					//se sono io il coord faccio partire l'election
-					System.out.println("**** MY IP " + pc.myIp + " COORD " + coord + " *******");
+					//se sono io il coordinatore faccio partire l'election
+					if (debug)
+						System.out.println("**** MY IP " + pc.myIp + " COORD " + coord + " *******");
 					if(pc.myIp.equals(coord))
 						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr);					
 					if (debug)
@@ -979,6 +959,7 @@ public class testFrameworkGUI {
 				}
 				disconnect = false;
 				
+				// XXX (Arianna): la seguente riga di codice per cosa era?
 				//table.clearSelection();
 				btnDelete.setEnabled(false);
 			}

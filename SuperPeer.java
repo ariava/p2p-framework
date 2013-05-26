@@ -11,8 +11,7 @@ public interface SuperPeer extends Peer {
 	public Vector<String> getList(String resource_name) throws RemoteException;
 	public void setList(Hashtable<String, String> table) throws RemoteException;
 	public  Hashtable<String, String> getCoordTable() throws RemoteException;
-	
-	// TODO: eliminare metodo getId()?
+
 	public String getId() throws RemoteException;
 	public String getName() throws RemoteException;
 	public String getIP() throws RemoteException;

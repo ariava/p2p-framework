@@ -36,7 +36,6 @@ public class PeerClient {
 	/*
 	 * Metodi chiamati sul tracker
 	 * */
-	
 
 	/**
 	 * Metodo privato utilizzato per chiamare il metodo registrazione del tracker,
@@ -84,7 +83,6 @@ public class PeerClient {
 		try {	
 			return server.register(this.myIp, resources);
 		} catch (Exception e) {
-			
 			System.out.println("Something went wrong while registering resources "+resources);
 			return null;
 		}		
@@ -130,8 +128,7 @@ public class PeerClient {
 					" dato come prevCoord "+prevCoord);
 		try {
 			return server.richiesta(resource, prevCoord);
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			System.out.println("Something went wrong while requesting resource "+resource);
 			return "";
 		}
@@ -227,8 +224,7 @@ public class PeerClient {
 		
 		Vector<PeerTableData> list = this.myPS.getTable().get(resName).get();
 		
-		for(int i=0;i<list.size();++i) {
-			
+		for(int i=0 ; i<list.size() ; ++i) {
 			String peer = "rmi://"+list.get(i).peer+"/Peer"+list.get(i).peer;
 			if (debug)
 				System.out.println("goodbye(): uscita pulita dal PeerServer " + list.get(i));
@@ -356,7 +352,7 @@ public class PeerClient {
 			if(debug)
 				System.out.println("resources/"+file.getName());
 			BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("resources/"+file.getName()));
-			output.write(filedata,0,filedata.length);
+			output.write(filedata, 0, filedata.length);
 			output.flush();
 			output.close();
 		} catch (Exception e) {
@@ -540,9 +536,9 @@ public class PeerClient {
 		if(!noSelf)
 			peerMin = this.myIp;
 		
-		for(int i=0;i<answers.length;++i) {
+		for(int i=0 ; i<answers.length ; ++i) {
 			if(answers[i] < min) {
-				if(!noSelf) {
+				if (!noSelf) {
 					min = answers[i];
 					peerMin = peers[i];
 				} else
@@ -553,7 +549,7 @@ public class PeerClient {
 			}
 		}
 		
-		if(peerMin.isEmpty()) {
+		if (peerMin.isEmpty()) {
 			System.out.println("Election ended but no coordinator was elected");
 			try {
 				tr.cambioCoordinatore(peerMin, resName);

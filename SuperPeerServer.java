@@ -87,7 +87,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 * vecs: un numero variabile di vettori di stringhe
 	 * XXX: cfr PeerServer, usare un'unica libreria SPOT?
 	 * */
-	private void printStringVectors(String[] labels, Vector<String>... vecs) {
+	@SafeVarargs
+	private final void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {
 			System.out.print("[");
@@ -150,9 +151,13 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 				coord = new String(requestor_ip);
 				coordTable.put(resources.get(i), coord);
 			}
+			/*
+			 * Se nella PeerTable del mio peer non c'è la risorsa, la inserisco
+			 * anche lì per non creare inconsistenze.
+			 */
 			PeerTable pt = this.myPS.getTable().get(resources.get(i));
 			boolean found = false;
-			for(int j=0;j<pt.get().size();++j) {
+			for(int j=0 ; j<pt.get().size() ; ++j) {
 				if(pt.get().get(j).peer.equals(requestor_ip)) {
 					found = true;
 					break;
@@ -160,9 +165,9 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			}
 			if(!found) {
 				pt.add(new PeerTableData(requestor_ip, 4,
-						false, coord.equals(requestor_ip)?true:false));
+					   false, coord.equals(requestor_ip) ? true : false));
 				this.myPS.addToTable(resources.get(i), pt); 
-				}
+			}
 			coordinators.add(coord);
 		}
 		assert(resources.size() == coordinators.size());

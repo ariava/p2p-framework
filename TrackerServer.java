@@ -19,6 +19,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	private String timestamp;
 	private Hashtable<String, String> table;
 	
+	// XXX (Arianna): controllo del formato sull'IP in libreria accessibile
+	//                anche dalle altre classi?
 	private static final String PATTERN = 
 	        "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 	        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
@@ -47,7 +49,6 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Metodo che stampa la tabella posseduta dal tracker
 	 */
 	private void stampaTabella() {
-		
 		Enumeration<String> enumKey = table.keys();
 		System.out.println("*** TABELLA TRACKER ***");
 		System.out.println("timestamp: " + timestamp);
@@ -228,8 +229,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
         			this.stampaTabella();
         		}
     			return coordinatore_corrente;
-    		}
-    		else {
+    		} else {
     			this.eliminateCoordinatorFromTable(ipPrecedente);
     			if (debug) {
     				System.out.println("Il ping del coordinatore " + coordinatore_corrente + " ha dato esito negativo");
@@ -238,8 +238,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
         		}
     			return null;
     		}
-    	}
-    	else {
+    	} else {
     		if (debug) {
     			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatore_corrente);
     			this.stampaTabella();
@@ -266,8 +265,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
             InetAddress adr = InetAddress.getByName(address);
             status = adr.isReachable(2000); // 2 secondi
             return status;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         
@@ -358,8 +356,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
         		System.out.println();
         	}
     		return table;
-    	}
-    	else {
+    	} else {
     		if (debug) {
         		System.out.println("Il peer ha già la tabella aggiornata percui non gli passo nulla");
         		System.out.println();
@@ -383,8 +380,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
             TrackerServer obj = new TrackerServer();
             Naming.rebind("Tracker", obj);
             System.out.println("Il server è in esecuzione, digitare CTRL+C per terminarlo.");
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }

@@ -34,7 +34,6 @@ public class PeerTable implements Serializable {
 	 * @param pd elemento di tipo PeerTableData
 	 */
 	public void add(PeerTableData pd) {
-		
 		this.data.add(pd);
 	}
 	
@@ -45,12 +44,10 @@ public class PeerTable implements Serializable {
 	 * @return elemento di tipo PeerTableData
 	 */
 	public PeerTableData getCoord() {
-		
-		for(int i=0;i<data.size();++i) {
+		for (int i=0 ; i<data.size() ; ++i) {
 			if(data.get(i).coordinator)
 				return data.get(i);
 		}
-		
 		return null;
 	}
 	
@@ -110,10 +107,9 @@ public class PeerTable implements Serializable {
 			System.out.println("******************************************************");
 			System.out.println("Chiamata la getAvgDist");
 		}
-		
 		float avg = 0;
 		int i, num_samples = 0;
-		for(i=0;i<this.data.size();++i) {
+		for (i=0 ; i<this.data.size() ; ++i) {
 			if (debug)
 				System.out.println("myIp: "+myIp+"    "+this.data.get(i).peer+": "+this.data.get(i).dist);
 			if(!this.data.get(i).peer.equals(myIp)) {
@@ -135,8 +131,8 @@ public class PeerTable implements Serializable {
 	public String getMinDistPeer() {
 		float min = this.data.get(0).dist;
 		int pos = 0;
-		for(int i=1;i<this.data.size();++i) {
-			if(this.data.get(i).dist<min) {
+		for (int i=1 ; i<this.data.size() ; ++i) {
+			if (this.data.get(i).dist<min) {
 				min = this.data.get(i).dist;
 				pos = i;
 			}
@@ -149,14 +145,12 @@ public class PeerTable implements Serializable {
 	 */
 	public void print() {
 		System.out.println("Stampa della peerTable");
-		for(int i=0;i<data.size();++i) {
-			
+		for (int i=0 ; i<data.size() ; ++i) {
 			System.out.println("Ip: "+data.get(i).peer);
 			System.out.println("Dst: "+data.get(i).dist);
 			System.out.println(data.get(i).coordinator);
 			System.out.println(data.get(i).down);
 			System.out.println(" ");
-			
 		}
 	}
 	

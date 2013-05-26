@@ -28,7 +28,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * macchina. Crea una hashtable vuota.
 	 */
 	public PeerServer() throws RemoteException, UnknownHostException {
-		
 		super();
 		this.avgDist = 0;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
@@ -50,7 +49,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			System.out.println("chiamata la sync");
 		}
 		this.resourceTable = rt;
-		
 	}
 	
 	/**
@@ -69,7 +67,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @param ip indirizzo ip del chiamante
 	 */
 	public void goodbye(String resName, String ip) throws RemoteException {
-		
 		PeerTable pt = this.resourceTable.get(resName);
 		
 		if (debug)
@@ -96,7 +93,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @return la distanza in termini di hopcount dalla macchina corrente
 	 */
 	public float discovery(String ip) throws RemoteException {
-		
 		if(debug) {
 			System.out.println("Chiamata la discovery() dal peer con ip "+ip);
 		}
@@ -146,6 +142,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @param vecs un numero variabile di vettori di stringhe
 	 * XXX: cfr SuperPeerServer, usare un'unica libreria SPOT?
 	 */
+	@SafeVarargs
 	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {
@@ -173,8 +170,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		Peer p = null;
 		try {
 			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();			
 		}
@@ -195,13 +191,11 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.avgDist = this.resourceTable.get(resName).getAvgDist(this.myIp);
 		if (debug) {
 			System.out.println("La nuova distanza media calcolata e': "+this.avgDist);
-		
 			Vector<String >poss = new Vector<String>();
 			for(int i=0;i<pt.get().size();++i)
 				poss.add( pt.get().get(i).peer);
 			printStringVectors(new String[]{"Possessori"}, poss);
 		}
-		
 	}
 	
 	/**
@@ -214,7 +208,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @return distanza media
 	 */
 	public float election(String res, String ipCaller) throws RemoteException {
-		
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa "+res);
 		
@@ -231,13 +224,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @param res stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 */
 	public void coordinator(String newCoord, String res) throws RemoteException {
-		
 		System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
 		
 		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
 		
-		for(int i=0;i<pt.get().size();++i) {
+		for(int i=0 ; i<pt.get().size() ; ++i) {
 			pt.get().get(i).coordinator = false;
 			if(pt.get().get(i).peer.equals(newCoord)) {
 				if (debug)
@@ -247,15 +239,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			}
 			
 		}
-		
+
 		this.resourceTable.put(res, pt);
 		if (debug) {
 			System.out.println("Stampa tabella dentro la modifica..");
 			this.resourceTable.get(res).print();
 		}
-		//XXX (Arianna): come viene gestito il fatto di "trasformare"
-		//               in SuperPeer l'oggetto nella gui per il Peer
-		//               che è diventato coordinatore?
 		assert elected == true : "No coordinator set!";
 		this.resourceTable.put(res, pt);
 	}
@@ -276,7 +265,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @param pt la peerTable da aggiungere a quella risorsa
 	 */
 	public void addToTable(String resName, PeerTable pt) {
-		
 		this.resourceTable.put(resName, pt);
 	}
 
@@ -288,9 +276,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
      * (args[0] = "debug") o no (senza parametri)
 	 */
 	public static void main(String[] args) {
-		
-		if(args.length > 0 && args[0].equals("debug"))
-			debug = true;
+		debug = args.length > 0 && args[0].equals("debug") ? true : false;
 		
 		if(debug)
 			System.out.println("Avviato il PeerServer");
@@ -309,5 +295,4 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			e.printStackTrace();
 		}
 	}
-
 }
