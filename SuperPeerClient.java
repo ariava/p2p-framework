@@ -1,6 +1,5 @@
 import java.net.UnknownHostException;
 import java.rmi.*;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -32,24 +31,6 @@ public class SuperPeerClient extends PeerClient {
 		this.myIp = pc.myIp;
 		
 		this.startupListRetriever();
-	}
-	
-	/**
-	 * Funzione privata di calcolo del timestamp, secondo un formato
-	 * comprensibile per un oggetto di tipo TrackerServer.
-	 * 
-	 * TODO: usare una libreria condivisa e lo stesso metodo SPOT?
-	 */
-	private void setTimestamp() {
-		Calendar now = Calendar.getInstance();
-		int year = now.get(Calendar.YEAR);
-		int month = now.get(Calendar.MONTH); // Note: zero based!
-		int day = now.get(Calendar.DAY_OF_MONTH);
-		int hour = now.get(Calendar.HOUR_OF_DAY);
-		int minute = now.get(Calendar.MINUTE);
-		int second = now.get(Calendar.SECOND);
-		int millis = now.get(Calendar.MILLISECOND);
-		this.timestamp = String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
 	}
 	
 	/**
@@ -116,7 +97,7 @@ public class SuperPeerClient extends PeerClient {
 		                	
 							try {
 								table = tracker.getList("1970-01-01 00:00:00.000");
-								setTimestamp();
+								timestamp = Common.setTimestamp();
 								printCoordTable(table);
 							} catch (RemoteException e1) {
 								e1.printStackTrace();
@@ -142,7 +123,7 @@ public class SuperPeerClient extends PeerClient {
 			                    	if (table != null) {
 			                    		if (debug) {
 				                    		System.out.println("Thread: impostazione della coordTable al timestamp " + timestamp);
-				                    		setTimestamp();
+				                    		timestamp = Common.setTimestamp();
 				                    		printCoordTable(table);
 				                    	}
 			                    		server.setList(table);

@@ -80,30 +80,6 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/*
-	 * Metodo di debug che stampa un insieme di vettori di stringhe in modo "ordinato".
-	 * 
-	 * Parametri:
-	 * labels: etichette dei vettori di stringhe
-	 * vecs: un numero variabile di vettori di stringhe
-	 * XXX: cfr PeerServer, usare un'unica libreria SPOT?
-	 * */
-	@SafeVarargs
-	private final void printStringVectors(String[] labels, Vector<String>... vecs) {
-		int labelnum = 0;
-		for (Vector<String> vec : vecs) {
-			System.out.print("[");
-			System.out.print(labels[labelnum] + ": ");
-			for (int i = 0 ; i < vec.size() ; i++) {
-				System.out.print(vec.get(i));
-				if (i != vec.size()-1)
-					System.out.print(", ");
-			}
-			System.out.println("]");
-			labelnum++;
-		}
-	}
-	
-	/*
 	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
 	 * 
 	 * Parametri:
@@ -173,7 +149,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		assert(resources.size() == coordinators.size());
 		if (debug) {
 			System.out.println("SuperPeerServer: funzione register()");
-			this.printStringVectors(new String[]{"Risorse", "Coordinatori"}, resources, coordinators);
+			Common.printStringVectors(new String[]{"Risorse", "Coordinatori"}, resources, coordinators);
 		}
 			
 		return coordinators;
@@ -369,7 +345,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		assert(possessors.size() != 0);
 		if (debug) {
 			System.out.println("SuperPeerServer: funzione getList() per la risorsa " + resource_name);
-			this.printStringVectors(new String[]{"Possessori"}, possessors);
+			Common.printStringVectors(new String[]{"Possessori"}, possessors);
 		}
 		return possessors;
 	}

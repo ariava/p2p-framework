@@ -3,7 +3,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.server.*;
 import java.rmi.*;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -61,22 +60,6 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	}
 	
 	/**
-	 * Metodo che setta il timestamp al momento corrente
-	 */
-	private void setTimestamp() {
-		Calendar now = Calendar.getInstance();
-		int year = now.get(Calendar.YEAR);
-		int month = now.get(Calendar.MONTH); // Note: zero based!
-		int day = now.get(Calendar.DAY_OF_MONTH);
-		int hour = now.get(Calendar.HOUR_OF_DAY);
-		int minute = now.get(Calendar.MINUTE);
-		int second = now.get(Calendar.SECOND);
-		int millis = now.get(Calendar.MILLISECOND);
-		this.timestamp = String.format("%d-%02d-%02d %02d:%02d:%02d.%03d", year, month + 1, day, hour, minute, second, millis);
-		assert timestamp.length() == 23 : "Il timestamp ha lunghezza " + timestamp.length();
-	}
-	
-	/**
 	 * Costruttore della classe TrackerServer.
 	 * 
 	 * Crea una tabella vuota con chiave = nome_risorsa e valore l'indirizzo
@@ -86,7 +69,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		super();
 		
 		this.table = new Hashtable<String, String>();
-		this.setTimestamp();
+		this.timestamp = Common.setTimestamp();
 	}
 	
 	/**
@@ -147,7 +130,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 			}
 			else {
 				table.put(risorse.get(i), ip);
-				this.setTimestamp();
+				this.timestamp = Common.setTimestamp();
 				ipCoordinatori.add(ip);
 			}
 		}
@@ -291,7 +274,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		    String val = table.get(key);
 		    if(val.equals(coordinator)) {
 		        table.remove(key);
-		        this.setTimestamp();
+		        this.timestamp = Common.setTimestamp();
 		    }
 		}
 		
@@ -321,7 +304,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	// se la chiave esiste già viene fatto un replace
     	// se la chiave non esiste, viene aggiunta
     	table.put(risorsa, ip);
-    	this.setTimestamp();
+    	this.timestamp = Common.setTimestamp();
     	
     	if (debug) {
     		System.out.println("Cambio coordinatore eseguito");

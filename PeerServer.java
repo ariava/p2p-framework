@@ -9,7 +9,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-
 public class PeerServer extends UnicastRemoteObject implements Peer {
 
 	private static final long serialVersionUID = 1L;
@@ -136,29 +135,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/**
-	 * Metodo di debug che stampa un insieme di vettori di stringhe in modo "ordinato".
-	 * 
-	 * @param labels etichette dei vettori di stringhe
-	 * @param vecs un numero variabile di vettori di stringhe
-	 * XXX: cfr SuperPeerServer, usare un'unica libreria SPOT?
-	 */
-	@SafeVarargs
-	private static void printStringVectors(String[] labels, Vector<String>... vecs) {
-		int labelnum = 0;
-		for (Vector<String> vec : vecs) {
-			System.out.print("[");
-			System.out.print(labels[labelnum] + ": ");
-			for (int i = 0 ; i < vec.size() ; i++) {
-				System.out.print(vec.get(i));
-				if (i != vec.size()-1)
-					System.out.print(", ");
-			}
-			System.out.println("]");
-			labelnum++;
-		}
-	}
-	
-	/**
 	 * Metodo (privato) per aggiungere un peer alla tabella dei possessori della risorsa
 	 * dopo che gli e' stata data
 	 * 
@@ -194,7 +170,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			Vector<String >poss = new Vector<String>();
 			for(int i=0;i<pt.get().size();++i)
 				poss.add( pt.get().get(i).peer);
-			printStringVectors(new String[]{"Possessori"}, poss);
+			Common.printStringVectors(new String[]{"Possessori"}, poss);
 		}
 	}
 	
