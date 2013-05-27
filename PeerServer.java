@@ -31,7 +31,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.avgDist = 0;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		resourceTable = new Hashtable<String, PeerTable>();
-		
 	}
 	
 	/**
@@ -96,8 +95,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			System.out.println("Chiamata la discovery() dal peer con ip "+ip);
 		}
 		//TODO: hopcount..
-		return 4;
-		
+		return 4;		
 	}
 	
 	/**
@@ -115,7 +113,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		}
 		
 		try {
-
 			File file = new File("resources/"+resName);
 	
 			byte buffer[] = new byte[(int)file.length()];
@@ -163,13 +160,13 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			System.out.println("Tabella ora:");
 			this.resourceTable.get(resName).print();
 		}
-		//ricalcolo avgdist
+		//ricalcolo la distanza media
 		this.avgDist = this.resourceTable.get(resName).getAvgDist(this.myIp);
 		if (debug) {
 			System.out.println("La nuova distanza media calcolata e': "+this.avgDist);
 			Vector<String >poss = new Vector<String>();
-			for(int i=0;i<pt.get().size();++i)
-				poss.add( pt.get().get(i).peer);
+			for (int i=0 ; i<pt.get().size() ; ++i)
+				poss.add(pt.get().get(i).peer);
 			Common.printStringVectors(new String[]{"Possessori"}, poss);
 		}
 	}
@@ -189,7 +186,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		
 		assert this.avgDist > 0 || ipCaller.equals(this.myIp): "Called election but avgDist is not a valid number!";
 		return this.avgDist;
-		
 	}
 	
 	/**
@@ -271,4 +267,5 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			e.printStackTrace();
 		}
 	}
+
 }

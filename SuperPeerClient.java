@@ -4,6 +4,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class SuperPeerClient extends PeerClient {
+
 	private SuperPeer server = null;
 	private Tracker tracker = null;
 	
@@ -62,13 +63,13 @@ public class SuperPeerClient extends PeerClient {
 	public void setCoordinator(String risorsa) {
 		assert(risorsa != null && risorsa != "");
 		try {
-			String coord_ip = server.getIP();
-			assert(coord_ip != null && coord_ip != "");
+			String coordIp = server.getIP();
+			assert(coordIp != null && coordIp != "");
 			if (debug) {
 				System.out.println("SuperPeerClient - Impostazione del coordinatore");
-			    System.out.println("Impostazione di " + coord_ip + " per la risorsa " + risorsa);
+			    System.out.println("Impostazione di " + coordIp + " per la risorsa " + risorsa);
 			}
-			tracker.cambioCoordinatore(coord_ip, risorsa);
+			tracker.cambioCoordinatore(coordIp, risorsa);
 		} catch (RemoteException e) {
 			System.out.println("Exception while setting coordinator: " + e.getMessage());
 			e.printStackTrace();
@@ -144,6 +145,7 @@ public class SuperPeerClient extends PeerClient {
 			                }
 		                }
 		            });
+		  /* Avvio il thread di rinfresco della tabella */
 		  listRetriever.start();
 	}
 	
@@ -165,4 +167,5 @@ public class SuperPeerClient extends PeerClient {
 				System.out.println("Thread non attivo");
 		}
 	}
+
 }

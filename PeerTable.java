@@ -1,7 +1,6 @@
 import java.io.Serializable;
 import java.util.Vector;
 
-
 public class PeerTable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -108,16 +107,16 @@ public class PeerTable implements Serializable {
 			System.out.println("Chiamata la getAvgDist");
 		}
 		float avg = 0;
-		int i, num_samples = 0;
+		int i, numSamples = 0;
 		for (i=0 ; i<this.data.size() ; ++i) {
 			if (debug)
 				System.out.println("myIp: "+myIp+"    "+this.data.get(i).peer+": "+this.data.get(i).dist);
 			if(!this.data.get(i).peer.equals(myIp)) {
 				avg += this.data.get(i).dist;
-				num_samples++;
+				numSamples++;
 			}
 		}
-		return avg/num_samples;
+		return avg/numSamples;
 	}
 	
 	/**
@@ -162,5 +161,6 @@ public class PeerTable implements Serializable {
 	 */
 	protected void setDebug(boolean value) {
 		this.debug = value;
-	}	
+	}
+
 }

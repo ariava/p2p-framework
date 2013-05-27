@@ -47,7 +47,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import  java.io.*;
 
-
 public class testFrameworkGUI {
 
 	private JFrame frmTestFrameworkGui;
@@ -58,9 +57,9 @@ public class testFrameworkGUI {
 	private Tracker tr;
 	private static boolean debug;
 	private static Lock l;
-	private static boolean first_connect = true;
+	private static boolean firstConnect = true;
 	private static boolean disconnect = false;
-	private static boolean connect = true; //boolean usato per vedere se la import l'ha chiamata l'utente o il doClick su connect
+	private static boolean connect = true; // boolean usato per vedere se la import l'ha chiamata l'utente o il doClick su connect
 	private static boolean elected = false;
 	private static File tmpFile = null;
 	final JPopupMenu cutpasteMenu = new JPopupMenu();
@@ -107,16 +106,15 @@ public class testFrameworkGUI {
 	 * resName: il nome della risorsa da controllare
 	 * */
 	private static boolean alreadyExists(String resName) {
-		
 		File resFolder = new File("resources/");
 		File[] list = resFolder.listFiles();
-		System.out.println("Stampa dei file nella cartella resources:");
-		for(int i=0;i<list.length;++i) {
+		if (debug)
+			System.out.println("Stampa dei file nella cartella resources:");
+		for (int i=0 ; i<list.length ; ++i) {
 			System.out.println(list[i].getName());
 			if(list[i].getName().equals(resName))
 				return true;
 		}
-		
 		return false;
 	}
 	
@@ -128,7 +126,6 @@ public class testFrameworkGUI {
 	 * dst: percorso assoluto della destinazione scelta.
 	 */
 	private boolean copyFile(String src, String dst) {
-		
 		InputStream inStream = null;
         OutputStream outStream = null;
         try {
@@ -146,7 +143,8 @@ public class testFrameworkGUI {
             if (inStream != null) inStream.close();
             if (outStream != null) outStream.close();
  
-            System.out.println("File " + src + " Copied");
+            if (debug)
+            	System.out.println("File " + src + " Copied");
             return true;
         } catch(IOException e) {
         	e.printStackTrace();
@@ -197,8 +195,8 @@ public class testFrameworkGUI {
 		frmTestFrameworkGui.setResizable(false);
 		frmTestFrameworkGui.setTitle("test Framework GUI");
 		frmTestFrameworkGui.setBounds(100, 100, 733, 493);
-		//frmTestFrameworkGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		/* Inizializzazione del lock utilizzato per l'elezione */
 		l = new ReentrantLock();
 		
 		Thread electionWorker = new Thread(
@@ -353,7 +351,7 @@ public class testFrameworkGUI {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
-				if (first_connect) {
+				if (firstConnect) {
 					try {
 						pc = new PeerClient(txtIpTracker.getText());
 						pc.setDebug(debug);
@@ -362,14 +360,14 @@ public class testFrameworkGUI {
 						e.printStackTrace();
 						return;
 					}
-					first_connect = false;
+					firstConnect = false;
 				} else
 					assert pc != null : "PeerClient object not initialized but GUI already connected";
 
 				tr = pc.getTracker(server);
 				
 				if(tr == null) {
-					JOptionPane.showMessageDialog(null, "Unable to connect to Tracker", "Error",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Unable to connect to Tracker", "Error", JOptionPane.ERROR_MESSAGE);
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
@@ -397,7 +395,7 @@ public class testFrameworkGUI {
 					connect = true;
 					boolean wasEnabled = btnImport.isEnabled();
 					btnImport.setEnabled(true);
-					for(int i=0;i<list.length;++i) {
+					for (int i=0 ; i<list.length ; ++i) {
 						if(list[i].getName().equals(".gitignore"))
 							continue;
 						tmpFile = list[i];
@@ -547,7 +545,7 @@ public class testFrameworkGUI {
 					}
 				}
 				
-				if(prevC == null) {
+				if (prevC == null) {
 					JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -560,9 +558,9 @@ public class testFrameworkGUI {
 				
 				Vector<String> ipList = pc.getList(c, resName);
 				int count = 0;
-				while(ipList == null) {
+				while (ipList == null) {
 					count++;
-					if(count == 3) {
+					if (count == 3) {
 						try {
 							tr.cambioCoordinatore("",resName);
 						} catch (RemoteException e1) {
@@ -571,7 +569,8 @@ public class testFrameworkGUI {
 						JOptionPane.showMessageDialog(null, "Coordinator not found, he probably left the network unpolitely!", "Error",JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					System.out.println("Coordinator isn't responding..");
+					if (debug)
+						System.out.println("Coordinator isn't responding..");
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException ex) {
@@ -586,7 +585,7 @@ public class testFrameworkGUI {
 					/*
 					 * FIXME: ha senso questa assert? come gestisce rmi il non
 					 * rispondere..? fa ritornare un null?
-					 **/
+					 */
 					assert c1 != null : "SuperPeer object is undefined!";
 					
 					ipList = pc.getList(c1, resName);
@@ -594,7 +593,7 @@ public class testFrameworkGUI {
 				
 				PeerTable pt = new PeerTable();
 				pt.setDebug(debug);
-				for(int i=0 ; i<ipList.size() ; ++i) {
+				for (int i=0 ; i<ipList.size() ; ++i) {
 					
 					String peer = ipList.get(i);
 					peer = "rmi://"+peer+"/"+"Peer"+peer;
@@ -637,7 +636,7 @@ public class testFrameworkGUI {
 				assert p != null : "Peer object is undefined!";
 				
 				//richiedi la risorsa..
-				if(pc.getResource(p, resName)) {
+				if (pc.getResource(p, resName)) {
 					DefaultTableModel model = (DefaultTableModel) table.getModel();
 					model.addRow(new Object[]{resName});
 					//aggiorna la distanza media dato che a sto punto saro' stato aggiunto nella tabella..
@@ -650,7 +649,7 @@ public class testFrameworkGUI {
 					}
 				}
 				else
-					JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..","Warning!",JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..", "Warning!", JOptionPane.WARNING_MESSAGE);
 	
 			/************************/
 				
@@ -683,7 +682,6 @@ public class testFrameworkGUI {
             public void mousePressed(MouseEvent e) {
             	if (SwingUtilities.isRightMouseButton(e)) {
             		if (table.rowAtPoint(e.getPoint()) >= 0) {
-            			 
             			// get the row index that contains that coordinate
             			int rowNumber = table.rowAtPoint(e.getPoint());
              
@@ -735,9 +733,7 @@ public class testFrameworkGUI {
 				}
 			}
 		});
-		
-		
-		
+
 		btnImport.setEnabled(false);
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -762,7 +758,7 @@ public class testFrameworkGUI {
 					lblStatus.setText("Status: Offline");
 					return;
 				}
-				int selezione=0;
+				int selezione = 0;
 				File f = null;
 				JFileChooser fc = null;
 				if (!connect) {
@@ -777,7 +773,7 @@ public class testFrameworkGUI {
                 		f = tmpFile;
                 	else
                 		f = fc.getSelectedFile();
-                	if(alreadyExists(f.getName()) && !connect) {
+                	if (alreadyExists(f.getName()) && !connect) {
     					JOptionPane.showMessageDialog(null, "You already have that resource dude!", "Warning",JOptionPane.WARNING_MESSAGE);
     					return;
     				}
@@ -793,7 +789,7 @@ public class testFrameworkGUI {
 	                
 	                String resName = f.getName();
 	                /********************************/
-	                if(debug)
+	                if (debug)
 	    				System.out.println("Client in modalita' registrazione");
 	    			Vector<String> resNames = new Vector<String>();
 	    			resNames.add(resName);
@@ -801,10 +797,10 @@ public class testFrameworkGUI {
 	    			//register new resources
 	    			Vector<String> coords = pc.registerResources(tr, resNames);
 	    			
-	    			assert coords.size() == resNames.size() : "coords and resNames size doesn't match!";
+	    			assert coords.size() == resNames.size() : "coords and resNames sizes doesn't match!";
 	    			
 	    			//add coordinators in the hashtable
-	    			for(int i=0;i<coords.size();++i) {
+	    			for (int i=0 ; i<coords.size() ; ++i) {
 	    				try {
 	    					PeerTable temp = new PeerTable(new PeerTableData(coords.get(i),0, false, true));
 	    					temp.setDebug(debug);
@@ -949,7 +945,7 @@ public class testFrameworkGUI {
 						e1.printStackTrace();
 					}
 					
-					if(!disconnect) {
+					if (!disconnect) {
 						File f = new File("resources/"+model.getValueAt(selectedRows[i], 0).toString()); //TODO: compatibilita' windows..? ma anche no
 						if(!f.delete())
 							JOptionPane.showMessageDialog(null, "Unable to delete file from filesystem!", "Error",JOptionPane.ERROR_MESSAGE);
@@ -974,8 +970,7 @@ public class testFrameworkGUI {
 		});
 		
 		panel.setLayout(null);
-		
-		
+
 		frmTestFrameworkGui.getContentPane().setLayout(groupLayout);
 	}
 

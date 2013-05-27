@@ -23,8 +23,7 @@ public class PeerTableData implements Serializable {
 		this.peer = peer;
 		this.dist = dist;
 		this.down = down;
-		this.coordinator = coord;
-		
+		this.coordinator = coord;	
 	}
 	
 }

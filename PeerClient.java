@@ -280,7 +280,6 @@ public class PeerClient {
 			System.out.println("Something went wrong while retrieving distances: "+e.getMessage());
 			return 0;
 		}
-		
 	}
 	
 	/**
@@ -311,12 +310,11 @@ public class PeerClient {
 				System.out.println("Tabella ora:");
 				this.myPS.getTable().get(resName).print();
 			}
-			//ricalcolo avgdist
+			// ricalcolo la distanza media
 			this.myPS.setAvgDist(this.myPS.getTable().get(resName).getAvgDist(this.myIp));
 			if (debug)
 				System.out.println("La nuova distanza media calcolata e': "+this.myPS.getAvgDist());
 		} catch (Exception e) {}
-		
 	}
 	
 	/**
@@ -430,7 +428,6 @@ public class PeerClient {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();
 			return null;
-			
 		}
 	}
 	
@@ -473,7 +470,6 @@ public class PeerClient {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();
 			return null;
-			
 		}
 	}
 	
@@ -489,7 +485,6 @@ public class PeerClient {
 	 * @param tr riferimento al tracker.
 	 */
 	public void startElection(String resName, boolean noSelf, Tracker tr) {
-		
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
 		Hashtable<String, PeerTable> rt = null;
@@ -563,7 +558,7 @@ public class PeerClient {
 		if(debug)
 			System.out.println("Election: il nuovo coordinatore e': "+peerMin+", ha distanza media "+min);
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
-		for(int i=0;i<rt.get(resName).get().size();++i) {
+		for (int i=0 ; i<rt.get(resName).get().size() ; ++i) {
 			String server = rt.get(resName).get().get(i).peer;
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
@@ -604,4 +599,5 @@ public class PeerClient {
 	 * */
 	protected void stopListRetriever() {
 	}
+
 }

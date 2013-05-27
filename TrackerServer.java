@@ -91,7 +91,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Metodo usato per impostare la lista dei coordinatori quando il tracker è
 	 * tornato disponibile dopo un periodo di downtime
 	 * 
-	 * @param l hashtable contenente la tabella dei coordinatori utilizzata dal
+	 * @param la hashtable contenente la tabella dei coordinatori utilizzata dal
 	 * TrackerServer
 	 */
 	public void setList(Hashtable<String, String> l) {
@@ -108,7 +108,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Se no aggiunge una entry nella tabella con chiave il nome della risorsa e con
 	 * valore l'indirizzo ip del nodo richiedente
 	 * 
-	 * @param ip ip del nodo che vuole entrare a far parte della rete p2p
+	 * @param ip del nodo che vuole entrare a far parte della rete p2p
 	 * @param risorse le risorse possedute dal nodo che vuole entrare a far
 	 * parte della rete p2p
 	 * 
@@ -124,7 +124,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		
 		Vector<String> ipCoordinatori = new Vector<String>();
 		
-		for (int i = 0; i < risorse.size(); i++) {
+		for (int i = 0 ; i < risorse.size() ; i++) {
 			if (table.containsKey(risorse.get(i))) {
 				ipCoordinatori.add(table.get(risorse.get(i)));
 			}
@@ -202,20 +202,20 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	if (debug)
     		System.out.println("Inizio richiesta per la risorsa " + risorsa + " dato che in precedenza ho risposto con il coordinatore " + ipPrecedente + "...");
     	
-    	String coordinatore_corrente = this.richiesta(risorsa);
+    	String coordinatoreCorrente = this.richiesta(risorsa);
     	
-    	if (coordinatore_corrente.equals(ipPrecedente)) {
-    		if (this.pingUrl(coordinatore_corrente)) {
+    	if (coordinatoreCorrente.equals(ipPrecedente)) {
+    		if (this.pingUrl(coordinatoreCorrente)) {
     			if (debug) {
-    				System.out.println("Il ping del coordinatore" + coordinatore_corrente + "ha dato esito positivo");
-        			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatore_corrente);
+    				System.out.println("Il ping del coordinatore" + coordinatoreCorrente + "ha dato esito positivo");
+        			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatoreCorrente);
         			this.stampaTabella();
         		}
-    			return coordinatore_corrente;
+    			return coordinatoreCorrente;
     		} else {
     			this.eliminateCoordinatorFromTable(ipPrecedente);
     			if (debug) {
-    				System.out.println("Il ping del coordinatore " + coordinatore_corrente + " ha dato esito negativo");
+    				System.out.println("Il ping del coordinatore " + coordinatoreCorrente + " ha dato esito negativo");
         			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
         			this.stampaTabella();
         		}
@@ -223,10 +223,10 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     		}
     	} else {
     		if (debug) {
-    			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatore_corrente);
+    			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + coordinatoreCorrente);
     			this.stampaTabella();
     		}
-    		return coordinatore_corrente;
+    		return coordinatoreCorrente;
     	}
     }
     
@@ -367,4 +367,5 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
             e.printStackTrace();
         }
     }
+
 }
