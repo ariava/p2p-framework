@@ -7,8 +7,10 @@ public class SuperPeerClient extends PeerClient {
 
 	private SuperPeer server = null;
 	private Tracker tracker = null;
+	private String trackerIp = null;
 	
 	private Thread listRetriever = null;
+	
 	
 	private String timestamp;
 	
@@ -28,6 +30,7 @@ public class SuperPeerClient extends PeerClient {
 		assert(tracker != null);
 		this.server = server;
 		this.tracker = tracker;
+		this.trackerIp = pc.trackerIp;
 		
 		this.myIp = pc.myIp;
 		
