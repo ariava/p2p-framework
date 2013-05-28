@@ -66,22 +66,20 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return this.id;
 	}
 	
-	/*
+	/**
 	 * Metodo accessore dell'IP di un server SuperPeer.
 	 * 
-	 * Valore di ritorno:
-	 * una stringa contenente l'IP del server SuperPeer.
-	 * */
+	 * @return una stringa contenente l'IP del server SuperPeer.
+	 */
 	public String getIP() throws RemoteException {
 		return this.ip;
 	}
 	
-	/*
+	/**
 	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
 	 * 
-	 * Parametri:
-	 * table: tabella hash dei coordinatori
-	 * */
+	 * @param table tabella hash dei coordinatori
+	 */
 	private void printCoordTable(Hashtable<String, String> table) {
 		assert(table != null && table.size() != 0);
 		Enumeration<String> e = table.keys();
@@ -90,23 +88,25 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			System.out.println("Risorsa: " + key + " | Coord: " + table.get(key));
 		}
 	}
-	/*
+	
+	/**
 	 * Metodo che ritorna la table dei coordinatori clonata dal tracker
-	 * */
+	 * 
+	 * @return la tabella dei coordinatori clonata dal tracker
+	 */
 	public Hashtable<String, String> getCoordTable() {
 		return this.coordTable;
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un peer per registrare una nuova risorsa nella rete peer-to-peer
 	 * quando il peer invocante si trova già nella rete.
 	 * 
-	 * Parametri:
-	 * requestorIp: indirizzo IP del peer richiedente
-	 * resources: vettore di identificatori univoci delle risorse registrate
-	 * Valore di ritorno:
-	 * un vettore di indirizzi IP dei coordinatori delle risorse registrate
-	 * */
+	 * @param requestorIp indirizzo IP del peer richiedente
+	 * @param resources vettore di identificatori univoci delle risorse registrate
+	 * 
+	 * @return un vettore di indirizzi IP dei coordinatori delle risorse registrate
+	 */
 	@SuppressWarnings("unchecked")
 	public Vector<String> register(String requestorIp, Vector<String> resources)
 			throws RemoteException {
@@ -153,17 +153,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return coordinators;
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un peer per richiedere una nuova risorsa quando il peer
 	 * invocante si trova già nella rete. Questo metodo è eseguito la prima volta
 	 * che tale risorsa è richiesta.
 	 * 
-	 * Parametri:
-	 * resource: l'identificativo univoco della risorsa richiesta
-	 * Valore di ritorno:
-	 * una stringa contenente l'IP del coordinatore per la risorsa richiesta, una
+	 * @param resource l'identificativo univoco della risorsa richiesta
+	 * 
+	 * @return una stringa contenente l'IP del coordinatore per la risorsa richiesta, una
 	 * stringa vuota se non esiste
-	 * */
+	 */
 	public String request(String resource) throws RemoteException {
 		assert resource != null : "Resource is null";
 		assert resource != "" : "Resource field is empty";
@@ -178,17 +177,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return coordinator;
 	}
 	
-	/*
+	/**
 	 * Metodo privato per il controllo di raggiungibilità di un IP.
 	 * 
 	 * Il metodo ritorna vero se l'indirizzo IP passato come parametro
 	 * risulta raggiungibile, falso altrimenti.
 	 * 
-	 * Parametri:
-	 * ip: l'indirizzo IP dell'host del quale verificare la raggiungibilità
-	 * Valore di ritorno:
-	 * true se l'IP è raggiungibile, false se non lo è
-	 * */
+	 * @param ip l'indirizzo IP dell'host del quale verificare la raggiungibilità
+	 * 
+	 * @return true se l'IP è raggiungibile, false se non lo è
+	 */
 	private boolean pingIP(String ip) {
 		assert ip != null : "IP is null";
 		assert ip != "" : "IP field is empty";
@@ -205,19 +203,18 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return reachable;
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un peer per richiedere una nuova risorsa quando il peer
 	 * invocante si trova già nella rete. Questo metodo è eseguito la seconda volta
 	 * che tale risorsa è richiesta, nel momento in cui il precedente coordinatore
 	 * non ha risposto al successivo tentativo di instaurare una connessione.
 	 * 
-	 * Parametri:
-	 * resource: l'identificativo univoco della risorsa richiesta
-	 * lastCoord: l'indirizzo IP dell'ultimo coordinatore noto per la risorsa richiesta
-	 * Valore di ritorno:
-	 * una stringa contenente l'indirizzo IP dell'attale coordinatore per la risorsa
+	 * @param resource l'identificativo univoco della risorsa richiesta
+	 * @param lastCoord l'indirizzo IP dell'ultimo coordinatore noto per la risorsa richiesta
+	 * 
+	 * @return una stringa contenente l'indirizzo IP dell'attale coordinatore per la risorsa
 	 * richiesta, una stringa vuota se non esiste
-	 * */
+	 */
 	public String request(String resource, String lastCoord)
 			throws RemoteException {
 		assert lastCoord != null : "Last coordinator is null";
@@ -256,12 +253,11 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return null;
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un peer per uscire dalla rete in modo "pulito".
 	 * 
-	 * Parametri:
-	 * peerIp: indirizzo Ip del peer invocante il metodo
-	 * */
+	 * @param peerIp indirizzo Ip del peer invocante il metodo
+	 */
 	public void goodbye(String peerIp) throws RemoteException {
 		assert peerIp != null : "Peer IP is null";
 		assert peerIp != "" : "Peer IP field is empty";
@@ -290,13 +286,12 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		}			
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un peer per uscire dalla rete in modo "pulito".
 	 * 
-	 * Parametri:
-	 * peerIp: indirizzo Ip del peer invocante il metodo
-	 * resName: stringa contenente il nome della risorsa da rimuovere
-	 * */
+	 * @param peerIp indirizzo Ip del peer invocante il metodo
+	 * @param resName stringa contenente il nome della risorsa da rimuovere
+	 */
 	public void goodbye(String peerIp, String resName) throws RemoteException {
 		assert peerIp != null : "Peer IP is null";
 		assert peerIp != "" : "Peer IP field is empty";
@@ -322,16 +317,15 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 					
 	}
 	
-	/*
+	/**
 	 * Metodo invocato da un peer quando ha appena ricevuto dal root tracker
 	 * l'informazione di chi sia il coordinatore per la risorsa richiesta.
 	 * 
-	 * Parametri:
-	 * resourceName: identificativo univoco della risorsa per la quale si
-	 *                effettua la richiesta dei possessori
-	 * Valore di ritorno:
-	 * una lista non vuota di indirizzi IP dei possessori della risorsa richiesta
-	 * */
+	 * @param resourceName identificativo univoco della risorsa per la quale si
+	 * effettua la richiesta dei possessori
+	 * 
+	 * @return una lista non vuota di indirizzi IP dei possessori della risorsa richiesta
+	 */
 	@SuppressWarnings("unchecked")
 	public Vector<String> getList(String resourceName) throws RemoteException {
 		assert resourceName != null : "Resource name is null";
@@ -354,16 +348,15 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		return possessors;
 	}
 	
-	/*
+	/**
 	 * Metodo per il rinfresco della tabella dei coordinatori nel server.
 	 * 
 	 * Il metodo rinfresca completamente il contenuto della tabella dei
 	 * coordinatori posseduta dal server SuperPeer.
 	 * 
-	 * Parametri:
-	 * una tabella hash che associa a un identificativo di risorsa il
+	 * @param table una tabella hash che associa a un identificativo di risorsa il
 	 * suo coordinatore.
-	 * */
+	 */
 	public void setList(Hashtable<String, String> table) {
 		/*
 		 * Se esiste un coordinatore (ed esiste perché si sta invocando
@@ -377,12 +370,16 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		this.coordTable = table;
 	}
 	
-	/*
+	/**
 	 * Metodo principale di funzionamento del server SuperPeer.
 	 * 
 	 * Il metodo registra il server nell'RMI registry in attività sulla
 	 * stessa JVM. 
-	 * */
+	 * 
+	 * @param args array passato al lancio del PeerServer. Il primo elemento
+     * di tale array indica se far partire il PeerServer in modalità di debug
+     * (args[0] = "debug") o no (senza parametri)
+	 */
 	public static void main(String[] args) {
 		if (args.length > 0)
 			debug = args[0].equals("debug") ? true : false;
