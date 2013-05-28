@@ -29,6 +29,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	/**
 	 * Metodo che controlla la correttezza del formato
 	 * che ha un indirizzo ip sulla stringa in input
+	 * 
 	 * @param ip indirizzo ip
 	 * 
 	 * @return vero se la stringa in input ha il formato
@@ -261,7 +262,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
      * In particolare vengono eliminate tutte le risorse associate ad un
      * certo coordinatore.
      *
-     *@param coordinator il coordinatore da eliminare nella tabella
+     * @param coordinator il coordinatore da eliminare nella tabella
      */
     private void eliminateCoordinatorFromTable(String coordinator) {
     	
