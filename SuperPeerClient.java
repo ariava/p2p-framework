@@ -32,11 +32,6 @@ public class SuperPeerClient extends PeerClient {
 		
 		this.myIp = pc.myIp;
 
-		if (debug)	
-			System.out.println("### CONTINUETHREAD " + continueThread + " pc " + pc);
-		pc.setContinueThread(false);
-		if (debug)
-			System.out.println("### CONTINUETHREAD 2 " + continueThread + " pc " + pc);
 		this.startupListRetriever();
 	}
 	

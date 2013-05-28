@@ -17,7 +17,6 @@ public class PeerClient {
 	static public boolean debug;
 	public String trackerIp = null;	
 	public Thread pollingWorker = null;
-	protected static boolean continueThread;
 	
 	public PeerClient() throws UnknownHostException {
 		self = this;
@@ -27,7 +26,6 @@ public class PeerClient {
 		this.myPS = self.getPeer(ps);
 		assert this.myPS != null : "PeerServer is null!";
 		
-		continueThread = true;
 		startPollingThread();
 	}
 	
@@ -39,15 +37,10 @@ public class PeerClient {
 		this.myPS = self.getPeer(ps);
 		this.trackerIp = tr;
 		assert this.myPS != null : "PeerServer is null!";
-		
-		continueThread = true;
+	
 		startPollingThread();
 	}
-	
-	public void setContinueThread(boolean ct) {
-		continueThread = ct;
-	}
-	
+		
 	private void startPollingThread() {
 		if (pollingWorker != null) {
 			if (debug)
@@ -59,7 +52,7 @@ public class PeerClient {
 		                public void run() {
 		                	if (debug)
 		                		System.out.println("Avviato il thread di polling");
-		                	while(continueThread) {	
+		                	while(true) {	
 		                		String key = null;
 		                		try {
 		                			Enumeration<String> e = myPS.getTable().keys();
@@ -67,7 +60,8 @@ public class PeerClient {
 		                				key = e.nextElement();
 			                			PeerTable pt = myPS.getTable().get(key);
 			                			String coord = pt.getCoord().peer;
-
+			                			if(coord.equals(myIp))
+			                				continue;
 			                			SuperPeer c = getCoord("rmi://"+coord+"/SuperPeer"+coord);
 			                		
 			                			if( c == null )
