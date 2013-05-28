@@ -92,7 +92,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Metodo usato per impostare la lista dei coordinatori quando il tracker è
 	 * tornato disponibile dopo un periodo di downtime
 	 * 
-	 * @param la hashtable contenente la tabella dei coordinatori utilizzata dal
+	 * @param l la hashtable contenente la tabella dei coordinatori utilizzata dal
 	 * TrackerServer
 	 */
 	public void setList(Hashtable<String, String> l) {
