@@ -25,8 +25,6 @@ public class PeerClient {
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
 		assert this.myPS != null : "PeerServer is null!";
-		
-		startPollingThread();
 	}
 	
 	public PeerClient(String tr) throws UnknownHostException {
@@ -37,11 +35,9 @@ public class PeerClient {
 		this.myPS = self.getPeer(ps);
 		this.trackerIp = tr;
 		assert this.myPS != null : "PeerServer is null!";
-	
-		startPollingThread();
 	}
 		
-	private void startPollingThread() {
+	public void startPollingWorker() {
 		if (pollingWorker != null) {
 			if (debug)
 				System.out.println("Thread di elezione già attivo");

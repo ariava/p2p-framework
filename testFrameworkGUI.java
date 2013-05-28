@@ -355,6 +355,7 @@ public class testFrameworkGUI {
 					try {
 						pc = new PeerClient(txtIpTracker.getText());
 						pc.setDebug(debug);
+						pc.startPollingWorker();
 					} catch (UnknownHostException e) {
 						System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
 						e.printStackTrace();

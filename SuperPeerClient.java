@@ -31,6 +31,11 @@ public class SuperPeerClient extends PeerClient {
 		this.trackerIp = pc.trackerIp;
 		
 		this.myIp = pc.myIp;
+		this.pollingWorker = pc.pollingWorker;
+		if (debug) {
+			System.out.println("PeerClient " + pc + ": pollingWorker " + pc.pollingWorker);
+			System.out.println("SuperPeerClient " + this + ": pollingWorker " + this.pollingWorker);
+		}
 
 		this.startupListRetriever();
 	}
