@@ -17,7 +17,7 @@ public class PeerClient {
 	static public boolean debug;
 	public String trackerIp = null;	
 	public Thread pollingWorker = null;
-	private boolean continueThread;
+	protected static boolean continueThread;
 	
 	public PeerClient() throws UnknownHostException {
 		self = this;
@@ -44,8 +44,8 @@ public class PeerClient {
 		startPollingThread();
 	}
 	
-	public void setContinueThread(boolean continueThread) {
-		this.continueThread = continueThread;
+	public void setContinueThread(boolean ct) {
+		continueThread = ct;
 	}
 	
 	private void startPollingThread() {

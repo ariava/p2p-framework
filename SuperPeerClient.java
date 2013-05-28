@@ -10,7 +10,6 @@ public class SuperPeerClient extends PeerClient {
 	
 	private Thread listRetriever = null;
 	
-	
 	private String timestamp;
 	
 	/**
@@ -32,7 +31,12 @@ public class SuperPeerClient extends PeerClient {
 		this.trackerIp = pc.trackerIp;
 		
 		this.myIp = pc.myIp;
-		
+
+		if (debug)	
+			System.out.println("### CONTINUETHREAD " + continueThread + " pc " + pc);
+		pc.setContinueThread(false);
+		if (debug)
+			System.out.println("### CONTINUETHREAD 2 " + continueThread + " pc " + pc);
 		this.startupListRetriever();
 	}
 	
