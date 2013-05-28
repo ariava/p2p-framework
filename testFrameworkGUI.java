@@ -916,7 +916,7 @@ public class testFrameworkGUI {
 					if (debug)
 						System.out.println("**** MY IP " + pc.myIp + " COORD " + coord + " *******");
 					if(pc.myIp.equals(coord))
-						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr);					
+						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr,null);					
 					if (debug)
 						System.out.println("Chiamata la goodbye sul superpeer "+coord);
 					try {
@@ -935,12 +935,22 @@ public class testFrameworkGUI {
 					
 					//rimuovo dalla tabella del peer..
 					try {
-						PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString());
-						ptable.get().remove(ptable.getIP(pc.myIp));
+						//PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString());
+						//ptable.get().remove(ptable.getIP(pc.myIp));
+						pc.myPS.removeFromTable(model.getValueAt(selectedRows[i], 0).toString());
 						if (debug)
 							System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(selectedRows[i], 0).toString()+
 											   "l'ip "+pc.myIp);
-						pc.myPS.addToTable(pc.myIp, ptable);
+						if (debug) {
+							try {
+								pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString()).print();
+							} catch (RemoteException e1) {
+								e1.printStackTrace();
+							} catch (NullPointerException ne) {
+								System.out.println(" ******* provo a stampare la tabella dopo la delete ma fallisco");
+							}
+						}
+						//pc.myPS.addToTable(pc.myIp, ptable);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}

@@ -54,12 +54,14 @@ public class PeerClient {
 		                		System.out.println("Avviato il thread di polling");
 		                	while(true) {	
 		                		String key = null;
+		                		String coord = null;
 		                		try {
+		                			
 		                			Enumeration<String> e = myPS.getTable().keys();
 		                			while(e.hasMoreElements()) {
 		                				key = e.nextElement();
 			                			PeerTable pt = myPS.getTable().get(key);
-			                			String coord = pt.getCoord().peer;
+			                			coord = pt.getCoord().peer;
 			                			if(coord.equals(myIp))
 			                				continue;
 			                			SuperPeer c = getCoord("rmi://"+coord+"/SuperPeer"+coord);
@@ -77,8 +79,8 @@ public class PeerClient {
 		                			}
 		                			Tracker tr;
 	                				tr = getTracker("rmi://"+trackerIp+"/Tracker");
-	                				startElection(key,false,tr);
-		                		}
+	                				startElection(key,false,tr,coord);
+		                		} catch (NullPointerException ne) {}
 							
 			                    try {
 									Thread.sleep(5000);
@@ -543,8 +545,9 @@ public class PeerClient {
 	 *        eleggere un nuovo coordinatore;
 	 * @param noSelf true se l'elezione non deve coinvolgere il peer invocante;
 	 * @param tr riferimento al tracker.
+	 * @param oldCoord stringa che indica il coordinatore defunto
 	 */
-	public void startElection(String resName, boolean noSelf, Tracker tr) {
+	public void startElection(String resName, boolean noSelf, Tracker tr, String oldCoord) {
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
 		Hashtable<String, PeerTable> rt = null;
@@ -557,23 +560,27 @@ public class PeerClient {
 		
 		assert rt != null:"Unable to get resourceTable..";
 		
-		float answers[] = new float[rt.get(resName).get().size()];
-		String peers[] = new String[rt.get(resName).get().size()];
+		int dim = oldCoord==null?rt.get(resName).get().size():rt.get(resName).get().size()-1;
+		float answers[] = new float[dim];
+		String peers[] = new String[dim];
 		//per ogni peer nella lista chiama la election su di loro per ottenere le loro avgDist
+		int j=0;
 		for(int i=0;i<rt.get(resName).get().size();++i) {
 			String server = rt.get(resName).get().get(i).peer;
+			if(server.equals(oldCoord))
+				continue;
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
 			assert p != null : "Peer object is undefined!";
 			
 			try {
-				answers[i] = p.election(resName,this.myIp);
+				answers[j] = p.election(resName,this.myIp);
 			} catch (RemoteException e) {
 				System.out.println("Exception in election procedure: " + e.getMessage());
 				e.printStackTrace();
 			}
-			peers[i] = rt.get(resName).get().get(i).peer;
+			peers[j++] = rt.get(resName).get().get(i).peer;
 		}
 		
 		//tra tutto quello che ho ricevuto trovo quello col minimo (considerando anche me stesso)
@@ -590,6 +597,7 @@ public class PeerClient {
 		String peerMin = "";
 		if(!noSelf)
 			peerMin = this.myIp;
+		
 		
 		for(int i=0 ; i<answers.length ; ++i) {
 			if(answers[i] < min) {
