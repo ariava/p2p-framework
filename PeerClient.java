@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -15,6 +16,7 @@ public class PeerClient {
 	public String myIp;
 	static public boolean debug;
 	public String trackerIp = null;	
+	public Thread pollingWorker = null;
 	
 	public PeerClient() throws UnknownHostException {
 		self = this;
@@ -22,6 +24,9 @@ public class PeerClient {
 			
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
+		assert this.myPS != null : "PeerServer is null!";
+		
+		startPollingThread();
 	}
 	
 	public PeerClient(String tr) throws UnknownHostException {
@@ -31,6 +36,56 @@ public class PeerClient {
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
 		this.trackerIp = tr;
+		assert this.myPS != null : "PeerServer is null!";
+		
+		startPollingThread();
+	}
+	
+	private void startPollingThread() {
+		
+		pollingWorker = new Thread(
+				  new Runnable() {
+		                public void run() {
+		                	if (debug)
+		                		System.out.println("Avviato il thread di elezione");
+		                	while(true) {	
+		                		String key = null;
+		                		try {
+		                			Enumeration<String> e = myPS.getTable().keys();
+		                			while(e.hasMoreElements()) {
+		                				key = e.nextElement();
+			                			PeerTable pt = myPS.getTable().get(key);
+			                			String coord = pt.getCoord().peer;
+
+			                			SuperPeer c = getCoord("rmi://"+coord+"/SuperPeer"+coord);
+			                		
+			                			if( c == null )
+			                				throw new RemoteException();
+			                			c.ping();
+			                			if(debug)
+			                				System.out.println("Il 'ping' al coordinatore di "+key+" e' andato a buon fine, e' tutto ok.");
+			                			
+		                			}
+		                		} catch (RemoteException e1) {
+		                			if(debug) {
+		                				System.out.println("Il coordinatore di "+key+" non ha risposto, faccio partire l'elezione.");
+		                			}
+		                			Tracker tr;
+	                				tr = getTracker("rmi://"+trackerIp+"/Tracker");
+	                				startElection(key,false,tr);
+		                		}
+							
+			                    try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								} 
+			                }
+		                }
+		            });
+		/*	fine thread */
+		pollingWorker.start();
+		
 	}
 	
 	/*

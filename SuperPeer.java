@@ -16,5 +16,6 @@ public interface SuperPeer extends Peer {
 	public String getId() throws RemoteException;
 	public String getName() throws RemoteException;
 	public String getIP() throws RemoteException;
+	public boolean ping() throws RemoteException;
 
 }

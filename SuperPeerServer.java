@@ -47,6 +47,13 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/**
+	 * Metodo usato per testare se il coordinatore effettivamente risponde
+	 */
+	 public boolean ping() {
+		 return true;
+	 }
+	
+	/**
 	 * Metodo che restituisce il nome del server SuperPeer.
 	 * 
 	 * @return una stringa contenente il nome del server SuperPeer
