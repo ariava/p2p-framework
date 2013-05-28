@@ -50,6 +50,15 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/**
+	 * Metodo che rimuove completamente la tabella della risorsa data
+	 * */
+	public void removeFromTable(String resName) {
+		
+		this.resourceTable.remove(resName);
+	}
+	
+	
+	/**
 	 * Getter di avgDist
 	 * 
 	 * @return la distanza media

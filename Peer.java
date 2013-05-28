@@ -13,5 +13,6 @@ public interface Peer extends Remote {
 	public void goodbye(String resName, String ip) throws RemoteException;
 	public float getAvgDist() throws RemoteException;
 	public void setAvgDist(float avg) throws RemoteException;
+	public void removeFromTable(String resName) throws RemoteException;
 
 }
