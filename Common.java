@@ -30,7 +30,7 @@ public class Common {
 	 * @param etichette dei vettori di stringhe
 	 * @param un numero variabile di vettori di stringhe
 	 */
-	@SafeVarargs
+	
 	public static final void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {
