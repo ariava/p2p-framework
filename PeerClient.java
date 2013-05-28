@@ -18,6 +18,9 @@ public class PeerClient {
 	public String trackerIp = null;	
 	public Thread pollingWorker = null;
 	
+	/**
+	 * Costruttore della classe PeerClient senza parametri
+	 */
 	public PeerClient() throws UnknownHostException {
 		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
@@ -29,6 +32,11 @@ public class PeerClient {
 		startPollingThread();
 	}
 	
+	/**
+	 * Costruttore della classe PeerClient
+	 * 
+	 * @param tr indirizzo ip del tracker
+	 */
 	public PeerClient(String tr) throws UnknownHostException {
 		self = this;
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
@@ -41,6 +49,9 @@ public class PeerClient {
 		startPollingThread();
 	}
 		
+	/**
+	 * Metodo privato che esegue il ping su tutti i SuperPeer presenti nella tabella
+	 */
 	private void startPollingThread() {
 		if (pollingWorker != null) {
 			if (debug)

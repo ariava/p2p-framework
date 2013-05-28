@@ -218,7 +218,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			this.resourceTable.get(res).print();
 		}
 		assert elected == true : "No coordinator set!";
-		this.resourceTable.put(res, pt);
 	}
 	
 	/**
