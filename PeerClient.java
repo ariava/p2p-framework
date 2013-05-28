@@ -356,10 +356,10 @@ public class PeerClient {
 	}
 	
 	/**
-	 * Metodo che aggiunge
+	 * Metodo che aggiunge una entry nella tabella per una risorsa
 	 * 
-	 * @param resName
-	 * @param ip
+	 * @param resName nome della risorsa
+	 * @param ip indirizzo ip del peer che ha scaricato la risorsa resName
 	 */
 	private void addNewPeer(String resName, String ip) {
 		try {
