@@ -27,10 +27,9 @@ public class Common {
 	/**
 	 * Metodo di debug che stampa un insieme di vettori di stringhe in modo "ordinato"
 	 * 
-	 * @param etichette dei vettori di stringhe
-	 * @param un numero variabile di vettori di stringhe
+	 * @param labels etichette dei vettori di stringhe
+	 * @param vecs un numero variabile di vettori di stringhe
 	 */
-	
 	public static final void printStringVectors(String[] labels, Vector<String>... vecs) {
 		int labelnum = 0;
 		for (Vector<String> vec : vecs) {
