@@ -42,12 +42,16 @@ public class PeerClient {
 	}
 	
 	private void startPollingThread() {
-		
+		if (pollingWorker != null) {
+			if (debug)
+				System.out.println("Thread di elezione già attivo");
+			return;
+		}
 		pollingWorker = new Thread(
 				  new Runnable() {
 		                public void run() {
 		                	if (debug)
-		                		System.out.println("Avviato il thread di elezione");
+		                		System.out.println("Avviato il thread di polling");
 		                	while(true) {	
 		                		String key = null;
 		                		try {

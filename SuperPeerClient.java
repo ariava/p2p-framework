@@ -7,7 +7,6 @@ public class SuperPeerClient extends PeerClient {
 
 	private SuperPeer server = null;
 	private Tracker tracker = null;
-	private String trackerIp = null;
 	
 	private Thread listRetriever = null;
 	
