@@ -17,6 +17,7 @@ public class PeerClient {
 	static public boolean debug;
 	public String trackerIp = null;	
 	public Thread pollingWorker = null;
+	private boolean continueThread;
 	
 	public PeerClient() throws UnknownHostException {
 		self = this;
@@ -26,6 +27,7 @@ public class PeerClient {
 		this.myPS = self.getPeer(ps);
 		assert this.myPS != null : "PeerServer is null!";
 		
+		continueThread = true;
 		startPollingThread();
 	}
 	
@@ -38,7 +40,12 @@ public class PeerClient {
 		this.trackerIp = tr;
 		assert this.myPS != null : "PeerServer is null!";
 		
+		continueThread = true;
 		startPollingThread();
+	}
+	
+	public void setContinueThread(boolean continueThread) {
+		this.continueThread = continueThread;
 	}
 	
 	private void startPollingThread() {
@@ -52,7 +59,7 @@ public class PeerClient {
 		                public void run() {
 		                	if (debug)
 		                		System.out.println("Avviato il thread di polling");
-		                	while(true) {	
+		                	while(continueThread) {	
 		                		String key = null;
 		                		try {
 		                			Enumeration<String> e = myPS.getTable().keys();

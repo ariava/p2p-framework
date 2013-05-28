@@ -226,7 +226,8 @@ public class testFrameworkGUI {
 			                				String coord = "rmi://"+pc.myIp+"/"+"SuperPeer"+pc.myIp;
 			    		    				SuperPeer c = pc.getCoord(coord);
 			                				try {
-			                					pc.pollingWorker.stop();
+			                					//pc.pollingWorker.stop();
+			                					pc.setContinueThread(false);
 												pc = new SuperPeerClient(pc, c, tr);
 											} catch (UnknownHostException e1) {
 												System.out.println("Thread di elezione: errore nella creazione di un SuperPeerClient");
@@ -837,7 +838,8 @@ public class testFrameworkGUI {
 		    				l.lock();
 		    				if (!elected) {
 		    					try {
-		    						pc.pollingWorker.stop();
+		    						//pc.pollingWorker.stop();
+		    						pc.setContinueThread(false);
 									pc = new SuperPeerClient(pc, c, tr);
 									if (debug)
 										System.out.println("### ISTANZIATO Riferimento al (Super)PeerClient: " + pc + " ###");
