@@ -9,6 +9,7 @@ public class SuperPeerClient extends PeerClient {
 	
 	private Thread listRetriever = null;
 	private final int listRetrieverSleep = 5000;
+	private static boolean listRetrieverContinue;
 	
 	private String timestamp;
 	
@@ -37,6 +38,7 @@ public class SuperPeerClient extends PeerClient {
 			System.out.println("SuperPeerClient " + this + ": pollingWorker " + this.pollingWorker);
 		}
 
+		listRetrieverContinue = true;
 		this.startupListRetriever();
 	}
 	
@@ -97,7 +99,7 @@ public class SuperPeerClient extends PeerClient {
 							} catch (RemoteException e1) {
 								e1.printStackTrace();
 							}
-		                	while(true) {
+		                	while (listRetrieverContinue) {
 			                    try {
 			                    	/* Faccio il lookup al tracker, che magari e' tornato disponibile */
 			                    	String s = "rmi://"+trackerIp+"/Tracker";
@@ -147,14 +149,17 @@ public class SuperPeerClient extends PeerClient {
 	 * Metodo per arrestare il thread incaricato di rinfrescare la tabella dei 
 	 * coordinatori nel server SuperPeer.
 	 */
-	@SuppressWarnings("deprecation")
 	protected void stopListRetriever() {
+		assert listRetriever == null && listRetrieverContinue == false :
+			"Thread arrestato ma flag di continue attivo";
+		assert listRetriever != null && listRetrieverContinue == true :
+			"Thread attivo ma flag di continue disattivo";
 		if (debug)
 			System.out.println("Tentativo di arresto del thread di rinfresco della coordTable");
 		if (listRetriever != null) {
 			if (debug)
 				System.out.println("Thread in funzione, arrestato");
-			listRetriever.stop();
+			listRetrieverContinue = false;
 			listRetriever = null;
 		} else {
 			if (debug)
