@@ -83,20 +83,6 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/**
-	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
-	 * 
-	 * @param table tabella hash dei coordinatori
-	 */
-	private void printCoordTable(Hashtable<String, String> table) {
-		assert(table != null && table.size() != 0);
-		Enumeration<String> e = table.keys();
-		while(e.hasMoreElements()) {
-			String key = e.nextElement();
-			System.out.println("Risorsa: " + key + " | Coord: " + table.get(key));
-		}
-	}
-	
-	/**
 	 * Metodo che ritorna la table dei coordinatori clonata dal tracker
 	 * 
 	 * @return la tabella dei coordinatori clonata dal tracker
@@ -119,7 +105,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			throws RemoteException {
 		assert requestorIp != null : "Requestor IP is null";
 		assert requestorIp != "" : "Requestor IP is empty";
-		assert(resources != null && resources.size() != 0);
+		assert resources != null: "Vettore risorse nullo";
+		assert resources.size() != 0 : "Vettore risorse vuoto";
 		Vector<String> coordinators = new Vector<String>();
 		for (int i = 0 ; i < resources.size() ; i++) {
 			String coord = this.coordTable.get(resources.get(i));
@@ -151,7 +138,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			}
 			coordinators.add(coord);
 		}
-		assert(resources.size() == coordinators.size());
+		assert resources.size() == coordinators.size() :
+			"Dimensione del vettore risorse e del vettore coordinatori non corrispondono";
 		if (debug) {
 			System.out.println("SuperPeerServer: funzione register()");
 			Common.printStringVectors(new String[]{"Risorse", "Coordinatori"}, resources, coordinators);
@@ -226,21 +214,22 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			throws RemoteException {
 		assert lastCoord != null : "Last coordinator is null";
 		assert lastCoord != "" : "Last coordinator field is empty";
-		assert(resource != null && resource != "");
+		assert resource != null : "Campo risorsa nullo";
+		assert resource != "" : "Campo risorsa vuoto";
 		if (debug) {
 			System.out.println("SuperPeerServer - Richiesta avanzata");
 			System.out.println("Risorsa: " + resource + " - precedente coordinatore: " + lastCoord);
 		}
 		/* Se il coordinatore è cambiato, ritorniamo il nuovo */
-		String new_coord = this.coordTable.get(resource);
-		if (new_coord != null && lastCoord != new_coord) {
+		String newCoord = this.coordTable.get(resource);
+		if (newCoord != null && lastCoord != newCoord) {
 			if (debug)
-				System.out.println("Nuovo coordinatore: " + new_coord);
-			return new_coord;
+				System.out.println("Nuovo coordinatore: " + newCoord);
+			return newCoord;
 		}
 		/* Altrimenti, verifichiamo che il vecchio coordinatore sia giù */
-		boolean last_coord_is_alive = this.pingIP(lastCoord);
-		if (last_coord_is_alive) {
+		boolean lastCoordIsAlive = this.pingIP(lastCoord);
+		if (lastCoordIsAlive) {
 			if (debug)
 				System.out.println("Il precedente coordinatore è ancora vivo ");
 			return lastCoord;
@@ -343,11 +332,11 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		PeerTable pt = this.myPS.getTable().get(resourceName);
 		if (pt != null) {
 			Vector<PeerTableData> data = pt.get();
-			assert(data != null);
+			assert data != null : "PeerTableData nulla per PeerTable esistente";
 			for(int i = 0 ; i < data.size() ; i++)
 				possessors.add(data.get(i).peer);
 		}
-		assert(possessors.size() != 0);
+		assert possessors.size() != 0 : "Vettore possessori vuoto quando esiste un coordinatore";
 		if (debug) {
 			System.out.println("SuperPeerServer: funzione getList() per la risorsa " + resourceName);
 			Common.printStringVectors(new String[]{"Possessori"}, possessors);
@@ -369,10 +358,11 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		 * Se esiste un coordinatore (ed esiste perché si sta invocando
 		 * questo metodo), allora la tabella non può essere vuota.
 		 */
-		assert(table != null && table.size() != 0);
+		assert table != null : "Tentativo di impostare tabella nulla nel SuperPeer";
+		assert table.size() != 0 : "Tentativo di impostare tabella vuota nel SuperPeer";
 		if (debug) {
 			System.out.println("SuperPeerServer: impostazione della tabella dei coordinatori");
-			this.printCoordTable(table);
+			Common.printCoordTable(table);
 		}
 		this.coordTable = table;
 	}

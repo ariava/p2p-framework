@@ -109,7 +109,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * Se no aggiunge una entry nella tabella con chiave il nome della risorsa e con
 	 * valore l'indirizzo ip del nodo richiedente
 	 * 
-	 * @param ip del nodo che vuole entrare a far parte della rete p2p
+	 * @param ip ip del nodo che vuole entrare a far parte della rete p2p
 	 * @param risorse le risorse possedute dal nodo che vuole entrare a far
 	 * parte della rete p2p
 	 * 

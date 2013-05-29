@@ -1,6 +1,5 @@
 import java.net.UnknownHostException;
 import java.rmi.*;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class SuperPeerClient extends PeerClient {
@@ -9,6 +8,7 @@ public class SuperPeerClient extends PeerClient {
 	private Tracker tracker = null;
 	
 	private Thread listRetriever = null;
+	private final int listRetrieverSleep = 5000;
 	
 	private String timestamp;
 	
@@ -24,8 +24,8 @@ public class SuperPeerClient extends PeerClient {
 	 * @param trIp indirizzo ip del tracker
 	 */
 	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker) throws UnknownHostException {
-		assert(server != null);
-		assert(tracker != null);
+		assert server != null : "Campo server nullo";
+		assert tracker != null : "Campo tracker nullo";
 		this.server = server;
 		this.tracker = tracker;
 		this.trackerIp = pc.trackerIp;
@@ -41,23 +41,6 @@ public class SuperPeerClient extends PeerClient {
 	}
 	
 	/**
-	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
-	 * 
-	 * @param table tabella hash dei coordinatori
-	 */
-	private void printCoordTable(Hashtable<String, String> table) {
-		assert(table != null && table.size() != 0);
-		
-		System.out.println("Sono nel thread, stampo la tabella:");
-		
-		Enumeration<String> e = table.keys();
-		while(e.hasMoreElements()) {
-			String key = e.nextElement();
-			System.out.println("Risorsa: " + key + " | Coord: " + table.get(key));
-		}
-	}
-	
-	/**
 	 * Metodo per impostare il server SuperPeer come coordinatore di una risorsa data.
 	 * 
 	 * Il metodo invoca il rispettivo metodo dell'oggetto Tracker passandogli l'indirizzo
@@ -67,10 +50,12 @@ public class SuperPeerClient extends PeerClient {
 	 *        il nuovo coordinatore
 	 */
 	public void setCoordinator(String risorsa) {
-		assert(risorsa != null && risorsa != "");
+		assert risorsa != null : "Campo risorsa nullo nell'impostazione del coordinatore";
+		assert risorsa != "" : "Campo risorsa vuoto nell'impostazione del coordinatore";
 		try {
 			String coordIp = server.getIP();
-			assert(coordIp != null && coordIp != "");
+			assert coordIp != null : "IP coordinatore nullo";
+			assert coordIp != "" : "IP coordinatore vuoto";
 			if (debug) {
 				System.out.println("SuperPeerClient - Impostazione del coordinatore");
 			    System.out.println("Impostazione di " + coordIp + " per la risorsa " + risorsa);
@@ -105,7 +90,10 @@ public class SuperPeerClient extends PeerClient {
 							try {
 								table = tracker.getList("1970-01-01 00:00:00.000");
 								timestamp = Common.setTimestamp();
-								printCoordTable(table);
+								if (debug) {
+									System.out.println("Sono nel thread, stampo la tabella iniziale");
+									Common.printCoordTable(table);
+								}
 							} catch (RemoteException e1) {
 								e1.printStackTrace();
 							}
@@ -116,11 +104,13 @@ public class SuperPeerClient extends PeerClient {
 			                    	tracker = (Tracker)Naming.lookup(s);
 
 			                    	if (down) {
-			                    		if (debug)
+			                    		Hashtable<String, String> coordTable = server.getCoordTable();
+			                    		if (debug) {
 			                    			System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la tabella");
-			                    		tracker.setList(server.getCoordTable()); 
+			                    			Common.printCoordTable(coordTable);
+			                    		}
+			                    		tracker.setList(coordTable); 
 			                    		down = false;
-			                    		printCoordTable(server.getCoordTable());
 			                    	}
 			                    	else
 			                    		/* Recupero della tabella dei coordinatori dal tracker */
@@ -130,20 +120,18 @@ public class SuperPeerClient extends PeerClient {
 			                    	if (table != null) {
 			                    		if (debug) {
 				                    		System.out.println("Thread: impostazione della coordTable al timestamp " + timestamp);
-				                    		timestamp = Common.setTimestamp();
-				                    		printCoordTable(table);
+				                    		Common.printCoordTable(table);
 				                    	}
+			                    		timestamp = Common.setTimestamp();
 			                    		server.setList(table);
-			                    	} else {
-			                    		if (debug)
+			                    	} else if (debug)
 			                    			System.out.println("Thread: al timestamp " + timestamp + " la tabella non è cambiata");
-			                    	}
-			                    	Thread.sleep(5000); 
+			                    	Thread.sleep(listRetrieverSleep); 
 			                    } catch (Exception e) {
 			                    	down = true;
-			                    	System.out.println("Tracker's dead baby, tracker's dead." + e.getMessage());
+			                    	System.out.println("Tracker's dead baby, tracker's dead:" + e.getMessage());
 			                    	try {
-										Thread.sleep(5000);
+										Thread.sleep(listRetrieverSleep);
 									} catch (InterruptedException e1) {
 										e1.printStackTrace();
 									}

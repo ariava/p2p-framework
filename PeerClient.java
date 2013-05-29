@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.net.ConnectException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
@@ -16,8 +15,10 @@ public class PeerClient {
 	public Peer myPS = null;
 	public String myIp;
 	static public boolean debug;
-	public String trackerIp = null;	
+	public String trackerIp = null;
+
 	public Thread pollingWorker = null;
+	private final int pollingWorkerSleep = 5000;
 	
 	/**
 	 * Costruttore della classe PeerClient senza parametri
@@ -52,7 +53,7 @@ public class PeerClient {
 	public void startPollingWorker() {
 		if (pollingWorker != null) {
 			if (debug)
-				System.out.println("Thread di elezione già attivo");
+				System.out.println("Thread di polling già attivo");
 			return;
 		}
 		pollingWorker = new Thread(
@@ -60,40 +61,36 @@ public class PeerClient {
 		                public void run() {
 		                	if (debug)
 		                		System.out.println("Avviato il thread di polling");
-		                	while(true) {	
+		                	while (true) { // Il thread deve avere lo stesso tempo di vita
+		                				   // dell'oggetto (Super)PeerClient che lo ospita
 		                		String key = null;
 		                		String coord = null;
 		                		try {
-		                			
 		                			Enumeration<String> e = myPS.getTable().keys();
-		                			while(e.hasMoreElements()) {
+		                			while (e.hasMoreElements()) {
 		                				key = e.nextElement();
 			                			PeerTable pt = myPS.getTable().get(key);
 			                			coord = pt.getCoord().peer;
-			                			if(coord.equals(myIp))
+			                			if (coord.equals(myIp))
 			                				continue;
 			                			SuperPeer c = getCoord("rmi://"+coord+"/SuperPeer"+coord);
-			                		
-			                			if( c == null )
+			                			if (c == null)
 			                				throw new RemoteException();
 			                			c.ping();
-			                			if(debug)
+			                			if (debug)
 			                				System.out.println("Il 'ping' al coordinatore di "+key+" e' andato a buon fine, e' tutto ok.");
-			                			
 		                			}
 		                		} catch (RemoteException e1) {
-		                			if(debug) {
+		                			if (debug)
 		                				System.out.println("Il coordinatore di "+key+" non ha risposto, faccio partire l'elezione.");
-		                			}
 		                			Tracker tr;
 	                				tr = getTracker("rmi://"+trackerIp+"/Tracker");
-	                				startElection(key,false,tr,coord);
+	                				startElection(key, false, tr, coord);
 		                		} catch (NullPointerException ne) {
-		                			System.out.println("Ho catturato la nullpointereccetera");
+		                			System.out.println("Thread di polling: ho catturato la nullpointereccetera");
 		                		}
-							
 			                    try {
-									Thread.sleep(5000);
+									Thread.sleep(pollingWorkerSleep);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								} 
@@ -102,7 +99,6 @@ public class PeerClient {
 		            });
 		/*	fine thread */
 		pollingWorker.start();
-		
 	}
 	
 	/*
@@ -639,7 +635,8 @@ public class PeerClient {
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
 		for (int i=0 ; i<rt.get(resName).get().size() ; ++i) {
 			String server = rt.get(resName).get().get(i).peer;
-			if(server.equals(oldCoord))
+			if(server.equals(oldCoord)) // se c'era un precedente coordinatore che ora non
+										// risponde più, non gli notifico nulla
 				continue;
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);

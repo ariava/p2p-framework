@@ -1,7 +1,10 @@
 import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Vector;
 
 public class Common {
+
 	private final static int timestampLength = 23;
 	
 	/**
@@ -42,6 +45,22 @@ public class Common {
 			}
 			System.out.println("]");
 			labelnum++;
+		}
+	}
+	
+	/**
+	 * Metodo di debug che stampa la tabella dei coordinatori passata come parametro.
+	 * 
+	 * @param table tabella hash dei coordinatori
+	 */
+	public static void printCoordTable(Hashtable<String, String> table) {
+		assert table != null : "Tabella coordinatori nulla nella funzione di stampa";
+		assert table.size() != 0 : "Tabella coordinatori di dimensione zero nella funzione di stampa";
+		System.out.println("*** Tabella dei coordinatori ***");
+		Enumeration<String> e = table.keys();
+		while(e.hasMoreElements()) {
+			String key = e.nextElement();
+			System.out.println("Risorsa: " + key + " | Coord: " + table.get(key));
 		}
 	}
 
