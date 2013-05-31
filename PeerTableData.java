@@ -18,6 +18,8 @@ public class PeerTableData implements Serializable {
 	 * @param dist distanza dal peer
 	 * @param down flag che indica se il peer è down
 	 * @param coord flag che indica se peer è il coordinatore
+	 * 
+	 * XXX il flag down non serve a niente
 	 */
 	public PeerTableData(String peer, float dist, boolean down, boolean coord) {
 		this.peer = peer;

@@ -102,9 +102,10 @@ public class testFrameworkGUI {
 	 * 
 	 * Utilizzato in import e download per evitare di ripetere le chiamate.
 	 * 
-	 * Parametri:
-	 * resName: il nome della risorsa da controllare
-	 * */
+	 * @param resName il nome della risorsa da controllare
+	 * 
+	 * @return vero se la risorsa resName è già nella tabella, falso altrimenti
+	 */
 	private static boolean alreadyExists(String resName) {
 		File resFolder = new File("resources/");
 		File[] list = resFolder.listFiles();
@@ -121,9 +122,10 @@ public class testFrameworkGUI {
 	/**
 	 * Metodo privato che copia un file.
 	 * 
-	 * Parametri:
-	 * src: percorso assoluto del file;
-	 * dst: percorso assoluto della destinazione scelta.
+	 * @param src percorso assoluto del file;
+	 * @param dst percorso assoluto della destinazione scelta.
+	 * 
+	 * @return vero se la copia è avvenuta con successo, falso altrimenti
 	 */
 	private boolean copyFile(String src, String dst) {
 		InputStream inStream = null;
@@ -171,6 +173,12 @@ public class testFrameworkGUI {
 		btnDelete.setEnabled(old_enabled);
 	}
 		
+	/**
+	 * Metodo privato che abilita o meno gli item del popup su un
+	 * un campo di testo
+	 * 
+	 * @param component una stringa che indica il componente da abilitare/disabilitare
+	 */
 	private void enabledDisabledMenuItems(String component) {
 		Transferable clipboardContent = clipboard.getContents(null);
 		if (clipboardContent!=null && (clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor)))
@@ -188,7 +196,7 @@ public class testFrameworkGUI {
 	
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inizializza il contenuto di un frame.
 	 */
 	private void initialize() {
 		frmTestFrameworkGui = new JFrame();
