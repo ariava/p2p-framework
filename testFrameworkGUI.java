@@ -822,6 +822,16 @@ public class testFrameworkGUI {
 	    					if (debug)
 	    						System.out.println("Sto registrando una risorsa gia' presente nella rete: "+resNames.get(i)+", lo notifico al coordinatore, che e': "+coord);
 	    					pc.registerResources(c, resNames);
+	    					try {
+		    					PeerTable pt = pc.myPS.getTable().get(resNames.get(i));
+		    					pt.add(new PeerTableData(pc.myIp, 0,
+										   false, false));
+		    					pc.myPS.addToTable(resNames.get(i), pt);
+	    					} catch(Exception e1) {
+	    						if(debug)
+	    							System.out.println("Unable to add myself to my peerTable: "+e1.getMessage());
+	    					}
+	    					
 	    				} else {
 	    					if(debug)
 	    						System.out.println("Sono io il nuovo coordinatore per la risorsa "+resNames.get(i));
