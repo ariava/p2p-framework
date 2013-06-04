@@ -20,6 +20,8 @@ public class PeerClient {
 	public Thread pollingWorker = null;
 	private final int pollingWorkerSleep = 5000;
 	
+	public boolean trackerIsDown;
+	
 	/**
 	 * Costruttore della classe PeerClient senza parametri
 	 */

@@ -30,6 +30,7 @@ public class SuperPeerClient extends PeerClient {
 		this.server = server;
 		this.tracker = tracker;
 		this.trackerIp = pc.trackerIp;
+		this.trackerIsDown = false;
 		
 		this.myIp = pc.myIp;
 		this.pollingWorker = pc.pollingWorker;
@@ -113,6 +114,7 @@ public class SuperPeerClient extends PeerClient {
 			                    		}
 			                    		tracker.setList(coordTable); 
 			                    		down = false;
+			                    		trackerIsDown = false;
 			                    	}
 			                    	else
 			                    		/* Recupero della tabella dei coordinatori dal tracker */
@@ -131,6 +133,7 @@ public class SuperPeerClient extends PeerClient {
 			                    	Thread.sleep(listRetrieverSleep); 
 			                    } catch (Exception e) {
 			                    	down = true;
+			                    	trackerIsDown = true;
 			                    	System.out.println("Tracker's dead baby, tracker's dead:" + e.getMessage());
 			                    	try {
 										Thread.sleep(listRetrieverSleep);
