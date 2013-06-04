@@ -203,7 +203,7 @@ public class fileSharingApplication {
 	private void initialize() {
 		frmTestFrameworkGui = new JFrame();
 		frmTestFrameworkGui.setResizable(false);
-		frmTestFrameworkGui.setTitle("test Framework GUI");
+		frmTestFrameworkGui.setTitle("MyFileSharingApp");
 		frmTestFrameworkGui.setBounds(100, 100, 733, 493);
 		
 		/* Inizializzazione del lock utilizzato per l'elezione */
@@ -228,6 +228,9 @@ public class fileSharingApplication {
 		                		if(!pc.trackerIsDown) {
 		                			lblStatus.setText("Status: Online");
 		                			btnImport.setEnabled(true);
+		                		}else {
+		                			lblStatus.setText("Status: Online, but tracker is down!");
+		                			btnImport.setEnabled(false);
 		                		}
 		                		
 		                		l.lock(); /* I dati protetti dal lock sono l'attributo
@@ -612,6 +615,12 @@ public class fileSharingApplication {
 				for (int i=0 ; i<ipList.size() ; ++i) {
 					
 					String peer = ipList.get(i);
+					
+					if(peer.equals("")) {
+						JOptionPane.showMessageDialog(null, "Resource "+resName+" not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
 					peer = "rmi://"+peer+"/"+"Peer"+peer;
 					Peer p = pc.getPeer(peer);
 					
