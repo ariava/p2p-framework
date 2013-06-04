@@ -209,6 +209,7 @@ public class fileSharingApplication {
 	
 	final JButton btnImport = new JButton("Import...");
 	final JLabel lblStatus = new JLabel("Status: Offline");
+	final JButton btnConnect = new JButton("    Connect   ");
 
 	/**
 	 * Inizializza il contenuto di un frame.
@@ -241,9 +242,16 @@ public class fileSharingApplication {
 		                		if(!pc.trackerIsDown) {
 		                			lblStatus.setText("Status: Online");
 		                			btnImport.setEnabled(true);
-		                		}else {
+		                			btnConnect.setEnabled(true);
+		                			if (table.getSelectedRows().length > 0) {
+		                				btnDelete.setEnabled(true);
+		                			}
+		                		}
+		                		else {
 		                			lblStatus.setText("Status: Online, but tracker is down!");
 		                			btnImport.setEnabled(false);
+		                			btnConnect.setEnabled(false);
+		                			btnDelete.setEnabled(false);
 		                		}
 		                		
 		                		l.lock(); /* I dati protetti dal lock sono l'attributo
@@ -345,8 +353,6 @@ public class fileSharingApplication {
 	            jte.paste();
 			}
 	    });
-		
-		final JButton btnConnect = new JButton("    Connect   ");
 		
 		txtIpTracker = new JTextField();
 		txtIpTracker.setText("insert tracker ip");
