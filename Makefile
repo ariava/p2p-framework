@@ -7,7 +7,7 @@ JAVAOPTS=-Djava.rmi.server.codebase=file:`pwd`/ -ea
 all: java rmi
 
 gui: java
-	java -ea testFrameworkGUI debug
+	java -ea fileSharingApplication debug
 
 tracker: java rmi
 	java $(JAVAOPTS) TrackerServer debug
