@@ -509,7 +509,6 @@ public class testFrameworkGUI {
 					btnDelete.setEnabled(false);
 					btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Offline");
-					return;
 				}
 				
 				String resName = txtInsertFileTo.getText();
@@ -755,7 +754,7 @@ public class testFrameworkGUI {
 				tr = pc.getTracker(server);
 				
 				if(tr == null) {
-					JOptionPane.showMessageDialog(null, "Tracker object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Tracker is unreachable!", "Error",JOptionPane.ERROR_MESSAGE);
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
 					btnNewButton.setEnabled(false);
