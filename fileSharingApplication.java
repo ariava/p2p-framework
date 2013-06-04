@@ -194,6 +194,19 @@ public class fileSharingApplication {
 		}
 	}
 	
+	/**
+	 * Metodo privato che abilita o meno gli item del popup sulla tabella
+	 */
+	private void enabledDisabledMenuItems() {
+		
+		if(!pc.trackerIsDown) {
+			deleteMenuItem.setEnabled(true);
+		}
+		else {
+			deleteMenuItem.setEnabled(false);
+		}
+	}
+	
 	final JButton btnImport = new JButton("Import...");
 	final JLabel lblStatus = new JLabel("Status: Offline");
 
@@ -387,6 +400,7 @@ public class fileSharingApplication {
 				tr = pc.getTracker(server);
 				
 				if(tr == null && btnConnect.getText().equals("Disconnect")) {
+					JOptionPane.showMessageDialog(null, "Unable to disconnect from Tracker, it is down", "Error", JOptionPane.ERROR_MESSAGE);
 					btnImport.setEnabled(false);
 					btnConnect.setEnabled(false);
 					btnDelete.setEnabled(false);
@@ -717,26 +731,38 @@ public class fileSharingApplication {
             public void mousePressed(MouseEvent e) {
             	if (SwingUtilities.isRightMouseButton(e)) {
             		if (table.rowAtPoint(e.getPoint()) >= 0) {
-            			// get the row index that contains that coordinate
-            			int rowNumber = table.rowAtPoint(e.getPoint());
-             
-            			// Get the ListSelectionModel of the JTable
-            			ListSelectionModel model = table.getSelectionModel();
-             
-            			// set the selected interval of rows. Using the "rowNumber"
-            			// variable for the beginning and end selects only that one row.
-            			model.setSelectionInterval(rowNumber, rowNumber);
-            			
-            			btnDelete.setEnabled(true);
-            			
+            			if(!pc.trackerIsDown) {
+            				// get the row index that contains that coordinate
+                			int rowNumber = table.rowAtPoint(e.getPoint());
+                 
+                			// Get the ListSelectionModel of the JTable
+                			ListSelectionModel model = table.getSelectionModel();
+                 
+                			// set the selected interval of rows. Using the "rowNumber"
+                			// variable for the beginning and end selects only that one row.
+                			model.setSelectionInterval(rowNumber, rowNumber);
+                			
+                			btnDelete.setEnabled(true);
+            			}
+            			else {
+            				btnDelete.setEnabled(false);
+            			}
+            			enabledDisabledMenuItems();
             			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
-            		} else {
+            		} 
+            		else {
             			table.clearSelection();
             			btnDelete.setEnabled(false);
             		}
             	} else if (SwingUtilities.isLeftMouseButton(e)) {
-            		if (table.rowAtPoint(e.getPoint()) >= 0)
-            			btnDelete.setEnabled(true);
+            		if (table.rowAtPoint(e.getPoint()) >= 0) {
+            			if(!pc.trackerIsDown) {
+            				btnDelete.setEnabled(true);
+            			}
+            			else {
+            				btnDelete.setEnabled(false);
+            			}
+            		}
             		else {
             			table.clearSelection();
             			btnDelete.setEnabled(false);
