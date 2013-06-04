@@ -386,6 +386,15 @@ public class fileSharingApplication {
 
 				tr = pc.getTracker(server);
 				
+				if(tr == null && btnConnect.getText().equals("Disconnect")) {
+					btnImport.setEnabled(false);
+					btnConnect.setEnabled(false);
+					btnDelete.setEnabled(false);
+					lblStatus.setText("Status: Online, but tracker is down!");
+					
+					return;
+				}
+				
 				if(tr == null) {
 					JOptionPane.showMessageDialog(null, "Unable to connect to Tracker", "Error", JOptionPane.ERROR_MESSAGE);
 					txtIpTracker.setEnabled(true);
@@ -517,7 +526,8 @@ public class fileSharingApplication {
 					//table.clearSelection();
 					//table.setEnabled(false);
 					btnImport.setEnabled(false);
-					//btnDelete.setEnabled(false);
+					btnConnect.setEnabled(false);
+					btnDelete.setEnabled(false);
 					//btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Online, but tracker is down!");
 				}
@@ -772,14 +782,15 @@ public class fileSharingApplication {
 				
 				if(tr == null) {
 					JOptionPane.showMessageDialog(null, "Tracker is unreachable, resource import not available!", "Error",JOptionPane.ERROR_MESSAGE);
-					/*txtIpTracker.setEnabled(true);
-					txtInsertFileTo.setEnabled(false);
-					btnNewButton.setEnabled(false);
-					table.clearSelection();
-					table.setEnabled(false);*/
+					//txtIpTracker.setEnabled(true);
+					//txtInsertFileTo.setEnabled(false);
+					//btnNewButton.setEnabled(false);
+					//table.clearSelection();
+					//table.setEnabled(false);
 					btnImport.setEnabled(false);
-					/*btnDelete.setEnabled(false);
-					btnConnect.setText("    Connect   ");*/
+					btnConnect.setEnabled(false);
+					btnDelete.setEnabled(false);
+					//btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Online, but tracker is down!");
 					return;
 				}
