@@ -691,7 +691,9 @@ public class PeerClient {
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
-			assert p != null : "Peer object is undefined!";
+			if(p==null)
+				continue;
+			
 			if (debug)
 				System.out.println("ORA DOVREI CHIAMARE LA COORDINATOR");
 			try {
