@@ -458,8 +458,6 @@ public class fileSharingApplication {
 							
 							
 							//XXX: aggiunto ora per fixare doppio inserimento, se ci son problemi futuri potrebbe esserne la causa
-							System.out.println("Sono io il coordinatore per la nuova risorsa..? "+pt.getCoord().peer.equals(pc.myIp));
-							System.out.println("il coordinatore e': "+pt.getCoord().peer);
 							if(!pt.getCoord().peer.equals(pc.myIp)) {
 								pt.add(new PeerTableData(pc.myIp, 0,
 										false, false));
