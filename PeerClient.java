@@ -557,9 +557,20 @@ public class PeerClient {
 	 * @param tr riferimento al tracker.
 	 * @param oldCoord stringa che indica il coordinatore defunto
 	 */
-	public void startElection(String resName, boolean noSelf, Tracker tr, String oldCoord) {
+	public void startElection(String resName, boolean noSelf, Tracker tr, String oldCoord)  {
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
+		
+		try {
+			if(this.myPS.noElection()) {
+				if(debug)
+					System.out.println("Elezione gia' in corso da parte di qualche altro peer!");
+				return;
+			}
+		} catch (RemoteException e2) {
+			e2.printStackTrace();
+		}
+		
 		Hashtable<String, PeerTable> rt = null;
 		try {
 			rt = this.myPS.getTable();
