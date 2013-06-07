@@ -210,7 +210,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @param res stringa contenente la risorsa per cui e' stato eletto il nuovo coordinatore
 	 */
 	public void coordinator(String newCoord, String res) throws RemoteException {
-		System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
+		if(debug)
+			System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
 		
 		
 		boolean elected = false;
@@ -252,6 +253,13 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 * @param pt la peerTable da aggiungere a quella risorsa
 	 */
 	public void addToTable(String resName, PeerTable pt) {
+		this.resourceTable.put(resName, pt);
+	}
+	
+	public void newPeer(String ip, String resName) {
+		PeerTable pt = this.resourceTable.get(resName);
+		pt.add(new PeerTableData(ip, 4, false, false));
+		
 		this.resourceTable.put(resName, pt);
 	}
 

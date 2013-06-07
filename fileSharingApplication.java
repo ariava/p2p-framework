@@ -699,8 +699,8 @@ public class fileSharingApplication {
 				}
 				
 				String closestPeer = pt.getMinDistPeer();
-				closestPeer = "rmi://"+closestPeer+"/"+"Peer"+closestPeer;
-				Peer p = pc.getPeer(closestPeer);
+				String closestPeerServer = "rmi://"+closestPeer+"/"+"Peer"+closestPeer;
+				Peer p = pc.getPeer(closestPeerServer);
 				
 				assert p != null : "Peer object is undefined!";
 				
@@ -716,9 +716,28 @@ public class fileSharingApplication {
 						System.out.println("Unable to set new avgDist: " + e1.getMessage());
 						e1.printStackTrace();
 					}
+					
+					//comunico agli altri peer (tranne chi me l'ha data) che la ho anche io
+					for(int i=0;i<ipList.size();++i) {
+						String peer = ipList.get(i);
+						if(!peer.equals(closestPeer)) {
+							peer = "rmi://"+peer+"/"+"Peer"+peer;
+							
+							Peer pe = pc.getPeer(peer);
+							if(pe!= null) {
+								try {
+									pe.newPeer(pc.myIp, resName);
+								} catch (RemoteException e1) {
+									e1.printStackTrace();
+								}
+							}
+						}
+					}
 				}
 				else
 					JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..", "Warning!", JOptionPane.WARNING_MESSAGE);
+				
+				
 	
 			/************************/
 				
