@@ -609,7 +609,15 @@ public class fileSharingApplication {
 				
 				SuperPeer c = pc.getCoord(coord);
 				
-				assert c != null : "SuperPeer object is undefined!";
+				if(c == null) {
+					try {
+						tr.cambioCoordinatore("",resName);
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
+					JOptionPane.showMessageDialog(null, "Coordinator not found, he probably left the network unpolitely!", "Error",JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				
 				Vector<String> ipList = pc.getList(c, resName);
 				int count = 0;
