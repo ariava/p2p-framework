@@ -540,8 +540,7 @@ public class PeerClient {
 			obj.ping();
 			return obj;
 		} catch (Exception e) {
-			System.out.println("Error while getting the remote object: "+e.getMessage());
-			e.printStackTrace();
+			System.out.println("Error while getting the remote object: " + e.getMessage());
 			
 			// Rimuoviamo un peer che non risponde dalla PeerTable
 			Enumeration<String> en = null;
