@@ -153,10 +153,9 @@ public class SuperPeerClient extends PeerClient {
 	 * coordinatori nel server SuperPeer.
 	 */
 	protected void stopListRetriever() {
-		assert listRetriever == null && listRetrieverContinue == false :
-			"Thread arrestato ma flag di continue attivo";
-		assert listRetriever != null && listRetrieverContinue == true :
-			"Thread attivo ma flag di continue disattivo";
+		assert (listRetriever == null && listRetrieverContinue == false) ||
+		       (listRetriever != null && listRetrieverContinue == true) :
+			"Discordanza tra il riferimento listRetriever e il flag";
 		if (debug)
 			System.out.println("Tentativo di arresto del thread di rinfresco della coordTable");
 		if (listRetriever != null) {
