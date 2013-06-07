@@ -700,43 +700,59 @@ public class fileSharingApplication {
 				
 				String closestPeer = pt.getMinDistPeer();
 				String closestPeerServer = "rmi://"+closestPeer+"/"+"Peer"+closestPeer;
-				Peer p = pc.getPeer(closestPeerServer);
+				boolean fail = false;
 				
-				assert p != null : "Peer object is undefined!";
-				
-				//richiedi la risorsa..
-				if (pc.getResource(p, resName)) {
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					model.addRow(new Object[]{resName});
-					//aggiorna la distanza media dato che a sto punto saro' stato aggiunto nella tabella..
-					try {
-						pc.myPS.setAvgDist(pc.myPS.getTable().get(resName).getAvgDist(pc.myIp));
-						System.out.println("Nuova avgDist: "+pc.myPS.getAvgDist());
-					} catch (RemoteException e1) {
-						System.out.println("Unable to set new avgDist: " + e1.getMessage());
-						e1.printStackTrace();
+				for(int k=0;k<ipList.size();++k) {
+					
+					
+					if(fail) {
+						if(ipList.get(k).equals(closestPeer))
+							continue;
+						closestPeerServer = "rmi://"+ipList.get(k)+"/"+"Peer"+ipList.get(k);
+						fail = false;
 					}
 					
-					//comunico agli altri peer (tranne chi me l'ha data) che la ho anche io
-					for(int i=0;i<ipList.size();++i) {
-						String peer = ipList.get(i);
-						if(!peer.equals(closestPeer)) {
-							peer = "rmi://"+peer+"/"+"Peer"+peer;
-							
-							Peer pe = pc.getPeer(peer);
-							if(pe!= null) {
-								try {
-									pe.newPeer(pc.myIp, resName);
-								} catch (RemoteException e1) {
-									e1.printStackTrace();
+					Peer p = pc.getPeer(closestPeerServer);
+					
+					assert p != null : "Peer object is undefined!";
+					
+					//richiedi la risorsa..
+					if (pc.getResource(p, resName)) {
+						DefaultTableModel model = (DefaultTableModel) table.getModel();
+						model.addRow(new Object[]{resName});
+						//aggiorna la distanza media dato che a sto punto saro' stato aggiunto nella tabella..
+						try {
+							pc.myPS.setAvgDist(pc.myPS.getTable().get(resName).getAvgDist(pc.myIp));
+							System.out.println("Nuova avgDist: "+pc.myPS.getAvgDist());
+						} catch (RemoteException e1) {
+							System.out.println("Unable to set new avgDist: " + e1.getMessage());
+							e1.printStackTrace();
+						}
+						
+						//comunico agli altri peer (tranne chi me l'ha data) che la ho anche io
+						for(int i=0;i<ipList.size();++i) {
+							String peer = ipList.get(i);
+							if(!peer.equals(closestPeer)) {
+								peer = "rmi://"+peer+"/"+"Peer"+peer;
+								
+								Peer pe = pc.getPeer(peer);
+								if(pe!= null) {
+									try {
+										pe.newPeer(pc.myIp, resName);
+									} catch (RemoteException e1) {
+										e1.printStackTrace();
+									}
 								}
 							}
 						}
+						break;
 					}
+					else {
+						JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..", "Warning!", JOptionPane.WARNING_MESSAGE);
+						fail = true;
+					}
+					
 				}
-				else
-					JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..", "Warning!", JOptionPane.WARNING_MESSAGE);
-				
 				
 	
 			/************************/
