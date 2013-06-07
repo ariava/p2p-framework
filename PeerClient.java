@@ -299,7 +299,8 @@ public class PeerClient {
 			if (debug)
 				System.out.println("goodbye(): uscita pulita dal PeerServer " + list.get(i));
 			Peer p = this.getPeer(peer);
-			p.goodbye(resName, this.myIp);
+			if(p!=null)
+				p.goodbye(resName, this.myIp);
 		}
 		if (debug) {
 			System.out.println("***Tabella dopo goodbye***");
@@ -580,11 +581,15 @@ public class PeerClient {
 				continue;
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
+			if(debug)
+				System.out.println("Sono nella election, contatto il peer "+server+", il suo riferimento e' "+p);
 			
-			assert p != null : "Peer object is undefined!";
 			
 			try {
-				answers[j] = p.election(resName,this.myIp);
+				if(p == null)
+					answers[j] = -1;
+				else
+					answers[j] = p.election(resName,this.myIp);
 			} catch (RemoteException e) {
 				System.out.println("Exception in election procedure: " + e.getMessage());
 				e.printStackTrace();
@@ -609,6 +614,8 @@ public class PeerClient {
 		
 		
 		for(int i=0 ; i<answers.length ; ++i) {
+			if(answers[i] == -1)
+				continue;
 			if(answers[i] < min) {
 				if (!noSelf) {
 					min = answers[i];
