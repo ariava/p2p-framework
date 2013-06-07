@@ -458,11 +458,11 @@ public class fileSharingApplication {
 							
 							
 							//XXX: aggiunto ora per fixare doppio inserimento, se ci son problemi futuri potrebbe esserne la causa
-							if(!pt.getCoord().peer.equals(pc.myIp)) {
+							/*if(!pt.getCoord().peer.equals(pc.myIp)) {
 								pt.add(new PeerTableData(pc.myIp, 0,
 										false, false));
 								pc.myPS.addToTable(list[i].getName(), pt);
-							}
+							}*/
 							if(debug)
 								pc.myPS.getTable().get(list[i].getName()).print();
 						} catch (RemoteException e) {
