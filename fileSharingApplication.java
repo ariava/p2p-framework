@@ -455,10 +455,18 @@ public class fileSharingApplication {
 							if (debug)
 								System.out.println("Ho finito di reimportare la risorsa "+list[i].getName()+", stampo la sua tabella");
 							PeerTable pt = pc.myPS.getTable().get(list[i].getName());
-							pt.add(new PeerTableData(pc.myIp, 0,
-								   false, pt.get().isEmpty() ? true : false));
-							pc.myPS.addToTable(list[i].getName(), pt);
-							pc.myPS.getTable().get(list[i].getName()).print();
+							
+							
+							//XXX: aggiunto ora per fixare doppio inserimento, se ci son problemi futuri potrebbe esserne la causa
+							System.out.println("Sono io il coordinatore per la nuova risorsa..? "+pt.getCoord().peer.equals(pc.myIp));
+							System.out.println("il coordinatore e': "+pt.getCoord().peer);
+							if(!pt.getCoord().peer.equals(pc.myIp)) {
+								pt.add(new PeerTableData(pc.myIp, 0,
+										false, false));
+								pc.myPS.addToTable(list[i].getName(), pt);
+							}
+							if(debug)
+								pc.myPS.getTable().get(list[i].getName()).print();
 						} catch (RemoteException e) {
 							e.printStackTrace();
 						}
@@ -850,6 +858,8 @@ public class fileSharingApplication {
                 		System.out.println(f.getAbsolutePath());
 	                if(!connect)
 	                	copyOk = copyFile(f.getAbsolutePath(),"resources/"+f.getName());
+	                else
+	                	copyOk = true;
 	                if(!copyOk) {
 	                	JOptionPane.showMessageDialog(null, "Failed to copy the resource! Do you have read permissions..? Or maybe the resource simply doesn't exists..", "Error",JOptionPane.ERROR_MESSAGE);
 	                	return;
