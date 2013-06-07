@@ -537,10 +537,41 @@ public class PeerClient {
 				
 		try {
 			Peer obj = (Peer)Naming.lookup(server);
+			obj.ping();
 			return obj;
 		} catch (Exception e) {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
 			e.printStackTrace();
+			
+			// Rimuoviamo un peer che non risponde dalla PeerTable
+			Enumeration<String> en = null;
+			try {
+				en = myPS.getTable().keys();
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+			}
+			while (en.hasMoreElements()) {
+				String key = en.nextElement();
+    			PeerTable pt = null;
+				try {
+					pt = myPS.getTable().get(key);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+    			Vector<PeerTableData> peers = pt.get();
+    			for (int i = 0 ; i < peers.size() ; ++i) {
+    				String peerip = peers.get(i).peer;
+    				String address = "rmi://"+peerip+"/"+"Peer"+peerip;
+    				if (address.equals(server))
+    					pt.remove(peers.get(i));
+    			}
+    			try {
+					myPS.addToTable(key, pt);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
 			return null;
 		}
 	}

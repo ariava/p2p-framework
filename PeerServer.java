@@ -263,6 +263,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(resName, pt);
 	}
 
+	public boolean ping() {
+		return true;
+	}
+	
 	/**
 	 * Il main inizializza il PeerServer e lo fa eseguire
 	 * 

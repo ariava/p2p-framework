@@ -16,5 +16,6 @@ public interface Peer extends Remote {
 	public void removeFromTable(String resName) throws RemoteException;
 	public boolean noElection() throws RemoteException;
 	public void newPeer(String ip, String resName) throws RemoteException;
+	public boolean ping() throws RemoteException;
 
 }
