@@ -668,7 +668,8 @@ public class fileSharingApplication {
 					peer = "rmi://"+peer+"/"+"Peer"+peer;
 					Peer p = pc.getPeer(peer);
 					
-					assert p != null : "Peer object is undefined!";
+					if(p == null)
+						continue;
 					
 					PeerTableData pd = new PeerTableData(ipList.get(i), pc.discovery(p),
 														 false, ipList.get(i).equals(prevC)?true:false);
@@ -714,7 +715,10 @@ public class fileSharingApplication {
 					
 					Peer p = pc.getPeer(closestPeerServer);
 					
-					assert p != null : "Peer object is undefined!";
+					if(p == null) {
+						fail = true;
+						continue;
+					}
 					
 					//richiedi la risorsa..
 					if (pc.getResource(p, resName)) {
