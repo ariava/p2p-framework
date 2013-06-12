@@ -309,8 +309,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			if (debug)
 				System.out.println("Rimozione dell'ip " + peerIp + " dalla tabella coordinatori per la risorsa " + resName);
 			coordTable.remove(resName);
-		}
-					
+		}			
 	}
 	
 	/**

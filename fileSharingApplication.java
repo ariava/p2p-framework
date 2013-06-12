@@ -238,7 +238,8 @@ public class fileSharingApplication {
 		                		}
 		                		
 		                		// non riguarda l'elezione. Controllo se il tracker è giu
-		                		// o no per settare la label giusta riguardo lo status
+		                		// o no per impostare correttamente la label riguardo lo
+		                		// status
 		                		if(!pc.trackerIsDown) {
 		                			lblStatus.setText("Status: Online");
 		                			btnImport.setEnabled(true);
@@ -454,15 +455,6 @@ public class fileSharingApplication {
 						try {
 							if (debug)
 								System.out.println("Ho finito di reimportare la risorsa "+list[i].getName()+", stampo la sua tabella");
-							PeerTable pt = pc.myPS.getTable().get(list[i].getName());
-							
-							
-							//XXX: aggiunto ora per fixare doppio inserimento, se ci son problemi futuri potrebbe esserne la causa
-							/*if(!pt.getCoord().peer.equals(pc.myIp)) {
-								pt.add(new PeerTableData(pc.myIp, 0,
-										false, false));
-								pc.myPS.addToTable(list[i].getName(), pt);
-							}*/
 							if(debug)
 								pc.myPS.getTable().get(list[i].getName()).print();
 						} catch (RemoteException e) {
@@ -471,10 +463,7 @@ public class fileSharingApplication {
 					}
 					btnImport.setEnabled(wasEnabled);
 					connect = false;
-				}
-				
-				// Quando si preme il pulsante Disconnect
-				else {
+				} else { // Quando si preme il pulsante Disconnect
 					if (debug)
 						System.out.println("#### Disconnessione in corso ####");
 					close();
@@ -510,7 +499,8 @@ public class fileSharingApplication {
             		table.clearSelection();
             		btnDelete.setEnabled(false);
             	}
-            	if (txtInsertFileTo.getText().equals("insert file to download...") && SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled())
+            	if (txtInsertFileTo.getText().equals("insert file to download...") &&
+            		SwingUtilities.isLeftMouseButton(e) && txtInsertFileTo.isEnabled())
             		txtInsertFileTo.setText("");
             }
         });
@@ -535,26 +525,18 @@ public class fileSharingApplication {
 		btnNewButton.addActionListener(new ActionListener() {
 			/*							LISTENER PULSANTE DI DOWNLOAD				*/
 			public void actionPerformed(ActionEvent e) {
-				
 				if(pc == null) {	
 					JOptionPane.showMessageDialog(null, "PeerClient object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
 				tr = pc.getTracker(server);
 				if (debug)
 					System.out.println("Tracker after getTracker(): " + tr);
 				if(tr == null) {
-					//txtIpTracker.setEnabled(true);
-					//txtInsertFileTo.setEnabled(false);
-					//btnNewButton.setEnabled(false);
-					//table.clearSelection();
-					//table.setEnabled(false);
 					btnImport.setEnabled(false);
 					btnConnect.setEnabled(false);
 					btnDelete.setEnabled(false);
-					//btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Online, but tracker is down!");
 				}
 				
@@ -645,10 +627,6 @@ public class fileSharingApplication {
 					coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;				
 					SuperPeer c1 = pc.getCoord(coord);
 					
-					/*
-					 * FIXME: ha senso questa assert? come gestisce rmi il non
-					 * rispondere..? fa ritornare un null?
-					 */
 					assert c1 != null : "SuperPeer object is undefined!";
 					
 					ipList = pc.getList(c1, resName);
@@ -703,9 +681,7 @@ public class fileSharingApplication {
 				String closestPeerServer = "rmi://"+closestPeer+"/"+"Peer"+closestPeer;
 				boolean fail = false;
 				
-				for(int k=0;k<ipList.size();++k) {
-					
-					
+				for(int k=0 ; k<ipList.size() ; ++k) {
 					if(fail) {
 						if(ipList.get(k).equals(closestPeer))
 							continue;
@@ -734,7 +710,7 @@ public class fileSharingApplication {
 						}
 						
 						//comunico agli altri peer (tranne chi me l'ha data) che la ho anche io
-						for(int i=0;i<ipList.size();++i) {
+						for(int i=0 ; i<ipList.size() ; ++i) {
 							String peer = ipList.get(i);
 							if(!peer.equals(closestPeer)) {
 								peer = "rmi://"+peer+"/"+"Peer"+peer;
@@ -750,17 +726,12 @@ public class fileSharingApplication {
 							}
 						}
 						break;
-					}
-					else {
+					} else {
 						JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..", "Warning!", JOptionPane.WARNING_MESSAGE);
 						fail = true;
 					}
-					
 				}
-				
-	
 			/************************/
-				
 			}
 		});
 		panel_2.add(btnNewButton);
@@ -802,14 +773,12 @@ public class fileSharingApplication {
                 			model.setSelectionInterval(rowNumber, rowNumber);
                 			
                 			btnDelete.setEnabled(true);
-            			}
-            			else {
+            			} else {
             				btnDelete.setEnabled(false);
             			}
             			enabledDisabledMenuItems();
             			runFileMenu.show(e.getComponent(), e.getX(), e.getY());
-            		} 
-            		else {
+            		} else {
             			table.clearSelection();
             			btnDelete.setEnabled(false);
             		}
@@ -817,12 +786,10 @@ public class fileSharingApplication {
             		if (table.rowAtPoint(e.getPoint()) >= 0) {
             			if(!pc.trackerIsDown) {
             				btnDelete.setEnabled(true);
-            			}
-            			else {
+            			} else {
             				btnDelete.setEnabled(false);
             			}
-            		}
-            		else {
+            		} else {
             			table.clearSelection();
             			btnDelete.setEnabled(false);
             		}
@@ -866,16 +833,10 @@ public class fileSharingApplication {
 				tr = pc.getTracker(server);
 				
 				if(tr == null) {
-					JOptionPane.showMessageDialog(null, "Tracker is unreachable, resource import not available!", "Error",JOptionPane.ERROR_MESSAGE);
-					//txtIpTracker.setEnabled(true);
-					//txtInsertFileTo.setEnabled(false);
-					//btnNewButton.setEnabled(false);
-					//table.clearSelection();
-					//table.setEnabled(false);
+					JOptionPane.showMessageDialog(null, "Tracker is unreachable, resource import not available!", "Error", JOptionPane.ERROR_MESSAGE);
 					btnImport.setEnabled(false);
 					btnConnect.setEnabled(false);
 					btnDelete.setEnabled(false);
-					//btnConnect.setText("    Connect   ");
 					lblStatus.setText("Status: Online, but tracker is down!");
 					return;
 				}
@@ -883,7 +844,7 @@ public class fileSharingApplication {
 				File f = null;
 				JFileChooser fc = null;
 				if (!connect) {
-					fc = new JFileChooser("~");
+					fc = new JFileChooser("~"); // XXX Compatibilità Windows?
 					fc.setMultiSelectionEnabled(true);
 					selezione = fc.showDialog(null, "Seleziona il file da aprire");
 				} else
@@ -1023,8 +984,7 @@ public class fileSharingApplication {
 					selectedRows = new int[model.getRowCount()];
 					for(int i=0 ; i<model.getRowCount() ; ++i)
 						selectedRows[i] = i;
-				}
-				else
+				} else
 					selectedRows = table.getSelectedRows();
 				
 				for (int i=selectedRows.length-1 ; i>=0 && selectedRows.length>0 ; --i) {
@@ -1068,8 +1028,6 @@ public class fileSharingApplication {
 					
 					//rimuovo dalla tabella del peer..
 					try {
-						//PeerTable ptable = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString());
-						//ptable.get().remove(ptable.getIP(pc.myIp));
 						pc.myPS.removeFromTable(model.getValueAt(selectedRows[i], 0).toString());
 						if (debug)
 							System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(selectedRows[i], 0).toString()+
@@ -1097,7 +1055,6 @@ public class fileSharingApplication {
 					}	
 				}
 				disconnect = false;
-
 				btnDelete.setEnabled(false);
 			}
 		});

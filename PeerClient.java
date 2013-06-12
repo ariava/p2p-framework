@@ -624,8 +624,6 @@ public class PeerClient {
 			Peer p = this.getPeer(server);
 			if(debug)
 				System.out.println("Sono nella election, contatto il peer "+server+", il suo riferimento e' "+p);
-			
-			
 			try {
 				if(p == null)
 					answers[j] = -1;
@@ -670,7 +668,8 @@ public class PeerClient {
 		}
 		
 		if (peerMin.isEmpty()) {
-			System.out.println("Election ended but no coordinator was elected");
+			if (debug)
+				System.out.println("Election ended but no coordinator was elected");
 			try {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
@@ -691,7 +690,7 @@ public class PeerClient {
 			server = "rmi://"+server+"/"+"Peer"+server;
 			Peer p = this.getPeer(server);
 			
-			if(p==null)
+			if(p == null)
 				continue;
 			
 			if (debug)
