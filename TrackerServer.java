@@ -97,7 +97,26 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 */
 	public void setList(Hashtable<String, String> l) {
 		assert l != null : "Table not defined";
-		this.table = l;
+		
+		//merge lists:
+		if(this.table.isEmpty()) {
+			this.table = l;
+			return;
+		}
+		else {
+			Enumeration<String> e = l.keys();
+			while(e.hasMoreElements()) {
+				String key = e.nextElement();
+				if(!this.table.containsKey(key)) {
+					this.table.put(key, l.get(key));
+				}
+					
+			}
+		}
+		if(debug) {
+			System.out.println("Ho ricevuto una nuova tabella da qualcuno dopo esser tornato up, stampo la tabella attuale");
+			this.stampaTabella();
+		}
 	}
 	
 	/**

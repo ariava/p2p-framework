@@ -593,6 +593,9 @@ public class fileSharingApplication {
 				
 				if(c == null) {
 					try {
+						if(tr == null)
+							//TODO DANIELE: metti che se qua il tracker e' down deve far le solite cose tipo disabilitare i pulsanti ecc
+							return;
 						tr.cambioCoordinatore("",resName);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
