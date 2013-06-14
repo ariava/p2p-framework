@@ -104,7 +104,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	public Vector<String> register(String requestorIp, Vector<String> resources)
 			throws RemoteException {
 		assert requestorIp != null : "Requestor IP is null";
-		assert requestorIp != "" : "Requestor IP is empty";
+		assert !requestorIp.equals("") : "Requestor IP is empty";
 		assert resources != null: "Vettore risorse nullo";
 		assert resources.size() != 0 : "Vettore risorse vuoto";
 		Vector<String> coordinators = new Vector<String>();
@@ -160,7 +160,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 */
 	public String request(String resource) throws RemoteException {
 		assert resource != null : "Resource is null";
-		assert resource != "" : "Resource field is empty";
+		assert !resource.equals("") : "Resource field is empty";
 		String coordinator = "";
 		String coord = this.coordTable.get(resource);
 		if (coord != null)
@@ -184,7 +184,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 */
 	private boolean pingIP(String ip) {
 		assert ip != null : "IP is null";
-		assert ip != "" : "IP field is empty";
+		assert !ip.equals("") : "IP field is empty";
 		boolean reachable = false;
 		try {
 			InetAddress address = InetAddress.getByName(ip);
@@ -213,9 +213,9 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	public String request(String resource, String lastCoord)
 			throws RemoteException {
 		assert lastCoord != null : "Last coordinator is null";
-		assert lastCoord != "" : "Last coordinator field is empty";
+		assert !lastCoord.equals("") : "Last coordinator field is empty";
 		assert resource != null : "Campo risorsa nullo";
-		assert resource != "" : "Campo risorsa vuoto";
+		assert !resource.equals("") : "Campo risorsa vuoto";
 		if (debug) {
 			System.out.println("SuperPeerServer - Richiesta avanzata");
 			System.out.println("Risorsa: " + resource + " - precedente coordinatore: " + lastCoord);
@@ -256,7 +256,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 */
 	public void goodbye(String peerIp) throws RemoteException {
 		assert peerIp != null : "Peer IP is null";
-		assert peerIp != "" : "Peer IP field is empty";
+		assert !peerIp.equals("") : "Peer IP field is empty";
 		if (debug)
 			System.out.println("SuperPeerServer: uscita pulita dell'host " + peerIp);
 		Enumeration<String> e = this.myPS.getTable().keys();
@@ -290,7 +290,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	 */
 	public void goodbye(String peerIp, String resName) throws RemoteException {
 		assert peerIp != null : "Peer IP is null";
-		assert peerIp != "" : "Peer IP field is empty";
+		assert !peerIp.equals("") : "Peer IP field is empty";
 		if (debug)
 			System.out.println("SuperPeerServer: rimozione della risorsa "+resName+" dall'host " + peerIp);
 		
@@ -351,6 +351,8 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 		assert !resourceName.equals("") : "Resource name is empty";
 		assert newCoord != null : "Coordinator ip is null";
 		assert !newCoord.equals("") : "Coordinator ip is empty";
+		if (debug)
+			System.out.println("### Impostazione forzata del coordinatore per " + resourceName + " a " + newCoord);
 		coordTable.put(resourceName, newCoord);
 	}
 	
