@@ -582,6 +582,7 @@ public class fileSharingApplication {
 							prevC = pc.simpleResourceRequest(sp, resName);
 							System.out.println("Sono nel ciclo, ho trovato come coord "+prevC);
 							if (prevC == null|| prevC.equals("")) {
+								p = "";
 								continue;
 							}
 							
