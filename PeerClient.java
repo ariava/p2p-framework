@@ -707,8 +707,24 @@ public class PeerClient {
 			try {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
-				System.out.println("Unable to change coordinator: " + e.getMessage());
-				//e.printStackTrace();
+				if (debug) {
+					System.out.println("Unable to change coordinator: " + e.getMessage());
+					System.out.println("### Attempting to contact SuperPeer at " + peerMin + " ###");
+				}
+				// Se il tracker è giù, modifico la coordTable del nuovo
+				// coordinatore per mantenere la consistenza nella zona
+				SuperPeer c = getCoord("rmi://"+peerMin+"/SuperPeer"+peerMin);
+    			if (c == null) {
+    				if (debug)
+    					System.out.println("### Unable to contact new SuperPeer ###");
+    			} else {
+    				try {
+						c.setCoordinator(resName, peerMin);
+					} catch (RemoteException e1) {
+						if (debug)
+							System.out.println("### New SuperPeer exists but is dead ###");
+					}
+    			}
 			}
 		}
 	}
