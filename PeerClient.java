@@ -708,7 +708,7 @@ public class PeerClient {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
 				System.out.println("Unable to change coordinator: " + e.getMessage());
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}

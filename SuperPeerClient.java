@@ -141,11 +141,17 @@ public class SuperPeerClient extends PeerClient {
 			                    				startElection(key,noSelf,tracker,ip);
 			                    			}
 			                    		}*/
-			                    		
-			                    		tracker.setList(coordTable);
+			                    		Hashtable<String, String> tempTable = new Hashtable<String, String>();
+							Enumeration<String> ec = coordTable.keys();
+							while (ec.hasMoreElements()) {
+								String key = ec.nextElement();
+								if (coordTable.get(key).equals(myIp))
+									tempTable.put(key, coordTable.get(key));
+							}
+			                    		tracker.setList(tempTable);
 							if (debug) {
 								System.out.println("TABELLA IMPOSTATA SUL TRACKER");
-								Common.printCoordTable(table);
+								Common.printCoordTable(tempTable);
 							}
 			                    		down = false;
 			                    		trackerIsDown = false;
