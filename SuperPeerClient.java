@@ -126,7 +126,7 @@ public class SuperPeerClient extends PeerClient {
 			                    			try {
 				                    			Peer p = getPeer("rmi://"+ip+"/Peer"+ip);
 				                    			p.ping(); 
-			                    			} catch (RemoteException re) {
+			                    			} catch (Exception re) { //XXX: dovremmo catturare solo NullPointerEx. e Remote, in java 1.7 si usa l'!..ma qui siamo in 1.6
 			                    				if(debug)
 			                    					System.out.println("Il coordinatore non risponde, faccio un'election prima di mandare la tabella al tracker");
 			                    				boolean noSelf = true;
