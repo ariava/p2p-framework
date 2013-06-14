@@ -12,6 +12,7 @@ public interface SuperPeer extends Peer {
 	public Vector<String> getList(String resourceName) throws RemoteException;
 	public void setList(Hashtable<String, String> table) throws RemoteException;
 	public  Hashtable<String, String> getCoordTable() throws RemoteException;
+	public void setCoordinator(String resourceName, String newCoord) throws RemoteException;
 
 	public String getId() throws RemoteException;
 	public String getName() throws RemoteException;

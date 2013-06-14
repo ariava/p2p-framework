@@ -324,7 +324,7 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	@SuppressWarnings("unchecked")
 	public Vector<String> getList(String resourceName) throws RemoteException {
 		assert resourceName != null : "Resource name is null";
-		assert resourceName != "" : "Resource name field is empty";
+		assert !resourceName.equals("") : "Resource name field is empty";
 		/* Costruzione di una lista degli IP possessori della richiesta */
 		Vector<String> possessors = new Vector<String>();
 		/* Ricerca nella tabella delle risorse */
@@ -341,6 +341,17 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 			Common.printStringVectors(new String[]{"Possessori"}, possessors);
 		}
 		return possessors;
+	}
+	
+	/**
+	 * XXX Commento
+	 */
+	public void setCoordinator(String resourceName, String newCoord) throws RemoteException {
+		assert resourceName != null : "Resource name is null";
+		assert !resourceName.equals("") : "Resource name is empty";
+		assert newCoord != null : "Coordinator ip is null";
+		assert !newCoord.equals("") : "Coordinator ip is empty";
+		coordTable.put(resourceName, newCoord);
 	}
 	
 	/**
