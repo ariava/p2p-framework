@@ -609,6 +609,9 @@ public class fileSharingApplication {
 					}
 				}
 				
+				coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
+				
+				c = pc.getCoord(coord);
 				
 				if(c == null) {
 					try {
