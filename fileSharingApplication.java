@@ -556,29 +556,39 @@ public class fileSharingApplication {
 					prevC = pc.simpleResourceRequest(tr, resName);
 				if(tr == null || (prevC != null && prevC.equals("exception"))) {
 					PeerTable pt = null;
+					String p = "";
+					Enumeration<String> en = null;
 					/* Recuperiamo l'IP di un coordinatore di risorsa */
 					try {
-						pt = pc.myPS.getTable().entrySet().iterator().next().getValue();
-					} catch (RemoteException e1) {
-						e1.printStackTrace();
-					}
-					/* Utilizziamolo per richiedere la risorsa */
-					if (pt != null) {
-						String s = "rmi://"+pt.getCoord().peer+"/SuperPeer"+pt.getCoord().peer;
-						SuperPeer sp = pc.getCoord(s);
-						prevC = pc.simpleResourceRequest(sp, resName);
-					} else {
-						JOptionPane.showMessageDialog(null, "Lost connection to the network!", "Error",JOptionPane.ERROR_MESSAGE);
-						txtIpTracker.setEnabled(true);
-						txtInsertFileTo.setEnabled(false);
-						btnDownload.setEnabled(false);
-						table.clearSelection();
-						table.setEnabled(false);
-						btnImport.setEnabled(false);
-						btnDelete.setEnabled(false);
-						btnConnect.setText("    Connect   ");
-						lblStatus.setText("Status: Offline");
-						return;
+						en =  pc.myPS.getTable().keys();
+					} catch (RemoteException e2) {}
+					while(en.hasMoreElements() && p.equals("")) {
+						String key = en.nextElement();
+						try {
+							pt = pc.myPS.getTable().get(key);
+						} catch (RemoteException e1) {
+							e1.printStackTrace();
+						}
+						/* Utilizziamolo per richiedere la risorsa */
+						if (pt != null) {
+							if(pt.getCoord() == null || (p = pt.getCoord().peer).equals(""))
+								continue;
+							String s = "rmi://"+p+"/SuperPeer"+p;
+							SuperPeer sp = pc.getCoord(s);
+							prevC = pc.simpleResourceRequest(sp, resName);
+						} else {
+							JOptionPane.showMessageDialog(null, "Lost connection to the network!", "Error",JOptionPane.ERROR_MESSAGE);
+							txtIpTracker.setEnabled(true);
+							txtInsertFileTo.setEnabled(false);
+							btnDownload.setEnabled(false);
+							table.clearSelection();
+							table.setEnabled(false);
+							btnImport.setEnabled(false);
+							btnDelete.setEnabled(false);
+							btnConnect.setText("    Connect   ");
+							lblStatus.setText("Status: Offline");
+							return;
+						}
 					}
 				}
 				
