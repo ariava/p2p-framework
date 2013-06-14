@@ -555,6 +555,7 @@ public class fileSharingApplication {
 				if (tr != null)
 					prevC = pc.simpleResourceRequest(tr, resName);
 				SuperPeer c=null;
+				String coord = null;
 				if(tr == null || (prevC != null && prevC.equals("exception"))) {
 					PeerTable pt = null;
 					String p = "";
@@ -584,7 +585,7 @@ public class fileSharingApplication {
 								return;
 							}
 							
-							String coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
+							coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
 							
 							c = pc.getCoord(coord);
 							try {
