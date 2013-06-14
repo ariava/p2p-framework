@@ -554,10 +554,12 @@ public class fileSharingApplication {
 				String prevC = null;
 				if (tr != null)
 					prevC = pc.simpleResourceRequest(tr, resName);
+				SuperPeer c=null;
 				if(tr == null || (prevC != null && prevC.equals("exception"))) {
 					PeerTable pt = null;
 					String p = "";
 					Enumeration<String> en = null;
+					
 					/* Recuperiamo l'IP di un coordinatore di risorsa */
 					try {
 						en =  pc.myPS.getTable().keys();
@@ -576,6 +578,20 @@ public class fileSharingApplication {
 							String s = "rmi://"+p+"/SuperPeer"+p;
 							SuperPeer sp = pc.getCoord(s);
 							prevC = pc.simpleResourceRequest(sp, resName);
+
+							if (prevC == null|| prevC.equals("")) {
+								JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+							
+							String coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
+							
+							c = pc.getCoord(coord);
+							try {
+								c.ping();
+							} catch (Exception exc) {
+								continue;
+							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Lost connection to the network!", "Error",JOptionPane.ERROR_MESSAGE);
 							txtIpTracker.setEnabled(true);
@@ -592,14 +608,6 @@ public class fileSharingApplication {
 					}
 				}
 				
-				if (prevC == null|| prevC.equals("")) {
-					JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				String coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
-				
-				SuperPeer c = pc.getCoord(coord);
 				
 				if(c == null) {
 					try {
