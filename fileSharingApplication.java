@@ -852,7 +852,7 @@ public class fileSharingApplication {
 				File f = null;
 				JFileChooser fc = null;
 				if (!connect) {
-					fc = new JFileChooser("~"); // XXX Compatibilità Windows?
+					fc = new JFileChooser("~");
 					fc.setMultiSelectionEnabled(true);
 					selezione = fc.showDialog(null, "Seleziona il file da aprire");
 				} else
@@ -1055,7 +1055,7 @@ public class fileSharingApplication {
 					}
 					
 					if (!disconnect) {
-						File f = new File("resources/"+model.getValueAt(selectedRows[i], 0).toString()); //TODO: compatibilita' windows..? ma anche no
+						File f = new File("resources/"+model.getValueAt(selectedRows[i], 0).toString()); 
 						if(!f.delete())
 							JOptionPane.showMessageDialog(null, "Unable to delete file from filesystem!", "Error",JOptionPane.ERROR_MESSAGE);
 						
