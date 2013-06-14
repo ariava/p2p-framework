@@ -592,7 +592,7 @@ public class fileSharingApplication {
 					}
 				}
 				
-				if (prevC == null) {
+				if (prevC == null|| prevC.equals("")) {
 					JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
