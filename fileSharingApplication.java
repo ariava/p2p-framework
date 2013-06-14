@@ -566,6 +566,7 @@ public class fileSharingApplication {
 						en =  pc.myPS.getTable().keys();
 					} catch (RemoteException e2) {}
 					while(en.hasMoreElements() && p.equals("")) {
+						System.out.println("Sono nel ciclo di controllo dei coordinatori, ne cerco uno valido");
 						String key = en.nextElement();
 						try {
 							pt = pc.myPS.getTable().get(key);
@@ -579,17 +580,18 @@ public class fileSharingApplication {
 							String s = "rmi://"+p+"/SuperPeer"+p;
 							SuperPeer sp = pc.getCoord(s);
 							prevC = pc.simpleResourceRequest(sp, resName);
-
+							System.out.println("Sono nel ciclo, ho trovato come coord "+prevC);
 							if (prevC == null|| prevC.equals("")) {
 								continue;
 							}
 							
 							coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
-							
-							c = pc.getCoord(coord);
 							try {
+								c = pc.getCoord(coord);
+							
 								c.ping();
 							} catch (Exception exc) {
+								System.out.println("Il coord "+prevC+" non e' valido, continuo");
 								continue;
 							}
 						} else {
