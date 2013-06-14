@@ -581,8 +581,7 @@ public class fileSharingApplication {
 							prevC = pc.simpleResourceRequest(sp, resName);
 
 							if (prevC == null|| prevC.equals("")) {
-								JOptionPane.showMessageDialog(null, "Resource not found in the network!", "Error",JOptionPane.ERROR_MESSAGE);
-								return;
+								continue;
 							}
 							
 							coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;
