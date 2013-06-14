@@ -34,9 +34,9 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		resourceTable = new Hashtable<String, PeerTable>();
 	}
 	
-	public boolean noElection() throws RemoteException {
+	/*public boolean noElection() throws RemoteException {
 		return this.no_election;
-	}
+	}*/
 	
 	/**
 	 * Metodo orribile per sincronizzare la tabella del client con quella del
