@@ -12,5 +12,6 @@ public interface Tracker extends Remote {
     public Hashtable<String, String> getList(String timestamp) throws RemoteException;
     public String getIp() throws RemoteException;
     public void setList(Hashtable<String, String> l) throws RemoteException;
+    public boolean ping() throws RemoteException;
     
 }

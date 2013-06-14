@@ -106,7 +106,7 @@ public class SuperPeerClient extends PeerClient {
 			                    	/* Faccio il lookup al tracker, che magari e' tornato disponibile */
 			                    	String s = "rmi://"+trackerIp+"/Tracker";
 			                    	tracker = (Tracker)Naming.lookup(s);
-
+			                    	tracker.ping(); //pingo in caso che il registry sia su ma il tracker no
 			                    	if (down) {
 			                    		Hashtable<String, String> coordTable = server.getCoordTable();
 			                    		if (debug) {

@@ -119,6 +119,10 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		}
 	}
 	
+	//TODO: daniele documentazione
+	public boolean ping() throws RemoteException {
+		return true;
+	}
 	/**
 	 * Metodo invocato quando un nuovo nodo vuole entrare a far parte della rete
 	 * p2p.
