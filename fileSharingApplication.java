@@ -386,7 +386,7 @@ public class fileSharingApplication {
 		lblStatus.setBounds(12, 12, 685, 15);
 		panel.add(lblStatus);
 		
-		final JButton btnNewButton = new JButton(" Download ");
+		final JButton btnDownload = new JButton(" Download ");
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
@@ -420,7 +420,7 @@ public class fileSharingApplication {
 					JOptionPane.showMessageDialog(null, "Unable to connect to Tracker", "Error", JOptionPane.ERROR_MESSAGE);
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
-					btnNewButton.setEnabled(false);
+					btnDownload.setEnabled(false);
 					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
@@ -434,7 +434,7 @@ public class fileSharingApplication {
 				if (btnConnect.getText().equals("    Connect   ")) {
 					txtIpTracker.setEnabled(false);
 					txtInsertFileTo.setEnabled(true);
-					btnNewButton.setEnabled(true);
+					btnDownload.setEnabled(true);
 					table.setEnabled(true);
 					btnImport.setEnabled(true);
 					btnConnect.setText("Disconnect");
@@ -469,7 +469,7 @@ public class fileSharingApplication {
 					close();
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
-					btnNewButton.setEnabled(false);
+					btnDownload.setEnabled(false);
 					table.clearSelection();
 					table.setEnabled(false);
 					btnImport.setEnabled(false);
@@ -509,7 +509,7 @@ public class fileSharingApplication {
 			public void keyPressed(KeyEvent e) {
 				int key = e.getKeyCode();
 				if (key == KeyEvent.VK_ENTER)
-					btnNewButton.doClick();
+					btnDownload.doClick();
 			}
         });
 		txtInsertFileTo.addMouseListener(new MouseAdapter() {
@@ -521,8 +521,8 @@ public class fileSharingApplication {
             }
         });
 		
-		btnNewButton.setEnabled(false);
-		btnNewButton.addActionListener(new ActionListener() {
+		btnDownload.setEnabled(false);
+		btnDownload.addActionListener(new ActionListener() {
 			/*							LISTENER PULSANTE DI DOWNLOAD				*/
 			public void actionPerformed(ActionEvent e) {
 				if(pc == null) {	
@@ -571,7 +571,7 @@ public class fileSharingApplication {
 						JOptionPane.showMessageDialog(null, "Lost connection to the network!", "Error",JOptionPane.ERROR_MESSAGE);
 						txtIpTracker.setEnabled(true);
 						txtInsertFileTo.setEnabled(false);
-						btnNewButton.setEnabled(false);
+						btnDownload.setEnabled(false);
 						table.clearSelection();
 						table.setEnabled(false);
 						btnImport.setEnabled(false);
@@ -593,9 +593,14 @@ public class fileSharingApplication {
 				
 				if(c == null) {
 					try {
-						if(tr == null)
-							//TODO DANIELE: metti che se qua il tracker e' down deve far le solite cose tipo disabilitare i pulsanti ecc
+						if(tr == null) {
+							JOptionPane.showMessageDialog(null, "Unable to disconnect from Tracker, it is down", "Error", JOptionPane.ERROR_MESSAGE);
+							btnImport.setEnabled(false);
+							btnConnect.setEnabled(false);
+							btnDelete.setEnabled(false);
+							lblStatus.setText("Status: Online, but tracker is down!");
 							return;
+						}
 						tr.cambioCoordinatore("",resName);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
@@ -737,7 +742,7 @@ public class fileSharingApplication {
 			/************************/
 			}
 		});
-		panel_2.add(btnNewButton);
+		panel_2.add(btnDownload);
 		
 		JPanel panel_3 = new JPanel();
 		panel_1.add(panel_3, BorderLayout.CENTER);
