@@ -1,5 +1,6 @@
 import java.net.UnknownHostException;
 import java.rmi.*;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class SuperPeerClient extends PeerClient {
@@ -112,6 +113,35 @@ public class SuperPeerClient extends PeerClient {
 			                    			System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la tabella");
 			                    			Common.printCoordTable(coordTable);
 			                    		}
+			                    		/* Prima di mandargli la tabella, controllo che i coordinatori siano ancora validi:
+			                    		 * durante l'assenza del tracker non e' possibile eseguire un'elezione, per cui 
+			                    		 * se un peer lascia la rete in maniera unpolite si ha un'inconsistenza nella tabella
+			                    		 */
+			                    		Enumeration<String> en = coordTable.keys();
+			                    		while(en.hasMoreElements()) {
+			                    			String key = en.nextElement();
+			                    			String ip = coordTable.get(key);
+			                    			if(ip.equals(myIp))
+			                    				continue;
+			                    			try {
+				                    			Peer p = getPeer("rmi://"+ip+"/Peer"+ip);
+				                    			p.ping(); 
+			                    			} catch (RemoteException re) {
+			                    				if(debug)
+			                    					System.out.println("Il coordinatore non risponde, faccio un'election prima di mandare la tabella al tracker");
+			                    				boolean noSelf = true;
+			                    				//Ho la risorsa, quindi posso diventare coordinatore?
+			                    				PeerTable pt = myPS.getTable().get(key);
+			                    				for(int j=0;j<pt.get().size();++j) {
+			                    					if(pt.get().get(j).peer.equals(myIp)) {
+			                    						noSelf = false;
+			                    						break;
+			                    					}
+			                    				}
+			                    				startElection(key,noSelf,tracker,ip);
+			                    			}
+			                    		}
+			                    		
 			                    		tracker.setList(coordTable); 
 			                    		down = false;
 			                    		trackerIsDown = false;
