@@ -117,7 +117,7 @@ public class SuperPeerClient extends PeerClient {
 			                    		 * durante l'assenza del tracker non e' possibile eseguire un'elezione, per cui 
 			                    		 * se un peer lascia la rete in maniera unpolite si ha un'inconsistenza nella tabella
 			                    		 */
-			                    		Enumeration<String> en = coordTable.keys();
+			                    		/*Enumeration<String> en = coordTable.keys();
 			                    		while(en.hasMoreElements()) {
 			                    			String key = en.nextElement();
 			                    			String ip = coordTable.get(key);
@@ -140,9 +140,13 @@ public class SuperPeerClient extends PeerClient {
 			                    				}
 			                    				startElection(key,noSelf,tracker,ip);
 			                    			}
-			                    		}
+			                    		}*/
 			                    		
-			                    		tracker.setList(coordTable); 
+			                    		tracker.setList(coordTable);
+							if (debug) {
+								System.out.println("TABELLA IMPOSTATA SUL TRACKER");
+								Common.printCoordTable(table);
+							}
 			                    		down = false;
 			                    		trackerIsDown = false;
 			                    	}
