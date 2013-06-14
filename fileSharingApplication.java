@@ -592,6 +592,7 @@ public class fileSharingApplication {
 								c.ping();
 							} catch (Exception exc) {
 								System.out.println("Il coord "+prevC+" non e' valido, continuo");
+								p = "";
 								continue;
 							}
 						} else {
