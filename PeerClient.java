@@ -518,7 +518,6 @@ public class PeerClient {
 			return obj;
 		} catch (Exception e) {
 			System.out.println("Error while getting the remote object: "+e.getMessage());
-			//e.printStackTrace();
 			return null;
 			
 		}
@@ -590,16 +589,6 @@ public class PeerClient {
 	public void startElection(String resName, boolean noSelf, Tracker tr, String oldCoord)  {
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
-		
-		/*try {
-			//if(this.myPS.noElection()) {
-			//	if(debug)
-			//		System.out.println("Elezione gia' in corso da parte di qualche altro peer!");
-			//	return;
-			//}
-		} catch (RemoteException e2) {
-			e2.printStackTrace();
-		}*/
 		
 		Hashtable<String, PeerTable> rt = null;
 		try {

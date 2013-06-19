@@ -16,7 +16,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	private float avgDist;
 	private String myIp;
 	static private boolean debug = true;
-	private boolean no_election = false;
 	
 	protected Hashtable<String, PeerTable> resourceTable;
 	
@@ -33,10 +32,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.myIp = InetAddress.getLocalHost().getHostAddress();
 		resourceTable = new Hashtable<String, PeerTable>();
 	}
-	
-	/*public boolean noElection() throws RemoteException {
-		return this.no_election;
-	}*/
 	
 	/**
 	 * Metodo orribile per sincronizzare la tabella del client con quella del
@@ -197,7 +192,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	public float election(String res, String ipCaller) throws RemoteException {
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa "+res);
-		this.no_election = true;
 		assert this.avgDist > 0 || ipCaller.equals(this.myIp): "Called election but avgDist is not a valid number!";
 		return this.avgDist;
 	}
@@ -212,7 +206,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	public void coordinator(String newCoord, String res) throws RemoteException {
 		if(debug)
 			System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
-		
 		
 		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
@@ -234,7 +227,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			this.resourceTable.get(res).print();
 		}
 		assert elected == true : "No coordinator set!";
-		this.no_election = false;
 	}
 	
 	/**
@@ -263,6 +255,11 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(resName, pt);
 	}
 
+	/**
+	 * Metodo invocato per accertare la raggiungibilità del @PeerServer
+	 * 
+	 * @return il valore booleano "true"
+	 */
 	public boolean ping() {
 		return true;
 	}

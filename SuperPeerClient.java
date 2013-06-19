@@ -55,11 +55,11 @@ public class SuperPeerClient extends PeerClient {
 	 */
 	public void setCoordinator(String risorsa) {
 		assert risorsa != null : "Campo risorsa nullo nell'impostazione del coordinatore";
-		assert risorsa != "" : "Campo risorsa vuoto nell'impostazione del coordinatore";
+		assert !risorsa.equals("") : "Campo risorsa vuoto nell'impostazione del coordinatore";
 		try {
 			String coordIp = server.getIP();
 			assert coordIp != null : "IP coordinatore nullo";
-			assert coordIp != "" : "IP coordinatore vuoto";
+			assert !coordIp.equals("") : "IP coordinatore vuoto";
 			if (debug) {
 				System.out.println("SuperPeerClient - Impostazione del coordinatore");
 			    System.out.println("Impostazione di " + coordIp + " per la risorsa " + risorsa);
@@ -113,52 +113,23 @@ public class SuperPeerClient extends PeerClient {
 			                    			System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la tabella");
 			                    			Common.printCoordTable(coordTable);
 			                    		}
-			                    		/* Prima di mandargli la tabella, controllo che i coordinatori siano ancora validi:
-			                    		 * durante l'assenza del tracker non e' possibile eseguire un'elezione, per cui 
-			                    		 * se un peer lascia la rete in maniera unpolite si ha un'inconsistenza nella tabella
-			                    		 */
-			                    		/*Enumeration<String> en = coordTable.keys();
-			                    		while(en.hasMoreElements()) {
-			                    			String key = en.nextElement();
-			                    			String ip = coordTable.get(key);
-			                    			if(ip.equals(myIp))
-			                    				continue;
-			                    			try {
-				                    			Peer p = getPeer("rmi://"+ip+"/Peer"+ip);
-				                    			p.ping(); 
-			                    			} catch (Exception re) { //XXX: dovremmo catturare solo NullPointerEx. e Remote, in java 1.7 si usa l'!..ma qui siamo in 1.6
-			                    				if(debug)
-			                    					System.out.println("Il coordinatore non risponde, faccio un'election prima di mandare la tabella al tracker");
-			                    				boolean noSelf = true;
-			                    				//Ho la risorsa, quindi posso diventare coordinatore?
-			                    				PeerTable pt = myPS.getTable().get(key);
-			                    				for(int j=0;j<pt.get().size();++j) {
-			                    					if(pt.get().get(j).peer.equals(myIp)) {
-			                    						noSelf = false;
-			                    						break;
-			                    					}
-			                    				}
-			                    				startElection(key,noSelf,tracker,ip);
-			                    			}
-			                    		}*/
-			                    		Hashtable<String, String> tempTable = new Hashtable<String, String>();
-							Enumeration<String> ec = coordTable.keys();
-							while (ec.hasMoreElements()) {
-								String key = ec.nextElement();
-								if (coordTable.get(key).equals(myIp))
-									tempTable.put(key, coordTable.get(key));
-							}
-			                    		tracker.setList(tempTable);
-							if (debug) {
-								System.out.println("TABELLA IMPOSTATA SUL TRACKER");
-								Common.printCoordTable(tempTable);
-							}
-			                    		down = false;
-			                    		trackerIsDown = false;
-			                    	}
-			                    	else
-			                    		/* Recupero della tabella dei coordinatori dal tracker */
-			                    		table = tracker.getList(timestamp);
+				                   		Hashtable<String, String> tempTable = new Hashtable<String, String>();
+										Enumeration<String> ec = coordTable.keys();
+										while (ec.hasMoreElements()) {
+											String key = ec.nextElement();
+											if (coordTable.get(key).equals(myIp))
+												tempTable.put(key, coordTable.get(key));
+										}
+							            tracker.setList(tempTable);
+										if (debug) {
+											System.out.println("TABELLA IMPOSTATA SUL TRACKER");
+											Common.printCoordTable(tempTable);
+										}
+					                   	down = false;
+					                   	trackerIsDown = false;
+				                   	} else // if (down)
+				                   		/* Recupero della tabella dei coordinatori dal tracker */
+				                   		table = tracker.getList(timestamp);
 			                    		
 			                    	/* Impostazione della tabella sul server se non è nulla */
 			                    	if (table != null) {

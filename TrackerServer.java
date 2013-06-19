@@ -35,8 +35,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * @return vero se la stringa in input ha il formato
 	 * di un indirizzo ip, falso altrimenti
 	 */
-	public boolean validate(final String ip){          
-		
+	public boolean validate(final String ip) {
 		if(ip.isEmpty()) 
 			return false;
 		
@@ -102,15 +101,13 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		if(this.table.isEmpty()) {
 			this.table = l;
 			return;
-		}
-		else {
+		} else {
 			Enumeration<String> e = l.keys();
 			while(e.hasMoreElements()) {
 				String key = e.nextElement();
 				if(!this.table.containsKey(key)) {
 					this.table.put(key, l.get(key));
-				}
-					
+				}		
 			}
 		}
 		if(debug) {
@@ -119,10 +116,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		}
 	}
 	
-	//TODO: daniele documentazione
+	/**
+	 * Metodo invocato per accertare la raggiungibilità del TrackerServer
+	 * 
+	 * @return il valore booleano "true".
+	 */
 	public boolean ping() throws RemoteException {
 		return true;
 	}
+
 	/**
 	 * Metodo invocato quando un nuovo nodo vuole entrare a far parte della rete
 	 * p2p.

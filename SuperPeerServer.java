@@ -344,7 +344,14 @@ public class SuperPeerServer extends PeerServer implements SuperPeer {
 	}
 	
 	/**
-	 * XXX Commento
+	 * Metodo per l'impostazione forzata del coordinatore per una risorsa.
+	 * 
+	 * Il metodo modifica la il contenuto della tabella dei coordinatori
+	 * impostando il nuovo coordinatore passato come parametro per la risorsa
+	 * specificata.
+	 * 
+	 * @param resourceName nome della risorsa.
+	 * @param newCoord nuovo coordinatore per la risorsa specificata.
 	 */
 	public void setCoordinator(String resourceName, String newCoord) throws RemoteException {
 		assert resourceName != null : "Resource name is null";
