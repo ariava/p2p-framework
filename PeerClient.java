@@ -9,6 +9,20 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
+/**
+ * La classe PeerClient implementa le funzionalita' offerte da 
+ * un semplice Peer che entra a far parte della rete peer to peer.
+ * 
+ * In particolare ciascun Peer può: 
+ * 1) Registrare le proprie risorse nella rete peer to peer
+ * 2) Effettuare la ricerca di una certa risorsa
+ * 3) Cancellare dalla rete peer to peer le risorse possedute
+ * 4) Far partire l'elezione per una certa risorsa
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class PeerClient {
 
 	static public PeerClient self = null;
@@ -140,32 +154,6 @@ public class PeerClient {
 	}
 	
 	/**
-	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer,
-	 * utilizzato per gestire le eventuali eccezioni.
-	 * 
-	 * @param server oggetto di tipo SuperPeer sul quale chiamare il metodo
-	 * @param resources vettore di stringhe contenente i nomi delle risorse da registrare
-	 * 
-	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
-	 */
-	public Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
-		assert server != null : "L'oggetto SuperPeer non e' definito!";
-		
-		if(debug) {
-			System.out.println("Chiamata la registrazione() sul coordinatore: "+server.toString()+" per queste risorse:");
-			System.out.println(resources.toString());
-		}
-		
-		try {	
-			return server.register(this.myIp, resources);
-		} catch (Exception e) {
-			if(debug)
-				System.out.println("Qualcosa e' andato storto durante la registrazione delle risorse "+resources);
-			return null;
-		}		
-	}
-	
-	/**
 	 * Metodo usato per gestire le eccezioni della chiamata al metodo richiesta
 	 * del tracker. Gestisce la richiesta semplice.
 	 * 
@@ -211,6 +199,38 @@ public class PeerClient {
 				System.out.println("Qualcosa e' andato storto durante la richiesta avanzata della risorsa "+resource);
 			return "";
 		}
+	}
+	
+	
+	
+	/*
+	 * Metodi sul coordinatore
+	 */
+	
+	/**
+	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer,
+	 * utilizzato per gestire le eventuali eccezioni.
+	 * 
+	 * @param server oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * @param resources vettore di stringhe contenente i nomi delle risorse da registrare
+	 * 
+	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
+	 */
+	public Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
+		assert server != null : "L'oggetto SuperPeer non e' definito!";
+		
+		if(debug) {
+			System.out.println("Chiamata la registrazione() sul coordinatore: "+server.toString()+" per queste risorse:");
+			System.out.println(resources.toString());
+		}
+		
+		try {	
+			return server.register(this.myIp, resources);
+		} catch (Exception e) {
+			if(debug)
+				System.out.println("Qualcosa e' andato storto durante la registrazione delle risorse "+resources);
+			return null;
+		}		
 	}
 	
 	/**
@@ -261,12 +281,6 @@ public class PeerClient {
 			return "";
 		}		
 	}
-	
-	
-	
-	/*
-	 * Metodi sul coordinatore
-	 */
 	
 	/**
 	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye sul coordinatore
@@ -377,7 +391,7 @@ public class PeerClient {
 	}
 	
 	/**
-	 * Metodo che aggiunge una entry nella tabella per una risorsa
+	 * Metodo che aggiunge una entry nella tabella per una certa risorsa
 	 * 
 	 * @param resName nome della risorsa
 	 * @param ip indirizzo ip del peer che ha scaricato la risorsa resName

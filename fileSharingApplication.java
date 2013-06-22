@@ -422,7 +422,7 @@ public class fileSharingApplication {
 						pc.startPollingWorker();
 					} catch (UnknownHostException e) {
 						if (debug) {
-							System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
+							System.out.println("Impossibile inizializzare l'oggetto PeerClient: "+e.getMessage());
 							e.printStackTrace();
 						}
 						return;

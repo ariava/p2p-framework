@@ -3,6 +3,17 @@ import java.rmi.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+/**
+ * La classe SuperPeerClient è una estensione della classe PeerClient
+ * aggiungendo di fatto le funzionalità offerte da un SuperPeer
+ * (coordinatore di zona).
+ * 
+ * In particolare
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class SuperPeerClient extends PeerClient {
 
 	private SuperPeer server = null;

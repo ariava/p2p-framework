@@ -9,6 +9,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class PeerServer extends UnicastRemoteObject implements Peer {
 
 	private static final long serialVersionUID = 1L;
