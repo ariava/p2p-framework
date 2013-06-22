@@ -9,6 +9,23 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * La classe TrackerServer implementa le funzionalità del
+ * Tracker centralizzato.
+ * 
+ * Il punto d'accesso alla rete peer to peer è centralizzato 
+ * ed è costituito da un server tracker. Il tracker mantiene 
+ * una tabella che descrive il layout della rete: ad ogni risorsa 
+ * registrata nella rete, tale tabella associa l'identificativo 
+ * univoco (indirizzo ip) di un peer eletto quale coordinatore 
+ * per quella risorsa, mantenendo di fatto informazioni solamente 
+ * su un sottoinsieme molto ristretto dei peer che fanno parte 
+ * della rete.
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	
 	private static final long serialVersionUID = 1L;
