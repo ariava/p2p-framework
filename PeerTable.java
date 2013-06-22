@@ -103,7 +103,6 @@ public class PeerTable implements Serializable {
 	 */
 	public float getAvgDist(String myIp) {
 		if (debug) {
-			System.out.println("******************************************************");
 			System.out.println("Chiamata la getAvgDist");
 		}
 		float avg = 0;
@@ -149,7 +148,7 @@ public class PeerTable implements Serializable {
 			System.out.println("Dst: "+data.get(i).dist);
 			System.out.println(data.get(i).coordinator);
 			System.out.println(data.get(i).down);
-			System.out.println(" ");
+			System.out.println();
 		}
 	}
 	
