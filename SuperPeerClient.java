@@ -23,7 +23,6 @@ public class SuperPeerClient extends PeerClient {
 	 * @param pc riferimento al PeerClient
 	 * @param server riferimento al server coordinatore
 	 * @param tracker riferimento al tracker
-	 * @param trIp indirizzo ip del tracker
 	 */
 	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker) throws UnknownHostException {
 		assert server != null : "Campo server nullo";
@@ -66,8 +65,10 @@ public class SuperPeerClient extends PeerClient {
 			}
 			tracker.cambioCoordinatore(coordIp, risorsa);
 		} catch (RemoteException e) {
-			System.out.println("Exception while setting coordinator: " + e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Eccezione nel settaggio del coordinatore: " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -99,7 +100,8 @@ public class SuperPeerClient extends PeerClient {
 									Common.printCoordTable(table);
 								}
 							} catch (RemoteException e1) {
-								e1.printStackTrace();
+								if (debug)
+									e1.printStackTrace();
 							}
 		                	while (listRetrieverContinue) {
 			                    try {
@@ -122,12 +124,12 @@ public class SuperPeerClient extends PeerClient {
 										}
 							            tracker.setList(tempTable);
 										if (debug) {
-											System.out.println("TABELLA IMPOSTATA SUL TRACKER");
+											System.out.println("Tabella impostata sul tracker");
 											Common.printCoordTable(tempTable);
 										}
 					                   	down = false;
 					                   	trackerIsDown = false;
-				                   	} else // if (down)
+				                   	} else
 				                   		/* Recupero della tabella dei coordinatori dal tracker */
 				                   		table = tracker.getList(timestamp);
 			                    		
@@ -145,11 +147,13 @@ public class SuperPeerClient extends PeerClient {
 			                    } catch (Exception e) {
 			                    	down = true;
 			                    	trackerIsDown = true;
-			                    	System.out.println("Tracker's dead baby, tracker's dead:" + e.getMessage());
+			                    	if (debug)
+			                    		System.out.println("Il Tracker è morto:" + e.getMessage());
 			                    	try {
 										Thread.sleep(listRetrieverSleep);
 									} catch (InterruptedException e1) {
-										e1.printStackTrace();
+										if (debug)
+											e1.printStackTrace();
 									}
 			                    }
 			                }
