@@ -47,6 +47,21 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import  java.io.*;
 
+/**
+ * La classe fileSharingApplication implementa una semplice interfaccia
+ * grafica di trasferimento file.
+ * 
+ * In particolare tale classe implementa tutti i componenti grafici
+ * dell'applicazione e tutti i listener associati ai bottoni e ai
+ * campi di testo.
+ * Tale classe sfrutta il livello software costituito dal framework,
+ * che in ogni caso risulta indipendente da qualsiasi applicazione 
+ * soprastante.
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class fileSharingApplication {
 
 	private JFrame frmTestFrameworkGui;
