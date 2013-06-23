@@ -3,6 +3,22 @@ import java.net.UnknownHostException;
 import java.rmi.*;
 import java.util.*;
 
+/**
+ * La classe SuperPeerServer è una estensione della classe PeerServer
+ * aggiungendo di fatto le funzionalità offerte da un SuperPeer
+ * (coordinatore di zona).
+ * 
+ * Tale classe contiene la tabella dei coordinatori che viene recuperata
+ * periodicamente dal Tracker. Il compito di questa classe è fornire
+ * tutte le funzionalità necessarie al relativo SuperPeerClient per
+ * gestire la tabella dei coordinatori permettendo l'aggiunta, la modifica 
+ * e la cancellazione dei coordinatori. Inoltre fornisce, a chi lo richiede,
+ * il coordinatore per una certa risorsa.
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class SuperPeerServer extends PeerServer implements SuperPeer {
 
 	private static final long serialVersionUID = 1L;

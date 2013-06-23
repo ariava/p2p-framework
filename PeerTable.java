@@ -1,6 +1,16 @@
 import java.io.Serializable;
 import java.util.Vector;
 
+/**
+ * La classe PeerTable implementa una tabella per una certa
+ * risorsa. In particolare vengono associate alla risorsa
+ * alcune informazioni utili quali i peer che contengono tale 
+ * risorsa e il coordinatore per quella risorsa.
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class PeerTable implements Serializable {
 
 	private static final long serialVersionUID = 1L;

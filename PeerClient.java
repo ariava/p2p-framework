@@ -12,6 +12,8 @@ import java.util.Vector;
 /**
  * La classe PeerClient implementa le funzionalita' offerte da 
  * un semplice Peer che entra a far parte della rete peer to peer.
+ * Tale classe si interfaccia con la GUI e comunica direttamente 
+ * con il relativo PeerServer/SuperPeerServer
  * 
  * In particolare ciascun Peer può: 
  * 1) Registrare le proprie risorse nella rete peer to peer

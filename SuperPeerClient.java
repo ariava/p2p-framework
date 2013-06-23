@@ -8,7 +8,12 @@ import java.util.Hashtable;
  * aggiungendo di fatto le funzionalità offerte da un SuperPeer
  * (coordinatore di zona).
  * 
- * In particolare
+ * Tale classe si interfaccia con la GUI e comunica direttamente 
+ * con il relativo PeerServer/SuperPeerServer
+ * 
+ * In particolare questa classe implementa un thread che fornisce
+ * periodicamente al SuperPeerServer la tabella dei coordinatori
+ * aggiornata dal Tracker
  * 
  * @author Arianna Avanzini <73628@studenti.unimore.it>, 
  * Stefano Alletto <72056@studenti.unimore.it>, 

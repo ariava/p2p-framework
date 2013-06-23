@@ -10,6 +10,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 /**
+ * La classe PeerServer è una classe remota che contiene la tabella
+ * delle risorse possedute da un certo Peer. Il compito di questa
+ * classe è fornire tutte le funzionalità necessarie al relativo
+ * PeerClient per gestire la tabella delle risorse permettendo l'aggiunta, 
+ * la modifica e la cancellazione delle risorse.
  * 
  * @author Arianna Avanzini <73628@studenti.unimore.it>, 
  * Stefano Alletto <72056@studenti.unimore.it>, 
