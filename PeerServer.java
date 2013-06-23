@@ -150,15 +150,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * Metodo per aggiungere un peer alla tabella dei possessori della risorsa.
 	 * Ora il metodo e' generico ed e' invocato anche in fase di prelievo 
 	 * di una risorsa per notificare agli altri peer nella zona il nuovo
 	 * arrivo
-=======
-	 * Metodo privato per aggiungere un peer alla tabella dei possessori della risorsa
-	 * dopo che gli e' stata data
->>>>>>> 4543f0524e0e4926985b092ae4775ce860420772
 	 * 
 	 * @param resName stringa contenente il nome della risorsa da aggiungere
 	 * @param ip indirizzo ip del peer da aggiungere
