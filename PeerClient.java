@@ -9,6 +9,20 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
+/**
+ * La classe PeerClient implementa le funzionalita' offerte da 
+ * un semplice Peer che entra a far parte della rete peer to peer.
+ * 
+ * In particolare ciascun Peer può: 
+ * 1) Registrare le proprie risorse nella rete peer to peer
+ * 2) Effettuare la ricerca di una certa risorsa
+ * 3) Cancellare dalla rete peer to peer le risorse possedute
+ * 4) Far partire l'elezione per una certa risorsa
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class PeerClient {
 
 	static public PeerClient self = null;
@@ -31,7 +45,7 @@ public class PeerClient {
 			
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
-		assert this.myPS != null : "PeerServer is null!";
+		assert this.myPS != null : "PeerServer e' null!";
 	}
 	
 	/**
@@ -46,7 +60,7 @@ public class PeerClient {
 		String ps = "rmi://"+this.myIp+"/"+"Peer"+this.myIp;
 		this.myPS = self.getPeer(ps);
 		this.trackerIp = tr;
-		assert this.myPS != null : "PeerServer is null!";
+		assert this.myPS != null : "PeerServer e' null!";
 	}
 		
 	/**
@@ -89,35 +103,39 @@ public class PeerClient {
 	                				tr = getTracker("rmi://"+trackerIp+"/Tracker");
 	                				startElection(key, false, tr, coord);
 		                		} catch (NullPointerException ne) {
-		                			System.out.println("Thread di polling: ho catturato la nullpointereccetera");
+		                			if (debug)
+		                				System.out.println("Thread di polling: ho catturato la NullPointerException");
 		                		}
 			                    try {
 									Thread.sleep(pollingWorkerSleep);
 								} catch (InterruptedException e) {
-									e.printStackTrace();
+									if (debug)
+										e.printStackTrace();
 								} 
 			                }
 		                }
 		            });
-		/*	fine thread */
+		//fine thread
 		pollingWorker.start();
 	}
 	
+	
+	
 	/*
 	 * Metodi chiamati sul tracker
-	 * */
+	 */
 
 	/**
 	 * Metodo privato utilizzato per chiamare il metodo registrazione del tracker,
 	 * utilizzato per gestire le eventuali eccezioni.
 	 * 
-	 * @param server oggetto di tipo tracker sul quale chiamare il metodo
-	 * @param resources Vector<String> contenente i nomi delle risorse da registrare
+	 * @param server oggetto di tipo Tracker sul quale chiamare il metodo
+	 * @param resources vettore di stringhe contenente i nomi delle risorse da registrare
 	 * 
 	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
 	 */
 	public Vector<String> registerResources(Tracker server, Vector<String> resources) {
-		assert server != null : "Tracker object is undefined!";
+		assert server != null : "L'oggetto Tracker non e' definito!";
 		
 		if (debug) {
 			System.out.println("Chiamata la registrazione() sul tracker: "+server.toString()+" per queste risorse:");
@@ -127,35 +145,12 @@ public class PeerClient {
 		try {	
 			return server.registrazione(this.myIp, resources);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while registering resources "+resources);
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Qualcosa e' andato storto durante la registrazione delle risorse "+resources);
+				e.printStackTrace();
+			}
 			return null;
 		}
-	}
-	
-	/**
-	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer,
-	 * utilizzato per gestire le eventuali eccezioni.
-	 * 
-	 * @param server oggetto di tipo SuperPeer sul quale chiamare il metodo
-	 * @param resources contenente i nomi delle risorse da registrare
-	 * 
-	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
-	 */
-	public Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
-		assert server != null : "SuperPeer object is undefined!";
-		
-		if(debug) {
-			System.out.println("Chiamata la registrazione() sul coordinatore: "+server.toString()+" per queste risorse:");
-			System.out.println(resources.toString());
-		}
-		
-		try {	
-			return server.register(this.myIp, resources);
-		} catch (Exception e) {
-			System.out.println("Something went wrong while registering resources "+resources);
-			return null;
-		}		
 	}
 	
 	/**
@@ -168,14 +163,15 @@ public class PeerClient {
 	 * @return il coordinatore della risorsa richiesta
 	 */
 	public String simpleResourceRequest(Tracker server, String resource) {
-		assert server != null : "Tracker object is undefined!";
+		assert server != null : "L'oggetto Tracker non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la simpleResourceRequest sul tracker: "+server.toString()+" per la risorsa "+resource);
 		try {
 			return server.richiesta(resource);
 		} catch(Exception e) {
-			System.out.println("Something went wrong while requesting resource "+resource);
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante la richiesta semplice della risorsa "+resource);
 			return "exception";
 		}	
 	}
@@ -191,7 +187,7 @@ public class PeerClient {
 	 * @return il coordinatore della risorsa richiesta
 	 */
 	public String advancedResourceRequest(Tracker server, String resource, String prevCoord) {
-		assert server != null : "Tracker object is undefined!";
+		assert server != null : "L'oggetto Tracker non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la advancedResourceRequest sul tracker: "+server.toString()+" per la risorsa "+resource+
@@ -199,9 +195,42 @@ public class PeerClient {
 		try {
 			return server.richiesta(resource, prevCoord);
 		} catch(Exception e) {
-			System.out.println("Something went wrong while requesting resource "+resource);
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante la richiesta avanzata della risorsa "+resource);
 			return "";
 		}
+	}
+	
+	
+	
+	/*
+	 * Metodi sul coordinatore
+	 */
+	
+	/**
+	 * Metodo privato utilizzato per chiamare il metodo registrazione del SuperPeer,
+	 * utilizzato per gestire le eventuali eccezioni.
+	 * 
+	 * @param server oggetto di tipo SuperPeer sul quale chiamare il metodo
+	 * @param resources vettore di stringhe contenente i nomi delle risorse da registrare
+	 * 
+	 * @return i coordinatori delle risorse contenute in resources o null in caso di errori
+	 */
+	public Vector<String> registerResources(SuperPeer server, Vector<String> resources) {
+		assert server != null : "L'oggetto SuperPeer non e' definito!";
+		
+		if(debug) {
+			System.out.println("Chiamata la registrazione() sul coordinatore: "+server.toString()+" per queste risorse:");
+			System.out.println(resources.toString());
+		}
+		
+		try {	
+			return server.register(this.myIp, resources);
+		} catch (Exception e) {
+			if(debug)
+				System.out.println("Qualcosa e' andato storto durante la registrazione delle risorse "+resources);
+			return null;
+		}		
 	}
 	
 	/**
@@ -214,7 +243,7 @@ public class PeerClient {
 	 * @return il coordinatore della risorsa richiesta
 	 */
 	public String simpleResourceRequest(SuperPeer server, String resource) {
-		assert server != null : "SuperPeer object is undefined!";
+		assert server != null : "L'oggetto SuperPeer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la simpleResourceRequest sul coordinatore: "+server.toString()+" per la risorsa "+resource);
@@ -222,7 +251,8 @@ public class PeerClient {
 		try {
 			return server.request(resource);
 		} catch(Exception e) {
-			System.out.println("Something went wrong while requesting resource "+resource);
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante la richiesta della risorsa "+resource);
 			return "";
 		}
 	}
@@ -238,7 +268,7 @@ public class PeerClient {
 	 * @return il coordinatore della risorsa richiesta
 	 */
 	public String advancedResourceRequest(SuperPeer server, String resource, String prevCoord) {
-		assert server != null : "SuperPeer object is undefined!";
+		assert server != null : "L'oggetto SuperPeer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la advancedResourceRequest sul coordinatore: "+server.toString()+" per la risorsa "+resource+
@@ -246,14 +276,11 @@ public class PeerClient {
 		try {
 			return server.request(resource, prevCoord);
 		} catch(Exception e) {
-			System.out.println("Something went wrong while requesting resource "+resource);
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante la richiesta della risorsa "+resource);
 			return "";
 		}		
 	}
-	
-	/*
-	 * Metodi sul coordinatore
-	 * */
 	
 	/**
 	 * Metodo per gestire le eccezioni della chiamata del metodo goodbye sul coordinatore
@@ -261,14 +288,15 @@ public class PeerClient {
 	 * @param coord oggetto di tipo SuperPeer sul quale effettuare la chiamata
 	 */
 	public void goodbye(SuperPeer coord) {
-		assert coord != null : "SuperPeer object is undefined!";
+		assert coord != null : "L'oggetto SuperPeer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
 		try {
 			coord.goodbye(this.myIp);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante l'uscita politely: "+e.getMessage());
 		}	
 	}
 	
@@ -280,16 +308,19 @@ public class PeerClient {
 	 * @param resName stringa contenente il nome della risorsa per la quale ci si rimuove
 	 */
 	public void goodbye(SuperPeer coord, String resName) throws RemoteException {
-		assert coord != null : "SuperPeer object is undefined!";
+		assert coord != null : "L'oggetto SuperPeer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la goodbye sul coordinatore: "+coord.toString());
 		try {
-			System.out.println(this.myIp+"   "+resName);
+			if (debug)
+				System.out.println(this.myIp+" desidera chiamare la goodbye per la risorsa "+resName);
 			coord.goodbye(this.myIp, resName);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while exiting politely: "+e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Qualcosa e' andato storto durante l'uscita politely: "+e.getMessage());
+				e.printStackTrace();
+			}
 		}	
 		
 		Vector<PeerTableData> list = this.myPS.getTable().get(resName).get();
@@ -317,22 +348,26 @@ public class PeerClient {
 	 * @return la lista dei Peer che hanno la risorsa resName
 	 */
 	public Vector<String> getList(SuperPeer coord, String resName) {
-		assert coord != null : "SuperPeer object is undefined!";
+		assert coord != null : "L'oggetto SuperPeer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la getList sul coordinatore: "+coord.toString()+" per la risorsa "+resName);
 		try {
 			return coord.getList(resName);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while retrieving the zone list: "+e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Qualcosa e' andato storto durante il recupero della zone list: "+e.getMessage());
+				e.printStackTrace();
+			}
 			return null;
 		}
 	}
 	
+	
+	
 	/*
 	 * Metodi su altri peer 
-	 * */
+	 */
 	
 	/**
 	 * Metodo per gestire le eccezioni della chiamata a discovery di un altro peer.
@@ -342,20 +377,21 @@ public class PeerClient {
 	 * @return la distanza in termini di hopcount al Peer p
 	 */
 	public float discovery(Peer p) {
-		assert p != null : "Peer object is undefined!";
+		assert p != null : "L'oggetto Peer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la discovery() sul peer: "+p.toString());
 		try {
 			return p.discovery(this.myIp);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while retrieving distances: "+e.getMessage());
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante il recupero delle distanze: "+e.getMessage());
 			return 0;
 		}
 	}
 	
 	/**
-	 * Metodo che aggiunge una entry nella tabella per una risorsa
+	 * Metodo che aggiunge una entry nella tabella per una certa risorsa
 	 * 
 	 * @param resName nome della risorsa
 	 * @param ip indirizzo ip del peer che ha scaricato la risorsa resName
@@ -366,15 +402,17 @@ public class PeerClient {
 			try {
 				p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
 			} catch (Exception e) {
-				System.out.println("Error while getting the remote object: "+e.getMessage());
-				e.printStackTrace();			
+				if (debug) {
+					System.out.println("Errore nel recupero dell'oggetto remoto: "+e.getMessage());
+					e.printStackTrace();	
+				}
 			}
 			
 			PeerTable pt = this.myPS.getTable().get(resName);
 			try {
-				pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false ));
+				pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false));
 			} catch (RemoteException e) {
-				System.out.println("Discovery failed.."+e.getMessage());
+				System.out.println("Il metodo discovery e' fallito: "+e.getMessage());
 				e.printStackTrace();
 			}
 			this.myPS.addToTable(resName, pt);
@@ -401,7 +439,7 @@ public class PeerClient {
 	 * @return vero se il trasferimento del file è avvenuto con successo, falso altrimenti
 	 */
 	public boolean getResource(Peer p, String resName) {
-		assert p != null : "Peer object is undefined!";
+		assert p != null : "L'oggetto Peer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la getResource() sul peer: "+p.toString()+" per la risorsa "+resName);
@@ -410,11 +448,13 @@ public class PeerClient {
 		try {
 			filedata = p.getResource(resName,this.myIp);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while retrieving the data from the peer: "+e.getMessage());
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante il recupero dei dati dal Peer: "+e.getMessage());
 			return false;
 		}
 		if(filedata == null) {
-			System.out.println("Something went wrong while retrieving the data from the peer and he handled the exception");
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante il recupero dei dati dal Peer ma lui ha gestito l'eccezione");
 			return false;
 		}
 		File file = new File("resources/"+resName);
@@ -426,7 +466,8 @@ public class PeerClient {
 			output.flush();
 			output.close();
 		} catch (Exception e) {
-			System.out.println("Something went wrong while writing the retrieved file: "+e.getMessage());
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante la scrittura del file recuperato: "+e.getMessage());
 			return false;
 		}
 		
@@ -444,7 +485,7 @@ public class PeerClient {
 	 * @return la distanza media verso i Peer che hanno la risorsa resName
 	 */
 	public float election(Peer p, String resName) {
-		assert p != null : "Peer object is undefined!";
+		assert p != null : "L'oggetto Peer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la election sul peer "+p.toString());
@@ -452,7 +493,8 @@ public class PeerClient {
 		try {
 			return p.election(resName,this.myIp);
 		} catch (Exception e) {
-			System.out.println("Something went wrong while polling for election candidates: "+e.getMessage());
+			if (debug)
+				System.out.println("Qualcosa e' andato storto durante il polling per i candidati dell'elezione: "+e.getMessage());
 			return 0;
 		}
 	}
@@ -465,7 +507,7 @@ public class PeerClient {
 	 * @param ipCoord stringa contenente l'indirizzo ip del coordinatore da impostare
 	 */
 	public void coordinator(Peer p, String resName, String ipCoord) {
-		assert p != null : "Peer object is undefined!";
+		assert p != null : "L'oggetto Peer non e' definito!";
 		
 		if(debug)
 			System.out.println("Chiamata la coordinator() sul peer "+p.toString()+" per la risorsa: "+resName+
@@ -474,21 +516,24 @@ public class PeerClient {
 		try {
 			p.coordinator(ipCoord, resName);
 		} catch (Exception e) {
-			System.out.println("Impossibile annunciare il nuovo coordinatore " + ipCoord);
+			if(debug)
+				System.out.println("Impossibile annunciare il nuovo coordinatore " + ipCoord);
 		}
 		
 	}
 	
+	
+	
 	/*
 	 * Metodi pubblici di gestione del ciclo di vita di un peer
-	 * */
+	 */
 	
 	/**
 	 * Metodo che dato in ingresso il percorso rmi di un tracker ne ritorna l'oggetto corrispondente.
 	 * 
 	 * @param server stringa contenente il percorso rmi del tracker.
 	 * 
-	 * @return l'oggetto del tracker
+	 * @return l'oggetto del Tracker
 	 */
 	public Tracker getTracker(String server) {
 		if(debug)
@@ -497,8 +542,10 @@ public class PeerClient {
 			Tracker obj = (Tracker)Naming.lookup(server);
 			return obj;
 		} catch (Exception e) {
-			System.out.println("Error while getting the remote object: "+e.getMessage());
-			e.printStackTrace();
+			if(debug) {
+				System.out.println("Errore nel recupero dell'oggetto remoto: "+e.getMessage());
+				e.printStackTrace();
+			}
 			return null;
 		}
 	}
@@ -517,8 +564,8 @@ public class PeerClient {
 			SuperPeer obj = (SuperPeer)Naming.lookup(server);
 			return obj;
 		} catch (Exception e) {
-			System.out.println("Error while getting the remote object: "+e.getMessage());
-			//e.printStackTrace();
+			if (debug)
+				System.out.println("Errore nel recupero dell'oggetto remoto: "+e.getMessage());
 			return null;
 			
 		}
@@ -540,14 +587,15 @@ public class PeerClient {
 			obj.ping();
 			return obj;
 		} catch (Exception e) {
-			System.out.println("Error while getting the remote object: " + e.getMessage());
+			System.out.println("Errore nel recupero dell'oggetto remoto: " + e.getMessage());
 			
 			// Rimuoviamo un peer che non risponde dalla PeerTable
 			Enumeration<String> en = null;
 			try {
 				en = myPS.getTable().keys();
 			} catch (RemoteException e1) {
-				e1.printStackTrace();
+				if (debug)
+					e1.printStackTrace();
 			}
 			while (en.hasMoreElements()) {
 				String key = en.nextElement();
@@ -555,7 +603,8 @@ public class PeerClient {
 				try {
 					pt = myPS.getTable().get(key);
 				} catch (RemoteException e1) {
-					e1.printStackTrace();
+					if (debug)
+						e1.printStackTrace();
 				}
     			Vector<PeerTableData> peers = pt.get();
     			for (int i = 0 ; i < peers.size() ; ++i) {
@@ -567,7 +616,8 @@ public class PeerClient {
     			try {
 					myPS.addToTable(key, pt);
 				} catch (RemoteException e1) {
-					e1.printStackTrace();
+					if (debug)
+						e1.printStackTrace();
 				}
 			}
 			
@@ -591,25 +641,17 @@ public class PeerClient {
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa: "+resName);
 		
-		/*try {
-			//if(this.myPS.noElection()) {
-			//	if(debug)
-			//		System.out.println("Elezione gia' in corso da parte di qualche altro peer!");
-			//	return;
-			//}
-		} catch (RemoteException e2) {
-			e2.printStackTrace();
-		}*/
-		
 		Hashtable<String, PeerTable> rt = null;
 		try {
 			rt = this.myPS.getTable();
 		} catch (RemoteException e1) {
-			System.out.println("Unable to get ResourceTable from my server: "+e1.getMessage());
-			e1.printStackTrace();
+			if (debug) {
+				System.out.println("Impossibile recuperare la ResourceTable dal mio server: "+e1.getMessage());
+				e1.printStackTrace();
+			}
 		}
 		
-		assert rt != null:"Unable to get resourceTable..";
+		assert rt != null : "La resourceTable non e' stata recuperata";
 		
 		int dim = oldCoord==null?rt.get(resName).get().size():rt.get(resName).get().size()-1;
 		float answers[] = new float[dim];
@@ -630,8 +672,10 @@ public class PeerClient {
 				else
 					answers[j] = p.election(resName,this.myIp);
 			} catch (RemoteException e) {
-				System.out.println("Exception in election procedure: " + e.getMessage());
-				e.printStackTrace();
+				if (debug) {
+					System.out.println("Eccezione nel metodo election sul peer: " + e.getMessage());
+					e.printStackTrace();
+				}
 			}
 			peers[j++] = rt.get(resName).get().get(i).peer;
 		}
@@ -644,8 +688,10 @@ public class PeerClient {
 			else
 				min = 999;
 		} catch (RemoteException e1) {
-			System.out.println("Unable to get avgDist from server");
-			e1.printStackTrace();
+			if (debug) {
+				System.out.println("Impossibile recuperare avgDist dal server");
+				e1.printStackTrace();
+			}
 		}
 		String peerMin = "";
 		if(!noSelf)
@@ -669,18 +715,20 @@ public class PeerClient {
 		
 		if (peerMin.isEmpty()) {
 			if (debug)
-				System.out.println("Election ended but no coordinator was elected");
+				System.out.println("Elezione finita ma nessun coordinatore e' stato eletto");
 			try {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
-				System.out.println("Unable to change coordinator: " + e.getMessage());
-				e.printStackTrace();
+				if (debug) {
+					System.out.println("Impossibile cambiare il coordinatore: " + e.getMessage());
+					e.printStackTrace();
+				}
 			}
 			return;
 		}
 		
 		if(debug)
-			System.out.println("Election: il nuovo coordinatore e': "+peerMin+", ha distanza media "+min);
+			System.out.println("Elezione: il nuovo coordinatore e': "+peerMin+", ha distanza media "+min);
 		//peerMin ora sara' il nuovo coordinatore per la risorsa resName
 		for (int i=0 ; i<rt.get(resName).get().size() ; ++i) {
 			String server = rt.get(resName).get().get(i).peer;
@@ -693,14 +741,18 @@ public class PeerClient {
 			if(p == null)
 				continue;
 			
-			if (debug)
-				System.out.println("ORA DOVREI CHIAMARE LA COORDINATOR");
+			// XXX: guardare qui!!
+			/*if (debug)
+				System.out.println("ORA DOVREI CHIAMARE LA COORDINATOR");*/
 			try {
-				System.out.println(p.toString());
+				if (debug)
+					System.out.println(p.toString());
 				p.coordinator(peerMin, resName);
 			} catch (Exception e) {
-				System.out.println("Exception while announcing coordinator: " + e.getMessage());
-				e.printStackTrace();
+				if (debug) {
+					System.out.println("Eccezione durante l'annuncio del coordinatore: " + e.getMessage());
+					e.printStackTrace();
+				}
 			}
 			if (debug)
 				System.out.println("Fine dell'annuncio coordinatore");
@@ -708,21 +760,21 @@ public class PeerClient {
 				tr.cambioCoordinatore(peerMin, resName);
 			} catch (RemoteException e) {
 				if (debug) {
-					System.out.println("Unable to change coordinator: " + e.getMessage());
-					System.out.println("### Attempting to contact SuperPeer at " + peerMin + " ###");
+					System.out.println("Impossibile cambiare il coordinatore: " + e.getMessage());
+					System.out.println("Sto per contattare il SuperPeer " + peerMin);
 				}
 				// Se il tracker è giù, modifico la coordTable del nuovo
 				// coordinatore per mantenere la consistenza nella zona
 				SuperPeer c = getCoord("rmi://"+peerMin+"/SuperPeer"+peerMin);
     			if (c == null) {
     				if (debug)
-    					System.out.println("### Unable to contact new SuperPeer ###");
+    					System.out.println("Impossibile contattare il nuovo SuperPeer");
     			} else {
     				try {
 						c.setCoordinator(resName, peerMin);
 					} catch (RemoteException e1) {
 						if (debug)
-							System.out.println("### New SuperPeer exists but is dead ###");
+							System.out.println("Il nuovo SuperPeer esiste ma e' morto");
 					}
     			}
 			}
@@ -739,7 +791,7 @@ public class PeerClient {
 		PeerClient.debug = value;
 	}
 	
-	/*
+	/* XXX: GUARDARE ANCHE QUA
 	 * Metodo vuoto da implementare nel @SuperPeerClient.
 	 * */
 	protected void stopListRetriever() {

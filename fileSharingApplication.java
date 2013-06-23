@@ -47,6 +47,21 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import  java.io.*;
 
+/**
+ * La classe fileSharingApplication implementa una semplice interfaccia
+ * grafica di trasferimento file.
+ * 
+ * In particolare tale classe implementa tutti i componenti grafici
+ * dell'applicazione e tutti i listener associati ai bottoni e ai
+ * campi di testo.
+ * Tale classe sfrutta il livello software costituito dal framework,
+ * che in ogni caso risulta indipendente da qualsiasi applicazione 
+ * soprastante.
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class fileSharingApplication {
 
 	private JFrame frmTestFrameworkGui;
@@ -76,7 +91,11 @@ public class fileSharingApplication {
 	
 
 	/**
-	 * Launch the application.
+	 * Avvio dell'applicazione
+	 * 
+	 * @param args array passato all'avvio dell'applicazione. Il primo elemento
+     * di tale array indica se far partire l'applicazione in modalità di debug
+     * (args[0] = "debug") o no (senza parametri)
 	 */
 	public static void main(String[] args) {
 		debug = (args.length > 0 && args[0].equals("debug")) ? true : false;
@@ -112,7 +131,8 @@ public class fileSharingApplication {
 		if (debug)
 			System.out.println("Stampa dei file nella cartella resources:");
 		for (int i=0 ; i<list.length ; ++i) {
-			System.out.println(list[i].getName());
+			if (debug)
+				System.out.println(list[i].getName());
 			if(list[i].getName().equals(resName))
 				return true;
 		}
@@ -146,16 +166,17 @@ public class fileSharingApplication {
             if (outStream != null) outStream.close();
  
             if (debug)
-            	System.out.println("File " + src + " Copied");
+            	System.out.println("File " + src + " copiato");
             return true;
         } catch(IOException e) {
-        	e.printStackTrace();
+        	if (debug)
+        		e.printStackTrace();
         	return false;
         }
 	}
 	
 	/**
-	 * Create the application.
+	 * Metodo che fa partire l'applicazione
 	 */
 	public fileSharingApplication() {
 		initialize();
@@ -212,7 +233,8 @@ public class fileSharingApplication {
 	final JButton btnConnect = new JButton("    Connect   ");
 
 	/**
-	 * Inizializza il contenuto di un frame.
+	 * Metodo privato che inizializza l'interfaccia grafica e tutti i listener associati
+	 * ai vari bottoni e ai campi di testo
 	 */
 	private void initialize() {
 		frmTestFrameworkGui = new JFrame();
@@ -272,11 +294,13 @@ public class fileSharingApplication {
 			                				try {
 												pc = new SuperPeerClient(pc, c, tr);
 											} catch (UnknownHostException e1) {
-												System.out.println("Thread di elezione: errore nella creazione di un SuperPeerClient");
-												e1.printStackTrace();
+												if (debug) {
+													System.out.println("Thread di elezione: errore nella creazione di un SuperPeerClient");
+													e1.printStackTrace();
+												}
 											}
 			                				if (debug)
-			                					System.out.println("!*!*! Mi istanzio un nuovo oggetto SuperPeer! !*!*!");
+			                					System.out.println("Mi istanzio un nuovo oggetto SuperPeer!");
 											pc.setDebug(debug);
 											elected = true;
 											break;
@@ -284,18 +308,19 @@ public class fileSharingApplication {
 			                			
 		                			}
 		                		} catch (RemoteException e1) {
-		                			e1.printStackTrace();
+		                			if (debug)
+		                				e1.printStackTrace();
 		                		}
 								l.unlock();
 			                    try {
 									Thread.sleep(5000);
 								} catch (InterruptedException e) {
-									e.printStackTrace();
+									if (debug)
+										e.printStackTrace();
 								} 
 			                }
 		                }
 		            });
-		/*	fine thread */
 		electionWorker.start();
 		
 		frmTestFrameworkGui.addWindowStateListener(new WindowAdapter() {
@@ -396,13 +421,15 @@ public class fileSharingApplication {
 						pc.setDebug(debug);
 						pc.startPollingWorker();
 					} catch (UnknownHostException e) {
-						System.out.println("Unable to initialize PeerClient object: "+e.getMessage());
-						e.printStackTrace();
+						if (debug) {
+							System.out.println("Impossibile inizializzare l'oggetto PeerClient: "+e.getMessage());
+							e.printStackTrace();
+						}
 						return;
 					}
 					firstConnect = false;
 				} else
-					assert pc != null : "PeerClient object not initialized but GUI already connected";
+					assert pc != null : "L'oggetto PeerClient non e' inizializzato ma la GUI e' gia' connessa";
 
 				tr = pc.getTracker(server);
 				
@@ -453,19 +480,20 @@ public class fileSharingApplication {
 							System.out.println("Sto riregistrando la risorsa "+list[i].getName());
 						btnImport.doClick();
 						try {
-							if (debug)
+							if (debug) {
 								System.out.println("Ho finito di reimportare la risorsa "+list[i].getName()+", stampo la sua tabella");
-							if(debug)
 								pc.myPS.getTable().get(list[i].getName()).print();
+							}
 						} catch (RemoteException e) {
-							e.printStackTrace();
+							if (debug)
+								e.printStackTrace();
 						}
 					}
 					btnImport.setEnabled(wasEnabled);
 					connect = false;
 				} else { // Quando si preme il pulsante Disconnect
 					if (debug)
-						System.out.println("#### Disconnessione in corso ####");
+						System.out.println("Disconnessione in corso...");
 					close();
 					txtIpTracker.setEnabled(true);
 					txtInsertFileTo.setEnabled(false);
@@ -523,7 +551,6 @@ public class fileSharingApplication {
 		
 		btnDownload.setEnabled(false);
 		btnDownload.addActionListener(new ActionListener() {
-			/*							LISTENER PULSANTE DI DOWNLOAD				*/
 			public void actionPerformed(ActionEvent e) {
 				if(pc == null) {	
 					JOptionPane.showMessageDialog(null, "PeerClient object is undefined!", "Error",JOptionPane.ERROR_MESSAGE);
@@ -532,7 +559,7 @@ public class fileSharingApplication {
 				String server = "rmi://"+txtIpTracker.getText()+"/"+"Tracker";
 				tr = pc.getTracker(server);
 				if (debug)
-					System.out.println("Tracker after getTracker(): " + tr);
+					System.out.println("Il Tracker e': " + tr);
 				if(tr == null) {
 					btnImport.setEnabled(false);
 					btnConnect.setEnabled(false);
@@ -547,7 +574,6 @@ public class fileSharingApplication {
 					return;
 				}
 				
-				/******************************/
 				if(debug)
 					System.out.println("Client in modalita' request");
 				
@@ -566,12 +592,14 @@ public class fileSharingApplication {
 						en =  pc.myPS.getTable().keys();
 					} catch (RemoteException e2) {}
 					while(en.hasMoreElements() && p.equals("")) {
-						System.out.println("Sono nel ciclo di controllo dei coordinatori, ne cerco uno valido");
+						if (debug)
+							System.out.println("Sono nel ciclo di controllo dei coordinatori, ne cerco uno valido");
 						String key = en.nextElement();
 						try {
 							pt = pc.myPS.getTable().get(key);
 						} catch (RemoteException e1) {
-							e1.printStackTrace();
+							if (debug)
+								e1.printStackTrace();
 						}
 						/* Utilizziamolo per richiedere la risorsa */
 						if (pt != null) {
@@ -580,7 +608,8 @@ public class fileSharingApplication {
 							String s = "rmi://"+p+"/SuperPeer"+p;
 							SuperPeer sp = pc.getCoord(s);
 							prevC = pc.simpleResourceRequest(sp, resName);
-							System.out.println("Sono nel ciclo, ho trovato come coord "+prevC);
+							if (debug)
+								System.out.println("Sono nel ciclo, ho trovato come coordinatore "+prevC);
 							if (prevC == null|| prevC.equals("")) {
 								p = "";
 								continue;
@@ -592,7 +621,8 @@ public class fileSharingApplication {
 							
 								c.ping();
 							} catch (Exception exc) {
-								System.out.println("Il coord "+prevC+" non e' valido, continuo");
+								if (debug)
+									System.out.println("Il coordinatore "+prevC+" non e' valido, continuo");
 								p = "";
 								continue;
 							}
@@ -628,7 +658,8 @@ public class fileSharingApplication {
 						}
 						tr.cambioCoordinatore("",resName);
 					} catch (RemoteException e1) {
-						e1.printStackTrace();
+						if (debug)
+							e1.printStackTrace();
 					}
 					JOptionPane.showMessageDialog(null, "Coordinator not found, he probably left the network unpolitely!", "Error",JOptionPane.ERROR_MESSAGE);
 					return;
@@ -642,25 +673,28 @@ public class fileSharingApplication {
 						try {
 							tr.cambioCoordinatore("",resName);
 						} catch (RemoteException e1) {
-							e1.printStackTrace();
+							if (debug)
+								e1.printStackTrace();
 						}
 						JOptionPane.showMessageDialog(null, "Coordinator not found, he probably left the network unpolitely!", "Error",JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					if (debug)
-						System.out.println("Coordinator isn't responding..");
+						System.out.println("Il coordinatore non sta rispondendo");
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException ex) {
-						System.out.println("Exception while sleeping: " + ex.getMessage());
-						ex.printStackTrace();
+						if (debug) {
+							System.out.println("Eccezione mentre dormo: " + ex.getMessage());
+							ex.printStackTrace();
+						}
 					}
 					
 					prevC = pc.advancedResourceRequest(tr, resName, prevC);
 					coord = "rmi://"+prevC+"/"+"SuperPeer"+prevC;				
 					SuperPeer c1 = pc.getCoord(coord);
 					
-					assert c1 != null : "SuperPeer object is undefined!";
+					assert c1 != null : "L'oggetto SuperPeer non e' definito!";
 					
 					ipList = pc.getList(c1, resName);
 				}
@@ -692,22 +726,28 @@ public class fileSharingApplication {
 				try {
 					pc.myPS.addToTable(resName, pt);
 				} catch (RemoteException e2) {
-					System.out.println("Problems while adding an entry to the resource table:" + e2.getMessage());
-					e2.printStackTrace();
+					if (debug) {
+						System.out.println("Problema ad aggiungere una entry alla tabella delle risorse:" + e2.getMessage());
+						e2.printStackTrace();
+					}
 				}
 				
 				try {
 					pt = pc.myPS.getTable().get(resName);
 				} catch (RemoteException e1) {
-					System.out.println("Problems while getting the resource table: " + e1.getMessage());
-					e1.printStackTrace();
+					if (debug) {
+						System.out.println("Problema nel recuperare la tabella delle risorse: " + e1.getMessage());
+						e1.printStackTrace();
+					}
 				}
 				
 				try {
 					pc.myPS.setAvgDist(pt.getAvgDist(InetAddress.getLocalHost().getHostAddress()));
 				} catch (Exception e1) {
-					System.out.println("Problems while setting average distance: " + e1.getMessage());
-					e1.printStackTrace();
+					if (debug) {
+						System.out.println("Problema nel settare la distanza media: " + e1.getMessage());
+						e1.printStackTrace();
+					}
 				}
 				
 				String closestPeer = pt.getMinDistPeer();
@@ -736,10 +776,13 @@ public class fileSharingApplication {
 						//aggiorna la distanza media dato che a sto punto saro' stato aggiunto nella tabella..
 						try {
 							pc.myPS.setAvgDist(pc.myPS.getTable().get(resName).getAvgDist(pc.myIp));
-							System.out.println("Nuova avgDist: "+pc.myPS.getAvgDist());
+							if (debug)
+								System.out.println("Nuova avgDist: "+pc.myPS.getAvgDist());
 						} catch (RemoteException e1) {
-							System.out.println("Unable to set new avgDist: " + e1.getMessage());
-							e1.printStackTrace();
+							if (debug) {
+								System.out.println("Impossibile settare il nuovo avgDist: " + e1.getMessage());
+								e1.printStackTrace();
+							}
 						}
 						
 						//comunico agli altri peer (tranne chi me l'ha data) che la ho anche io
@@ -753,7 +796,8 @@ public class fileSharingApplication {
 									try {
 										pe.addNewPeer(resName, pc.myIp);
 									} catch (RemoteException e1) {
-										e1.printStackTrace();
+										if (debug)
+											e1.printStackTrace();
 									}
 								}
 								if(debug) {
@@ -763,11 +807,10 @@ public class fileSharingApplication {
 						}
 						break;
 					} else {
-						JOptionPane.showMessageDialog(null, "Trasferimento della risorsa fallito..", "Warning!", JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Transferring of the resource failed", "Warning!", JOptionPane.WARNING_MESSAGE);
 						fail = true;
 					}
 				}
-			/************************/
 			}
 		});
 		panel_2.add(btnDownload);
@@ -846,13 +889,15 @@ public class fileSharingApplication {
 				int[] selectedRows = table.getSelectedRows();
 				try {
 					if (debug)
-						System.out.println("Trying to execute the file "+model.getValueAt(selectedRows[0], 0).toString());
+						System.out.println("Sto eseguendo il file "+model.getValueAt(selectedRows[0], 0).toString());
 					Process pr = Runtime.getRuntime().exec("gnome-open resources/"+model.getValueAt(selectedRows[0], 0).toString());
 					pr.waitFor();
 				} catch (InterruptedException ie) {
-					System.out.println("Subprocess execution interrupted (CTRL+C?)");
+					if (debug)
+						System.out.println("Esecuzione del sottoprocesso interrotta (CTRL+C?)");
 				} catch (IOException ioe) {
-					System.out.println("Can't execute that file, sorry :(");
+					if (debug)
+						System.out.println("Impossibile eseguire questo file");
 				}
 			}
 		});
@@ -908,7 +953,7 @@ public class fileSharingApplication {
 	                }
 	                
 	                String resName = f.getName();
-	                /********************************/
+	                
 	                if (debug)
 	    				System.out.println("Client in modalita' registrazione");
 	    			Vector<String> resNames = new Vector<String>();
@@ -917,7 +962,7 @@ public class fileSharingApplication {
 	    			//register new resources
 	    			Vector<String> coords = pc.registerResources(tr, resNames);
 	    			
-	    			assert coords.size() == resNames.size() : "coords and resNames sizes doesn't match!";
+	    			assert coords.size() == resNames.size() : "le dimensioni di coords e resNames non matchano!";
 	    			
 	    			//add coordinators in the hashtable
 	    			for (int i=0 ; i<coords.size() ; ++i) {
@@ -926,18 +971,20 @@ public class fileSharingApplication {
 	    					temp.setDebug(debug);
 							pc.myPS.addToTable(resNames.get(i), temp);	
 						} catch (RemoteException e2) {
-							System.out.println("Unable to add an element to resourceTable");
-							e2.printStackTrace();
+							if (debug) {
+								System.out.println("Impossibile aggiungere un elemento alla resourceTable");
+								e2.printStackTrace();
+							}
 						}
 	    				
 	    				if (debug)
-	    					System.out.println("AAAAAAAAAAAAA  "+coords.get(i) +"    "+ pc.myIp);
+	    					System.out.println(coords.get(i) +"    "+ pc.myIp);
 	    				
 	    				if (!coords.get(i).equals(pc.myIp)) {
 	    					String coord = "rmi://"+coords.get(i)+"/"+"SuperPeer"+coords.get(i);
 	    					SuperPeer c = pc.getCoord(coord);
 	    					
-	    					assert c != null : "SuperPeer object is undefined!";
+	    					assert c != null : "L'oggetto SuperPeer non e' definito!";
 	    					if (debug)
 	    						System.out.println("Sto registrando una risorsa gia' presente nella rete: "+resNames.get(i)+", lo notifico al coordinatore, che e': "+coord);
 	    					pc.registerResources(c, resNames);
@@ -948,7 +995,7 @@ public class fileSharingApplication {
 		    					pc.myPS.addToTable(resNames.get(i), pt);
 	    					} catch(Exception e1) {
 	    						if(debug)
-	    							System.out.println("Unable to add myself to my peerTable: "+e1.getMessage());
+	    							System.out.println("Impossibile aggiungere me stesso alla peerTable: "+e1.getMessage());
 	    					}
 	    					
 	    				} else {
@@ -960,20 +1007,24 @@ public class fileSharingApplication {
 		    				try {
 								c.register(pc.myIp, resNames);
 							} catch (RemoteException e2) {
-								System.out.println("Unable to register myself as coordinator in my SuperPeerServer");
-								e2.printStackTrace();
+								if (debug) {
+									System.out.println("Impossibile registrarmi come coordinatore nel mio SuperPeerServer");
+									e2.printStackTrace();
+								}
 							}
 		    				l.lock();
 		    				if (!elected) {
 		    					try {
 									pc = new SuperPeerClient(pc, c, tr);
 									if (debug)
-										System.out.println("### ISTANZIATO Riferimento al (Super)PeerClient: " + pc + " ###");
+										System.out.println("Istanziato riferimento al (Super)PeerClient: " + pc);
 									pc.setDebug(debug);
 									
 								} catch (UnknownHostException e1) {
-									System.out.println("Unable to become the new coordinator: "+e1.getMessage());
-									e1.printStackTrace();
+									if (debug) {
+										System.out.println("Impossibile diventare il nuovo coordinatore: "+e1.getMessage());
+										e1.printStackTrace();
+									}
 								}
 		    					elected = true;
 	    					}
@@ -981,7 +1032,7 @@ public class fileSharingApplication {
 	    				}
 	    					
 	    			}
-	    			/************************************/
+	    			
 	    			DefaultTableModel model = (DefaultTableModel) table.getModel();
 	    			boolean found = false;
 	    			for (int i=0 ; i<model.getRowCount() ; ++i) {
@@ -1006,16 +1057,14 @@ public class fileSharingApplication {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
 				int[] selectedRows;
 				if (debug) {
-					System.out.println();
-					System.out.println("### Chiamata la delete con disconnect == "+ disconnect + " ####");
-					System.out.println("### DISCONNESSO Riferimento al (Super)PeerClient: " + pc + " ###");
-					System.out.println();
+					System.out.println("Chiamata la delete con disconnect == "+ disconnect);
+					System.out.println("Disconnesso riferimento al (Super)PeerClient: " + pc);
 				}
 				if(disconnect) {
 					/* se non siamo superpeer le seguenti due istruzioni comunque non fanno danni */
 					elected = false;
 					if (debug)
-						System.out.println("### STOP LIST RETRIEVER Riferimento al (Super)PeerClient: " + pc + " ###");
+						System.out.println("Eseguo la stopListRetriever sul (Super)PeerClient: " + pc);
 					pc.stopListRetriever();
 					selectedRows = new int[model.getRowCount()];
 					for(int i=0 ; i<model.getRowCount() ; ++i)
@@ -1030,11 +1079,13 @@ public class fileSharingApplication {
 					try {
 						pt = pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0));
 					} catch (RemoteException e1) {
-						System.out.println("Unable to get resourceTable from my server");
-						e1.printStackTrace();
+						if (debug) {
+							System.out.println("Impossibile recuperare la resourceTable dal mio server");
+							e1.printStackTrace();
+						}
 					}
 					if (debug) {
-						System.out.println("****************************tabella prima crash **********************");
+						System.out.println("Tabella prima crash");
 						pt.print();
 					}
 					String coord = pt.getCoord().peer;
@@ -1043,7 +1094,7 @@ public class fileSharingApplication {
 					
 					//se sono io il coordinatore faccio partire l'election
 					if (debug)
-						System.out.println("**** MY IP " + pc.myIp + " COORD " + coord + " *******");
+						System.out.println("Mio indirizzo ip " + pc.myIp + " coordinatore " + coord);
 					if(pc.myIp.equals(coord))
 						pc.startElection(model.getValueAt(selectedRows[i], 0).toString(),true,tr,null);					
 					if (debug)
@@ -1051,7 +1102,8 @@ public class fileSharingApplication {
 					try {
 						pc.goodbye(c, model.getValueAt(selectedRows[i], 0).toString());
 					} catch (RemoteException e2) {
-						e2.printStackTrace();
+						if (debug)
+							e2.printStackTrace();
 					}
 					
 					if (debug) {
@@ -1065,21 +1117,22 @@ public class fileSharingApplication {
 					//rimuovo dalla tabella del peer..
 					try {
 						pc.myPS.removeFromTable(model.getValueAt(selectedRows[i], 0).toString());
-						if (debug)
+						if (debug) {
 							System.out.println("Rimuovo dalla tabella della risorsa "+model.getValueAt(selectedRows[i], 0).toString()+
 											   "l'ip "+pc.myIp);
-						if (debug) {
 							try {
 								pc.myPS.getTable().get(model.getValueAt(selectedRows[i], 0).toString()).print();
 							} catch (RemoteException e1) {
 								e1.printStackTrace();
 							} catch (NullPointerException ne) {
-								System.out.println(" ******* provo a stampare la tabella dopo la delete ma fallisco");
+								System.out.println("Provo a stampare la tabella dopo la delete ma fallisco");
 							}
 						}
+						
 						//pc.myPS.addToTable(pc.myIp, ptable);
 					} catch (RemoteException e1) {
-						e1.printStackTrace();
+						if (debug)
+							e1.printStackTrace();
 					}
 					
 					if (!disconnect) {

@@ -9,6 +9,23 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * La classe TrackerServer implementa le funzionalità del
+ * Tracker centralizzato.
+ * 
+ * Il punto d'accesso alla rete peer to peer è centralizzato 
+ * ed è costituito da un server tracker. Il tracker mantiene 
+ * una tabella che descrive il layout della rete: ad ogni risorsa 
+ * registrata nella rete, tale tabella associa l'identificativo 
+ * univoco (indirizzo ip) di un peer eletto quale coordinatore 
+ * per quella risorsa, mantenendo di fatto informazioni solamente 
+ * su un sottoinsieme molto ristretto dei peer che fanno parte 
+ * della rete.
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	
 	private static final long serialVersionUID = 1L;
@@ -35,8 +52,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * @return vero se la stringa in input ha il formato
 	 * di un indirizzo ip, falso altrimenti
 	 */
-	public boolean validate(final String ip){          
-		
+	public boolean validate(final String ip) {
 		if(ip.isEmpty()) 
 			return false;
 		
@@ -50,14 +66,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 */
 	private void stampaTabella() {
 		Enumeration<String> enumKey = table.keys();
-		System.out.println("*** TABELLA TRACKER ***");
+		System.out.println("Tabella Tracker");
 		System.out.println("timestamp: " + timestamp);
 		while(enumKey.hasMoreElements()) {
 		    String key = enumKey.nextElement();
 		    String val = table.get(key);   
 		    System.out.println("risorsa: " + key + " | coordinatore: " + val);
-		    System.out.println();
+		   
 		}
+		System.out.println();
 	}
 	
 	/**
@@ -83,7 +100,8 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			if (debug)
+				e.printStackTrace();
 		}
 		return null;
 	}
@@ -96,21 +114,19 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 * TrackerServer
 	 */
 	public void setList(Hashtable<String, String> l) {
-		assert l != null : "Table not defined";
+		assert l != null : "La tabella non e' definita";
 		
 		//merge lists:
 		if(this.table.isEmpty()) {
 			this.table = l;
 			return;
-		}
-		else {
+		} else {
 			Enumeration<String> e = l.keys();
 			while(e.hasMoreElements()) {
 				String key = e.nextElement();
 				if(!this.table.containsKey(key)) {
 					this.table.put(key, l.get(key));
-				}
-					
+				}		
 			}
 		}
 		if(debug) {
@@ -119,10 +135,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		}
 	}
 	
-	//TODO: daniele documentazione
+	/**
+	 * Metodo invocato per accertare la raggiungibilità del TrackerServer
+	 * 
+	 * @return il valore booleano "true".
+	 */
 	public boolean ping() throws RemoteException {
 		return true;
 	}
+
 	/**
 	 * Metodo invocato quando un nuovo nodo vuole entrare a far parte della rete
 	 * p2p.
@@ -144,7 +165,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 		assert this.validate(ip) == true : "Indirizzo ip non valido";
 		
 		if (debug)
-			System.out.println("Inizio registrazione risorse del peer " + ip + "...");
+			System.out.println("Inizio registrazione risorse del peer " + ip);
 		
 		Vector<String> ipCoordinatori = new Vector<String>();
 		
@@ -181,23 +202,17 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
 	 */
     public String richiesta(String risorsa) throws RemoteException {
     	
-    	if (debug) {
-    		System.out.println("Inizio richiesta semplice per la risorsa " + risorsa + "...");
-    		System.out.println();
-    	}
+    	if (debug) 
+    		System.out.println("Inizio richiesta semplice per la risorsa " + risorsa);
     	
     	if (table.containsKey(risorsa)) {
-    		if (debug) {
+    		if (debug) 
     			System.out.println("Il coordinatore per la risorsa " + risorsa + " è " + table.get(risorsa));
-    			System.out.println();
-    		}
     		return table.get(risorsa);
     	}
     	else {
-    		if (debug) {
+    		if (debug) 
     			System.out.println("Il coordinatore per la risorsa " + risorsa + " non esiste");
-    			System.out.println();
-    		}
     		return null;
     	}
     }
@@ -224,7 +239,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	assert this.validate(ipPrecedente) == true : "Indirizzo ip non valido";
     	
     	if (debug)
-    		System.out.println("Inizio richiesta per la risorsa " + risorsa + " dato che in precedenza ho risposto con il coordinatore " + ipPrecedente + "...");
+    		System.out.println("Inizio richiesta per la risorsa " + risorsa + " dato che in precedenza ho risposto con il coordinatore " + ipPrecedente);
     	
     	String coordinatoreCorrente = this.richiesta(risorsa);
     	
@@ -266,14 +281,15 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	boolean status = false;
     	
     	if (debug)
-    		System.out.println("Inizio ping...");
+    		System.out.println("Inizio ping sull'indirizzo ip " + address);
     	
         try {
             InetAddress adr = InetAddress.getByName(address);
             status = adr.isReachable(2000); // 2 secondi
             return status;
         } catch (IOException e) {
-            e.printStackTrace();
+        	if (debug)
+        		e.printStackTrace();
         }
         
         return status;
@@ -323,7 +339,7 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     	assert this.validate(ip) == true : "Indirizzo ip non valido";
     	
     	if (debug)
-    		System.out.println("Inizio cambio coordinatore...");
+    		System.out.println("Inizio cambio coordinatore");
     	
     	// se la chiave esiste già viene fatto un replace
     	// se la chiave non esiste, viene aggiunta
@@ -358,16 +374,12 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
     		System.out.println("Chiamata la getList da parte di un peer");
     	
     	if (timestamp.compareTo(this.timestamp) < 0) {
-    		if (debug) {
+    		if (debug) 
         		System.out.println("Ritorno la mia tabella (aggiornata) al peer che l'ha richiesta");
-        		System.out.println();
-        	}
     		return table;
     	} else {
-    		if (debug) {
+    		if (debug) 
         		System.out.println("Il peer ha già la tabella aggiornata percui non gli passo nulla");
-        		System.out.println();
-        	}
     		return null;
     	}
     }
@@ -386,9 +398,11 @@ public class TrackerServer extends UnicastRemoteObject implements Tracker {
         try {
             TrackerServer obj = new TrackerServer();
             Naming.rebind("Tracker", obj);
-            System.out.println("Il server è in esecuzione, digitare CTRL+C per terminarlo.");
+            if (debug)
+            	System.out.println("Il server è in esecuzione, digitare CTRL+C per terminarlo.");
         } catch(Exception e) {
-            e.printStackTrace();
+        	if (debug)
+        		e.printStackTrace();
         }
     }
 

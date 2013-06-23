@@ -9,6 +9,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class PeerServer extends UnicastRemoteObject implements Peer {
 
 	private static final long serialVersionUID = 1L;
@@ -16,7 +22,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	private float avgDist;
 	private String myIp;
 	static private boolean debug = true;
-	private boolean no_election = false;
 	
 	protected Hashtable<String, PeerTable> resourceTable;
 	
@@ -34,12 +39,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		resourceTable = new Hashtable<String, PeerTable>();
 	}
 	
-	/*public boolean noElection() throws RemoteException {
-		return this.no_election;
-	}*/
-	
 	/**
-	 * Metodo orribile per sincronizzare la tabella del client con quella del
+	 * Metodo per sincronizzare la tabella del client con quella del
 	 * rispettivo server.
 	 * 
 	 * @param rt l'oggetto di tipo Hashtable da sostituire con la propria tabella
@@ -56,7 +57,9 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	
 	/**
 	 * Metodo che rimuove completamente la tabella della risorsa data
-	 * */
+	 * 
+	 * @param resName il nome della risorsa da eliminare
+	 */
 	public void removeFromTable(String resName) {
 		
 		this.resourceTable.remove(resName);
@@ -122,9 +125,8 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	 */
 	public byte[] getResource(String resName,String ip) throws RemoteException {
 
-		if(debug) {
+		if(debug) 
 			System.out.println("Chiamata la getResource() dal peer "+ip+" per la risorsa "+resName);
-		}
 		
 		try {
 			File file = new File("resources/"+resName);
@@ -135,21 +137,28 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			input.read(buffer,0,buffer.length);
 			input.close();
 			
-			assert buffer.length > 0 : "Something went wrong while reading file, but no exception were rised..";
+			assert buffer.length > 0 : "Qualcosa e' andato storto nella lettura del file ma non e' stata sollevata alcuna eccezione";
 			this.addNewPeer(resName, ip);
 			return buffer;
 		} catch(Exception e) {
-			System.out.println("Something went wrong while reading file: "+e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Qualcosa e' andato storto nella lettura del file: "+e.getMessage());
+				e.printStackTrace();
+			}
 			return null;
 		}
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * Metodo per aggiungere un peer alla tabella dei possessori della risorsa.
 	 * Ora il metodo e' generico ed e' invocato anche in fase di prelievo 
 	 * di una risorsa per notificare agli altri peer nella zona il nuovo
 	 * arrivo
+=======
+	 * Metodo privato per aggiungere un peer alla tabella dei possessori della risorsa
+	 * dopo che gli e' stata data
+>>>>>>> 4543f0524e0e4926985b092ae4775ce860420772
 	 * 
 	 * @param resName stringa contenente il nome della risorsa da aggiungere
 	 * @param ip indirizzo ip del peer da aggiungere
@@ -160,16 +169,20 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		try {
 			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
 		} catch (Exception e) {
-			System.out.println("Error while getting the remote object: "+e.getMessage());
-			e.printStackTrace();			
+			if (debug) {
+				System.out.println("Errore nel recupero dell'oggetto remoto: "+e.getMessage());
+				e.printStackTrace();	
+			}
 		}
 		
 		PeerTable pt = this.resourceTable.get(resName);
 		try {
 			pt.add(new PeerTableData(ip, p.discovery(this.myIp),false,false ));
 		} catch (RemoteException e) {
-			System.out.println("Discovery failed.."+e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Fallito il metodo discovery() sul Peer "+e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		this.resourceTable.put(resName, pt);
 		if (debug) {
@@ -199,8 +212,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	public float election(String res, String ipCaller) throws RemoteException {
 		if(debug)
 			System.out.println("Chiamata la election() per la risorsa "+res);
-		this.no_election = true;
-		assert this.avgDist > 0 || ipCaller.equals(this.myIp): "Called election but avgDist is not a valid number!";
+		assert this.avgDist > 0 || ipCaller.equals(this.myIp): "Chiamata la election() ma avgDist non e' un numero valido!";
 		return this.avgDist;
 	}
 	
@@ -215,7 +227,6 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		if(debug)
 			System.out.println("Chiamata la coordinator() per la risorsa"+res+", il nuovo coordinatore e' "+newCoord);
 		
-		
 		boolean elected = false;
 		PeerTable pt = this.resourceTable.get(res);
 		
@@ -223,7 +234,7 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			pt.get().get(i).coordinator = false;
 			if(pt.get().get(i).peer.equals(newCoord)) {
 				if (debug)
-					System.out.println("Trovato il nuovo coordinatore della risorsa " + res + " nella peertable");
+					System.out.println("Trovato il nuovo coordinatore della risorsa " + res + " nella PeerTable");
 				pt.get().get(i).coordinator = true;
 				elected = true;
 			}
@@ -232,11 +243,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 
 		this.resourceTable.put(res, pt);
 		if (debug) {
-			System.out.println("Stampa tabella dentro la modifica..");
+			System.out.println("Stampa tabella:");
 			this.resourceTable.get(res).print();
 		}
-		assert elected == true : "No coordinator set!";
-		this.no_election = false;
+		assert elected == true : "Nessun coordinatore settato!";
 	}
 	
 	/**
@@ -258,6 +268,12 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(resName, pt);
 	}
 	
+	/**
+	 * Metodo che aggiunge un nuovo Peer nella PeerTable
+	 * 
+	 * @param ip indirizzo ip del nuovo Peer
+	 * @param resName il nome della risorsa posseduto dal nuovo Peer
+	 */
 	public void newPeer(String ip, String resName) {
 		PeerTable pt = this.resourceTable.get(resName);
 		pt.add(new PeerTableData(ip, 4, false, false));
@@ -265,6 +281,11 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 		this.resourceTable.put(resName, pt);
 	}
 
+	/**
+	 * Metodo invocato per accertare la raggiungibilità del @PeerServer
+	 * 
+	 * @return il valore booleano "true"
+	 */
 	public boolean ping() {
 		return true;
 	}
@@ -292,8 +313,10 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 			}
 		}
 		catch (Exception e) {
-			System.out.println("non va: "+e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("non va: "+e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 

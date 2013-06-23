@@ -3,6 +3,17 @@ import java.rmi.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+/**
+ * La classe SuperPeerClient è una estensione della classe PeerClient
+ * aggiungendo di fatto le funzionalità offerte da un SuperPeer
+ * (coordinatore di zona).
+ * 
+ * In particolare
+ * 
+ * @author Arianna Avanzini <73628@studenti.unimore.it>, 
+ * Stefano Alletto <72056@studenti.unimore.it>, 
+ * Daniele Cristofori <70982@studenti.unimore.it>
+ */
 public class SuperPeerClient extends PeerClient {
 
 	private SuperPeer server = null;
@@ -23,7 +34,6 @@ public class SuperPeerClient extends PeerClient {
 	 * @param pc riferimento al PeerClient
 	 * @param server riferimento al server coordinatore
 	 * @param tracker riferimento al tracker
-	 * @param trIp indirizzo ip del tracker
 	 */
 	public SuperPeerClient (PeerClient pc, SuperPeer server, Tracker tracker) throws UnknownHostException {
 		assert server != null : "Campo server nullo";
@@ -55,19 +65,21 @@ public class SuperPeerClient extends PeerClient {
 	 */
 	public void setCoordinator(String risorsa) {
 		assert risorsa != null : "Campo risorsa nullo nell'impostazione del coordinatore";
-		assert risorsa != "" : "Campo risorsa vuoto nell'impostazione del coordinatore";
+		assert !risorsa.equals("") : "Campo risorsa vuoto nell'impostazione del coordinatore";
 		try {
 			String coordIp = server.getIP();
 			assert coordIp != null : "IP coordinatore nullo";
-			assert coordIp != "" : "IP coordinatore vuoto";
+			assert !coordIp.equals("") : "IP coordinatore vuoto";
 			if (debug) {
 				System.out.println("SuperPeerClient - Impostazione del coordinatore");
 			    System.out.println("Impostazione di " + coordIp + " per la risorsa " + risorsa);
 			}
 			tracker.cambioCoordinatore(coordIp, risorsa);
 		} catch (RemoteException e) {
-			System.out.println("Exception while setting coordinator: " + e.getMessage());
-			e.printStackTrace();
+			if (debug) {
+				System.out.println("Eccezione nel settaggio del coordinatore: " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -99,7 +111,8 @@ public class SuperPeerClient extends PeerClient {
 									Common.printCoordTable(table);
 								}
 							} catch (RemoteException e1) {
-								e1.printStackTrace();
+								if (debug)
+									e1.printStackTrace();
 							}
 		                	while (listRetrieverContinue) {
 			                    try {
@@ -113,52 +126,23 @@ public class SuperPeerClient extends PeerClient {
 			                    			System.out.println("Thread: il tracker era down ed e' tornato up, gli mando la tabella");
 			                    			Common.printCoordTable(coordTable);
 			                    		}
-			                    		/* Prima di mandargli la tabella, controllo che i coordinatori siano ancora validi:
-			                    		 * durante l'assenza del tracker non e' possibile eseguire un'elezione, per cui 
-			                    		 * se un peer lascia la rete in maniera unpolite si ha un'inconsistenza nella tabella
-			                    		 */
-			                    		/*Enumeration<String> en = coordTable.keys();
-			                    		while(en.hasMoreElements()) {
-			                    			String key = en.nextElement();
-			                    			String ip = coordTable.get(key);
-			                    			if(ip.equals(myIp))
-			                    				continue;
-			                    			try {
-				                    			Peer p = getPeer("rmi://"+ip+"/Peer"+ip);
-				                    			p.ping(); 
-			                    			} catch (Exception re) { //XXX: dovremmo catturare solo NullPointerEx. e Remote, in java 1.7 si usa l'!..ma qui siamo in 1.6
-			                    				if(debug)
-			                    					System.out.println("Il coordinatore non risponde, faccio un'election prima di mandare la tabella al tracker");
-			                    				boolean noSelf = true;
-			                    				//Ho la risorsa, quindi posso diventare coordinatore?
-			                    				PeerTable pt = myPS.getTable().get(key);
-			                    				for(int j=0;j<pt.get().size();++j) {
-			                    					if(pt.get().get(j).peer.equals(myIp)) {
-			                    						noSelf = false;
-			                    						break;
-			                    					}
-			                    				}
-			                    				startElection(key,noSelf,tracker,ip);
-			                    			}
-			                    		}*/
-			                    		Hashtable<String, String> tempTable = new Hashtable<String, String>();
-							Enumeration<String> ec = coordTable.keys();
-							while (ec.hasMoreElements()) {
-								String key = ec.nextElement();
-								if (coordTable.get(key).equals(myIp))
-									tempTable.put(key, coordTable.get(key));
-							}
-			                    		tracker.setList(tempTable);
-							if (debug) {
-								System.out.println("TABELLA IMPOSTATA SUL TRACKER");
-								Common.printCoordTable(tempTable);
-							}
-			                    		down = false;
-			                    		trackerIsDown = false;
-			                    	}
-			                    	else
-			                    		/* Recupero della tabella dei coordinatori dal tracker */
-			                    		table = tracker.getList(timestamp);
+				                   		Hashtable<String, String> tempTable = new Hashtable<String, String>();
+										Enumeration<String> ec = coordTable.keys();
+										while (ec.hasMoreElements()) {
+											String key = ec.nextElement();
+											if (coordTable.get(key).equals(myIp))
+												tempTable.put(key, coordTable.get(key));
+										}
+							            tracker.setList(tempTable);
+										if (debug) {
+											System.out.println("Tabella impostata sul tracker");
+											Common.printCoordTable(tempTable);
+										}
+					                   	down = false;
+					                   	trackerIsDown = false;
+				                   	} else
+				                   		/* Recupero della tabella dei coordinatori dal tracker */
+				                   		table = tracker.getList(timestamp);
 			                    		
 			                    	/* Impostazione della tabella sul server se non è nulla */
 			                    	if (table != null) {
@@ -174,11 +158,13 @@ public class SuperPeerClient extends PeerClient {
 			                    } catch (Exception e) {
 			                    	down = true;
 			                    	trackerIsDown = true;
-			                    	System.out.println("Tracker's dead baby, tracker's dead:" + e.getMessage());
+			                    	if (debug)
+			                    		System.out.println("Il Tracker è morto:" + e.getMessage());
 			                    	try {
 										Thread.sleep(listRetrieverSleep);
 									} catch (InterruptedException e1) {
-										e1.printStackTrace();
+										if (debug)
+											e1.printStackTrace();
 									}
 			                    }
 			                }
