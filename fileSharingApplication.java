@@ -751,10 +751,13 @@ public class fileSharingApplication {
 								Peer pe = pc.getPeer(peer);
 								if(pe!= null) {
 									try {
-										pe.newPeer(pc.myIp, resName);
+										pe.addNewPeer(resName, pc.myIp);
 									} catch (RemoteException e1) {
 										e1.printStackTrace();
 									}
+								}
+								if(debug) {
+									System.out.println("Notificando il mio arrivo al peer "+ipList.get(i));
 								}
 							}
 						}

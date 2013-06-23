@@ -146,14 +146,16 @@ public class PeerServer extends UnicastRemoteObject implements Peer {
 	}
 	
 	/**
-	 * Metodo (privato) per aggiungere un peer alla tabella dei possessori della risorsa
-	 * dopo che gli e' stata data
+	 * Metodo per aggiungere un peer alla tabella dei possessori della risorsa.
+	 * Ora il metodo e' generico ed e' invocato anche in fase di prelievo 
+	 * di una risorsa per notificare agli altri peer nella zona il nuovo
+	 * arrivo
 	 * 
 	 * @param resName stringa contenente il nome della risorsa da aggiungere
 	 * @param ip indirizzo ip del peer da aggiungere
 	 */
 	@SuppressWarnings("unchecked")
-	private void addNewPeer(String resName, String ip) {
+	public void addNewPeer(String resName, String ip) throws RemoteException {
 		Peer p = null;
 		try {
 			p = (Peer)Naming.lookup("rmi://"+ip+"/Peer"+ip);
