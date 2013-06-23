@@ -13,7 +13,10 @@ import java.util.Hashtable;
  * 
  * In particolare questa classe implementa un thread che fornisce
  * periodicamente al SuperPeerServer la tabella dei coordinatori
- * aggiornata dal Tracker
+ * aggiornata dal Tracker.
+ * Tale classe implementa anche un metodo che consente ad un Peer
+ * di cambiare il coordinatore per una certa risorsa. Il compito
+ * della classe è comunicare il nuovo coordinatore al Tracker.
  * 
  * @author Arianna Avanzini <73628@studenti.unimore.it>, 
  * Stefano Alletto <72056@studenti.unimore.it>, 
@@ -109,7 +112,7 @@ public class SuperPeerClient extends PeerClient {
 		                		System.out.println("Avviato il thread, prelevo la tabella iniziale");
 		                	
 							try {
-								table = tracker.getList("1970-01-01 00:00:00.000");
+								table = tracker.getList("1970-01-01 00:00:00.000"); //XXX: il tracker restituisce SEMPRE la sua tabella
 								timestamp = Common.setTimestamp();
 								if (debug) {
 									System.out.println("Sono nel thread, stampo la tabella iniziale");

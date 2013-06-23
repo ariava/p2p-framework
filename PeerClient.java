@@ -18,8 +18,14 @@ import java.util.Vector;
  * In particolare ciascun Peer può: 
  * 1) Registrare le proprie risorse nella rete peer to peer
  * 2) Effettuare la ricerca di una certa risorsa
- * 3) Cancellare dalla rete peer to peer le risorse possedute
+ * 3) Cancellare dalla rete peer to peer una o più risorse possedute
  * 4) Far partire l'elezione per una certa risorsa
+ * 
+ * Inoltre questa classe fornisce un Thread che effettua un ping su
+ * tutti i coordinatori delle risorse possedute dal Peer. Nel caso
+ * in cui un coordinatore non risponde, viene avviata un'elezione
+ * per quella risorsa. Alla fine dell'elezione viene comunicato il
+ * nuovo coordinatore al relativo PeerServer e al Tracker.
  * 
  * @author Arianna Avanzini <73628@studenti.unimore.it>, 
  * Stefano Alletto <72056@studenti.unimore.it>, 

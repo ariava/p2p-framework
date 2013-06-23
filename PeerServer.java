@@ -15,6 +15,10 @@ import java.util.*;
  * classe è fornire tutte le funzionalità necessarie al relativo
  * PeerClient per gestire la tabella delle risorse permettendo l'aggiunta, 
  * la modifica e la cancellazione delle risorse.
+ * In breve questa classe gestisce la tabella delle risorse possedute
+ * da un certo Peer.
+ * Inoltre tale classe consente il trasferimento fisico di una risorsa
+ * da un Peer ad un altro.
  * 
  * @author Arianna Avanzini <73628@studenti.unimore.it>, 
  * Stefano Alletto <72056@studenti.unimore.it>, 
