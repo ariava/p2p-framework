@@ -4,7 +4,10 @@
 
 JAVAOPTS=-Djava.rmi.server.codebase=file:`pwd`/ -ea
 
-all: java rmi
+all: java rmi doc
+
+doc:
+	javadoc -charset "UTF-8" -d doc *.java
 
 gui: java
 	java -ea fileSharingApplication debug
