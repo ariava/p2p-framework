@@ -107,7 +107,7 @@ public class PeerTable implements Serializable {
 	/**
 	 * Tale metodo ritorna la distanza media dei peer nella PeerTable
 	 * 
-	 * @param indirizzo ip richiedente
+	 * @param myIp indirizzo ip richiedente
 	 * 
 	 * @return la distanza media
 	 */
