@@ -112,7 +112,7 @@ public class SuperPeerClient extends PeerClient {
 		                		System.out.println("Avviato il thread, prelevo la tabella iniziale");
 		                	
 							try {
-								table = tracker.getList("1970-01-01 00:00:00.000"); //XXX: il tracker restituisce SEMPRE la sua tabella
+								table = tracker.getList("1970-01-01 00:00:00.000");
 								timestamp = Common.setTimestamp();
 								if (debug) {
 									System.out.println("Sono nel thread, stampo la tabella iniziale");
